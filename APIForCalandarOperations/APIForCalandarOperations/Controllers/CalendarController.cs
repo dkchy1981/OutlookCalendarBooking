@@ -26,38 +26,29 @@ namespace APIForCalandarOperations.Controllers
         [Route("GetAllRooms"), HttpGet]
         public async Task<HttpResponseMessage> GetAllRooms()
         {
-            XDocument xmlDoc = XDocument.Load(System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/FloorsAndRooms.xml"));
-            List<Room> roomList = new List<Room>();
-
-            foreach (XElement floor in xmlDoc.Elements("Floors").Elements("Floor"))
-            {
-                foreach (XElement room in floor.Elements("Room"))
-                {
-                    roomList.Add(new Room() { Id = Convert.ToInt32(room.Attribute("Id").Value), Name = room.Attribute("Name").Value , Email = room.Attribute("Email").Value });
-                }
-            }
-            return Request.CreateResponse(HttpStatusCode.NotFound, roomList);            
+            GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
+            IList<Room> roomList = getFloorAndRooms.GetAllRooms(System.Configuration.ConfigurationManager.AppSettings["Connection"]);
+            return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
         }
 
         [Route("GetRoomsById/{roomID}"), HttpGet]
         public async Task<HttpResponseMessage> GetRoomsById([FromUri] int roomID)
         {
-            XDocument xmlDoc = XDocument.Load(System.Web.Hosting.HostingEnvironment.MapPath("~/Resources/FloorsAndRooms.xml"));
-            List<Room> roomList = new List<Room>();
 
-            foreach (XElement floor in xmlDoc.Elements("Floors").Elements("Floor"))
-            {
-                if (Convert.ToInt32(floor.Attribute("Id").Value) == roomID)
-                {
-                    foreach (XElement room in floor.Elements("Room"))
-                    {
-                        roomList.Add(new Room() { Id = Convert.ToInt32(room.Attribute("Id").Value), Name = room.Attribute("Name").Value, Email = room.Attribute("Email").Value });
-                    }
-                    break;
-                }
-            }
+            GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
+            IList<Room> roomList = getFloorAndRooms.GetRoomsByID(System.Configuration.ConfigurationManager.AppSettings["Connection"], roomID);
             return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
         }
+
+        [Route("GetRoomsByFloorId/{floorID}"), HttpGet]
+        public async Task<HttpResponseMessage> GetRoomsByFloorId([FromUri] int floorID)
+        {
+
+            GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
+            IList<Room> roomList = getFloorAndRooms.GetRoomsByFloorID(System.Configuration.ConfigurationManager.AppSettings["Connection"], floorID);
+            return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
+        }
+
 
 
         [HttpPost]

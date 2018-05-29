@@ -45,5 +45,102 @@ namespace APIForCalandarOperations.DataAccess
             }
             return floorList;
         }
+
+        public IList<Room> GetAllRooms(string connKey)
+        {
+            IList<Room> roomList = new List<Room>();
+            SqlConnection connection = new SqlConnection(SqlHelper.GetDBConnectionString(connKey));
+            try
+            {
+                using (SqlDataReader reader = SqlHelper.ExecuteReader(connection, CommandType.Text, "SELECT * FROM ROOM"))
+                {
+                    Room room;
+                    while (reader.Read())
+                    {
+                        room = new Room()
+                        {
+                            Id = SqlHelper.To<int>(reader["ID"], 0),
+                            Name = SqlHelper.To<string>(reader["RoomName"], string.Empty),
+                            Email = SqlHelper.To<string>(reader["RoomEmail"], string.Empty)
+
+                        };
+                        roomList.Add(room);
+                    }
+                }
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                }
+            }
+            return roomList;
+        }
+
+        public IList<Room> GetRoomsByID(string connKey, int roomID)
+        {
+            IList<Room> roomList = new List<Room>();
+            SqlConnection connection = new SqlConnection(SqlHelper.GetDBConnectionString(connKey));
+            try
+            {
+                using (SqlDataReader reader = SqlHelper.ExecuteReader(connection, CommandType.Text, "SELECT * FROM ROOM WHERE ID = "+ roomID))
+                {
+                    Room room;
+                    while (reader.Read())
+                    {
+                        room = new Room()
+                        {
+                            Id = SqlHelper.To<int>(reader["ID"], 0),
+                            Name = SqlHelper.To<string>(reader["RoomName"], string.Empty),
+                            Email = SqlHelper.To<string>(reader["RoomEmail"], string.Empty)
+
+                        };
+                        roomList.Add(room);
+                    }
+                }
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                }
+            }
+            return roomList;
+        }
+
+
+        public IList<Room> GetRoomsByFloorID(string connKey, int floorID)
+        {
+            IList<Room> roomList = new List<Room>();
+            SqlConnection connection = new SqlConnection(SqlHelper.GetDBConnectionString(connKey));
+            try
+            {
+                using (SqlDataReader reader = SqlHelper.ExecuteReader(connection, CommandType.Text, "SELECT * FROM ROOM WHERE FloorID = " + floorID))
+                {
+                    Room room;
+                    while (reader.Read())
+                    {
+                        room = new Room()
+                        {
+                            Id = SqlHelper.To<int>(reader["ID"], 0),
+                            Name = SqlHelper.To<string>(reader["RoomName"], string.Empty),
+                            Email = SqlHelper.To<string>(reader["RoomEmail"], string.Empty)
+
+                        };
+                        roomList.Add(room);
+                    }
+                }
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                }
+            }
+            return roomList;
+        }
     }
 }

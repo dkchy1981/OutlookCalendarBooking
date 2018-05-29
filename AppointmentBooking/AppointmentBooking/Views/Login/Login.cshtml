@@ -1,0 +1,46 @@
+﻿@model AppointmentBooking.Models.UserLoginInfo
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Login</h2>
+@using (Html.BeginForm("ValidateUser", "Login", FormMethod.Post))
+{
+    <fieldset>
+        <legend>User Login</legend>
+
+
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-10" align="center">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.userName, "User Name : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.userName, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.password, "Password : ", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Login" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+    </fieldset>
+}

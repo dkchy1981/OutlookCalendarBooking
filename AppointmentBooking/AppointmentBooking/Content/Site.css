@@ -2,8 +2,12 @@
     padding-top: 50px;
     padding-bottom: 20px;
     background-image:url("Images/CivicaBackground.png");
+    background-repeat: no-repeat;
+    background-position-x:center;
+    background-position-y:center;
+    height:1000PX;
     
-    background-color:#093E52;
+    
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -25,3 +29,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+legend,
+h2,
+.control-label
+{
+    color:burlywood;
+}
+

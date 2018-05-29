@@ -17,7 +17,7 @@ namespace APIForCalandarOperations.Controllers
     public class CalendarController : ApiController
     {
         [Route("ValidateUser"), HttpPost]
-        public HttpResponseMessage ValidateUser(UserLoginInfo user)
+        public async Task<HttpResponseMessage> ValidateUser(UserLoginInfo user)
         {
             string domain = "baroda";
             DirectoryEntry de = new DirectoryEntry(null, domain + "\\" + user.userName, user.password);

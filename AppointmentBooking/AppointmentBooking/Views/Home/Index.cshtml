@@ -1,0 +1,247 @@
+﻿@{
+    ViewBag.Title = "Book Appointment";
+}
+
+<!--<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+            enables a clean separation of concerns and gives you full control over markup
+            for enjoyable, agile development.
+        </p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    </div>
+</div>-->
+
+<head>
+    <script>
+        function DailyCheck()
+        {
+            if (document.getElementById("DailyRecursion").checked) {
+                document.getElementById("Weekly").style.visibility = "hidden";
+                document.getElementById("Monthly").style.visibility = "hidden";
+                document.getElementById("Daily").style.visibility = "visible";
+            }
+            else if (document.getElementById("WeeklyRecursion").checked) {
+                document.getElementById("Daily").style.visibility = "hidden";
+                document.getElementById("Monthly").style.visibility = "hidden";
+                document.getElementById("Weekly").style.visibility = "visible";
+            }
+            else if (document.getElementById("MonthlyRecursion").checked) {
+                document.getElementById("Daily").style.visibility = "hidden";
+                document.getElementById("Weekly").style.visibility = "hidden";
+                document.getElementById("Monthly").style.visibility = "visible";
+            }
+            else {
+                document.getElementById("Daily").style.visibility = "hidden";
+                document.getElementById("DemoDiv2").style.visibility = "hidden";
+                document.getElementById("Monthly").style.visibility = "hidden";
+            }
+        }
+
+    </script>
+    <style>
+
+        .GeneralNumberInput
+        {
+            width:50px;
+        }
+        .mainDivision
+        {
+            margin:20px;
+            background-color:#94CAB5;
+            border-radius:10px;
+            
+        }
+        .RucursionOptions
+        {
+            text-align:center;
+            border-style:solid;
+            border-color:white;
+            border-width:1px;
+        }
+        .RecursionInputElements
+        {
+            margin-top:2px;
+            margin-bottom:2px;
+            margin-left:5px;
+            margin-right:5px;
+        }
+        table
+        {
+            border-spacing:10px;
+            border-collapse:separate;
+        }
+
+
+    </style>
+</head>
+    <div class="mainDivision" style="width:50%;">
+    <form>
+
+        <table>
+
+            <tr>
+                <!--Floor Selection Drop Dopwn-->
+                <td>
+
+                    Select Floor : 
+                    <select id="FloorSelection">
+                        <option value="0">All Floors</option>
+                        <option value="1">First Floor</option>
+                        <option value="2">Third Floor</option>
+
+                    </select>
+
+                </td>
+                <!--Room Capacity Selection-->
+                <td>
+                    Room Capacity : <input id="RoomCapacity" class="GeneralNumberInput" type="number" min="2" value="2">
+                </td>
+             </tr>
+            <!--Start and End Date Inputs-->
+                <tr>
+                    <!--Start Date input-->
+                    <td>
+                        Start Date : <input id="StartData" type="date" value=""/>
+                    </td>
+                    <!--End Date input-->
+                    <td>
+                        End Date : <input id="EndDate" type="date" value=""/>
+                 </td>
+
+             </tr>
+
+            <tr>
+                <!--Start Time Input-->
+                <td>
+                    Start Time : <input id="StartTime" type="Time" />
+
+                </td>
+
+                <td>
+                    Duration : <input id="TimeDuration" type="Time" />
+
+                </td>
+
+            </tr>
+
+            <tr>
+                <!--End Time Input-->
+
+                <td>
+                    End Time : <input id="EndTime" type="Time" />
+
+                </td>
+                <!--use 24 Hour Clock Checkbox-->
+                <td>
+                    <input id="Use24HouseChecBox" type="checkbox" /> Use 24 Hour Format
+
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                <div class="RucursionOptions">
+                    <span class="RecursionInputElements">
+                        <input id="DailyRecursion" name="RecursionType" type="radio"onclick="javascript:DailyCheck();" /> Daily
+                    </span>
+
+                    <span class="RecursionInputElements">
+                        <input id="WeeklyRecursion" type="radio" name="RecursionType" onclick="javascript:DailyCheck();"/> Weekly
+                    </span>
+                    <span class="RecursionInputElements">
+                        <input id="MonthlyRecursion" type="radio" name="RecursionType" onclick="javascript:DailyCheck();"/> Monthly
+                    </span>
+                    <span class="RecursionInputElements">
+                        <input id="CustomRecursion" type="radio" name="RecursionType" onclick="javascript:DailyCheck();"/> Custom
+                    </span>
+                </div>
+                    </td>
+            </tr>
+
+            <tr>
+
+                <td colspan="2">
+                    <!--Daily Selection-->
+                        <script>
+                            function EveryDayRadioCheck() {
+                                if (document.getElementById("EveryDay").checked) {
+                                    document.getElementById("DailyRepeatFrequency").disabled = "true";
+                                }
+                                
+                            }
+                            function EveryNDayRadioCheck() {
+                                if (document.getElementById("EveryNDay").checked) {
+                                    document.getElementById("DailyRepeatFrequency").disabled = "false";
+                                }
+                                
+                            }
+                        </script>
+                    <div id="Daily" style="visibility:hidden" class="RecursionTypeSelection">
+                        <input id="EveryDay" name="DailySelectionType" type="radio"  onclick="javascript:EveryDayRadioCheck()"> Every Day
+                        <br /><br />
+                        <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript: EveryNDayRadioCheck()">
+                        
+                        Every <input id="DailyRepeatFrequency"  type="number" min="1" value =" 1" style="width:50px;"/> Day(s).
+                        
+                    </div>
+                    <!--Weekly Selection-->
+                    <div  id="Weekly" style="visibility:hidden"; class="RecursionTypeSelection">
+                        <div style="float:left;">
+                            <input id="Monday" type="checkbox" value="Monday"> Monday<br />
+                            <input id="Tuesday" type="checkbox" value="Tuesday"> Tuesday<br />
+                            <input id="Wednesday" type="checkbox" value="Wednesday"> Wednesday<br />
+                            <input id="Thursday" type="checkbox" value="Thursday"> Thursday<br />
+                            <input id="Friday" type="checkbox" value="Friday" > Friday<br />
+                        </div>
+                        <div style="float:right">
+                            <input id="Saturday" type="checkbox" value="Saturday"> Saturday<br />
+                            <input id="Sunday" type="checkbox" value="Sunday"> Sunday<br />
+
+                        </div>
+                        
+
+                    </div>
+                    <!--Monthly Selection-->
+                    <div id="Monthly" style="visibility:hidden" class="RecursionTypeSelection">
+                        
+                    </div>
+
+                    </td>
+                </td>
+            </tr>
+
+            <tr>
+                    <!--Book and Cancel Buttons-->
+                    <td colspan="2">
+                        <div>
+                            <input style="float:left;" id ="Cancel" type="submit" value="Cancel" />
+                            <input style="float:right;"id="Submit" type="submit" value="Submit" />
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </form>
+    </div>

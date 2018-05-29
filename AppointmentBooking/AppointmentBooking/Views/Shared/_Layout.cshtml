@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
+    <script type="text/javascript">
+        @*if ('@Session["UserName"]' == null || '@Session["UserName"]' == '')
+        {
+            location.href='Login'
+        }*@
+    </script>
     @Scripts.Render("~/bundles/modernizr")
         <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />    

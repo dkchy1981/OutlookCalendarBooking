@@ -32,7 +32,8 @@ textarea {
 
 legend,
 h2,
-.control-label
+.control-label,
+.text-danger
 {
     color:burlywood;
 }

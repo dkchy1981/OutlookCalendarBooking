@@ -34,6 +34,7 @@ namespace AppointmentBooking.Controllers
                     response.Wait();
                     if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
+                        Session["UserName"] = userInfo.userName;
                         return Redirect("~/Home/Index");
                     }
                     else

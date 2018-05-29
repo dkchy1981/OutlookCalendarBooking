@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\readme.txt" />
+    <Content Include="DataScript\AppointmentBooking_Database_Script.sql" />
     <Content Include="Global.asax" />
     <Content Include="Resources\FloorsAndRooms.xml" />
     <Content Include="Web.config" />

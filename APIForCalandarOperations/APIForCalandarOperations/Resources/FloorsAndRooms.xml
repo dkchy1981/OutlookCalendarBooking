@@ -1,0 +1,17 @@
+<Floors>
+<Floor Id="0" Name="All"></Floor>
+<Floor Id="1" Name="First Floor">
+  <Room Id="1" Name="Baroda Big Bang Meeting Room" Email="BarodaBigBangMeetingRoom@civica.co.uk"></Room>
+  <Room Id="2" Name="Baroda Black Hole Meeting Room" Email="BarodaBlackHoleMeetingRoom@civica.co.uk"></Room>
+  <Room Id="3" Name="Baroda Nebula Meeting Room" Email="BarodaNebulaMeetingRoom@civica.co.uk"></Room>
+  <Room Id="4" Name="Baroda Shooting Star Meeting room" Email="BarodaShootingStarMeetingRoom@civica.co.uk"></Room>
+  <Room Id="5" Name="Baroda Super Nova Meeting Room" Email="BarodaSuperNovaMeetingRoom@civica.co.uk"></Room>
+</Floor>
+<Floor Id="2" Name="Third Floor">
+  <Room Id="6" Name="Baroda Aqua Meeting Room" Email="BarodaA@sfwltd.co.uk"></Room>
+  <Room Id="7" Name="Baroda Brain Wave Meeting Room" Email="BarodaB@civica.co.uk"></Room>
+  <Room Id="8" Name="Baroda Footprint Meeting Room" Email="BarodaF@civica.co.uk"></Room>
+  <Room Id="9" Name="Baroda Season Meeting Room" Email="BarodaS2@civica.co.uk"></Room>
+  <Room Id="10" Name="Baroda Splash Meeting Room" Email="BarodaS@civica.co.uk"></Room>
+</Floor>
+</Floors>

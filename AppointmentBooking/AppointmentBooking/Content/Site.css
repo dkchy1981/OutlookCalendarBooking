@@ -1,13 +1,11 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    background-image:url("Images/CivicaBackground.png");
+    background-image: url("Images/CivicaBackground.png");
     background-repeat: no-repeat;
-    background-position-x:center;
-    background-position-y:center;
-    height:1000PX;
-    
-    
+    background-position-x: center;
+    background-position-y: center;
+    height: 1000PX;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -33,8 +31,20 @@ textarea {
 legend,
 h2,
 .control-label,
-.text-danger
-{
-    color:burlywood;
+.text-danger {
+    color: burlywood;
 }
 
+.navbar-brand-right {
+    float: right;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .25);
+    color: burlywood;
+}
+.navbar-header
+{
+    width:100%;
+}

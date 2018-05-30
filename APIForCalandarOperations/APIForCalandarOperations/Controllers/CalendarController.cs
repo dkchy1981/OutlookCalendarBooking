@@ -69,9 +69,7 @@ namespace APIForCalandarOperations.Controllers
             IList<Room> roomList = getFloorAndRooms.GetRoomsByFloorID(System.Configuration.ConfigurationManager.AppSettings["Connection"], floorID);
             return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
         }
-
-
-
+        
         [HttpPost]
         [Route("FetchBookings")]
         public async Task<HttpResponseMessage> FetchBookings(CalendarInput input)
@@ -79,17 +77,44 @@ namespace APIForCalandarOperations.Controllers
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<CalendarOutput> calendarOutputList = getFloorAndRooms.GetRoomsAvailabilityByCalendateInput(System.Configuration.ConfigurationManager.AppSettings["Connection"], input);
 
-            return Request.CreateResponse(HttpStatusCode.NotFound, calendarOutputList);
+            return Request.CreateResponse(HttpStatusCode.OK, calendarOutputList);
         }
 
 
         [HttpPost]
-        [Route("SaveCalendar")]
-        public IEnumerable<string> SaveCalendar(List<Models.Student> students)
+        [Route("BookCalandar")]
+        public async Task<HttpResponseMessage> BookCalandar(CalendarInputForBooking inputForRoomBooking)
         {
-            return new string[] { students[0].Id.ToString(), students[0].Name };
+            CalendarInput input = new CalendarInput();
+            CalendarOutputForBooking output = new CalendarOutputForBooking();
+
+            input.BookingSlots = inputForRoomBooking.BookingSlots.Select(
+                q => new Slot()
+                {
+                    StartDateTime = q.StartDateTime,
+                    EndDateTime = q.EndDateTime
+                    
+                }).ToList();
+            input.Capacity = inputForRoomBooking.Capacity;
+            input.FloorID = inputForRoomBooking.FloorID;
+            input.UserId = inputForRoomBooking.UserId;
+
+            GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
+            IList<CalendarOutput> calendarOutputList = getFloorAndRooms.GetRoomsAvailabilityByCalendateInput(System.Configuration.ConfigurationManager.AppSettings["Connection"], input);
+                        
+            if (calendarOutputList.Count>0 && !(calendarOutputList.Any(t=>t.IsAvailable==false)))
+            {
+                output= getFloorAndRooms.BookRooms(System.Configuration.ConfigurationManager.AppSettings["Connection"], inputForRoomBooking);
+            }
+            else
+            {
+                output.Message = "Conflict occured for provided slots against system bookings.";
+            }
+
+            return Request.CreateResponse(HttpStatusCode.NotFound, output);
         }
     }
+
 
     public class UserLoginInfo
     {
@@ -130,6 +155,53 @@ namespace APIForCalandarOperations.Controllers
         public CalendarOutput()
         {
             this.Messages = new List<string>();
+        }
+    }
+
+
+
+    public class CalendarInputForBooking
+    {
+        public int FloorID { get; set; }
+
+        public int Capacity { get; set; }
+
+        public string UserId { get; set; }
+
+        public List<SlotForBooking> BookingSlots { get; set; }
+
+        public string Subject { get; set; }
+
+        public List<string> RecipientsTo { get; set; }
+
+        public List<string> RecipientsCC { get; set; }
+
+        public int ReminderMinutesBeforeStart { get; set; }
+    }
+
+
+    public class SlotForBooking
+    {
+        public DateTime StartDateTime { get; set; }
+
+        public DateTime EndDateTime { get; set; }
+
+        public int RoomID { get; set; }
+
+        public string Message { get; set; }
+    }
+
+
+    public class CalendarOutputForBooking
+    {
+    
+        public List<SlotForBooking> ErrorSlots { get; set; }
+
+        public string Message { get; set; }
+        
+        public CalendarOutputForBooking()
+        {
+            this.ErrorSlots = new List<SlotForBooking>();
         }
     }
 }

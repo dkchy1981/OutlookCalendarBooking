@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Transactions;
 
 namespace APIForCalandarOperations.DataAccess
 {
@@ -159,7 +160,7 @@ namespace APIForCalandarOperations.DataAccess
                 IList<Room> lstPriorityRooms = lstRooms.Where(t => (t.Capacity >= input.Capacity)).OrderBy(t => t.Capacity).ToList();
                 string commonMessage = string.Empty;
                 ExchangeService service = GetExchangeService();
-                if(lstPriorityRooms.Count<=0)
+                if (lstPriorityRooms.Count <= 0)
                 {
                     commonMessage = "Room is not available for matching capacity";
                 }
@@ -172,7 +173,7 @@ namespace APIForCalandarOperations.DataAccess
                     {
                         calendarOutput.Messages.Add(commonMessage);
                     }
-                    calendarOutputList.Add(calendarOutput);                    
+                    calendarOutputList.Add(calendarOutput);
                 }
                 DateTime startDate = input.BookingSlots.OrderBy(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
                 DateTime endtDate = input.BookingSlots.OrderByDescending(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date.AddDays(1);
@@ -253,6 +254,142 @@ namespace APIForCalandarOperations.DataAccess
             }
             return blnReturn;
         }
+
+
+
+        public CalendarOutputForBooking BookRooms(string connKey, CalendarInputForBooking input)
+        {
+            CalendarOutputForBooking calendarOutputForBooking = new CalendarOutputForBooking();
+            SqlConnection connection = new SqlConnection(SqlHelper.GetDBConnectionString(connKey));
+            try
+            {
+                IList<Room> lstRooms = GetRoomsByFloorID(connKey, input.FloorID);
+                ExchangeService service = GetExchangeService();
+
+                DateTime startDate = input.BookingSlots.OrderBy(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
+                DateTime endtDate = input.BookingSlots.OrderByDescending(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
+
+                string strSQL = @"INSERT INTO BookedMeeting (UserID,StartDateTime,EndDateTime,Description,IsConfirmed) output INSERTED.ID VALUES(@UserID,@StartDateTime,@EndDateTime,@Description,@IsConfirmed)";
+                int bookedMeetingID = 0;
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    using (SqlCommand theSQLCommand = new SqlCommand(strSQL, connection))
+                    {
+                        theSQLCommand.Parameters.AddWithValue("@UserID", input.UserId);
+                        theSQLCommand.Parameters.AddWithValue("@StartDateTime", startDate);
+                        theSQLCommand.Parameters.AddWithValue("@EndDateTime", endtDate);
+                        theSQLCommand.Parameters.AddWithValue("@Description", input.Subject);
+                        theSQLCommand.Parameters.AddWithValue("@IsConfirmed", true);
+                        if (theSQLCommand.Connection.State == ConnectionState.Closed)
+                        {
+                            theSQLCommand.Connection.Open();
+                        }
+                        bookedMeetingID = (int)theSQLCommand.ExecuteScalar();
+                    }
+                    foreach (SlotForBooking slot in input.BookingSlots)
+                    {
+                        Room room = lstRooms.Where(t => t.Id == slot.RoomID).FirstOrDefault();
+                        input.RecipientsTo.Add(input.UserId);
+                        string strSQLInner = @"INSERT INTO Recurrence (RoomID,BookedMeetingID,StartDateTime,EndDateTime,IsConfirmed) VALUES(@RoomID,@BookedMeetingID,@StartDateTime,@EndDateTime,@IsConfirmed)";
+
+                        using (SqlCommand theSQLCommandInner = new SqlCommand(strSQLInner, connection))
+                        {
+                            theSQLCommandInner.Parameters.AddWithValue("@RoomID", room.Id);
+                            theSQLCommandInner.Parameters.AddWithValue("@BookedMeetingID", bookedMeetingID);
+                            theSQLCommandInner.Parameters.AddWithValue("@StartDateTime", slot.StartDateTime);
+                            theSQLCommandInner.Parameters.AddWithValue("@EndDateTime", slot.EndDateTime);
+                            try
+                            {
+                                if (BookAppointment(service, slot, input.Subject, room, input.RecipientsTo, input.RecipientsCC, input.ReminderMinutesBeforeStart))
+                                {
+                                    theSQLCommandInner.Parameters.AddWithValue("@IsConfirmed", true);
+                                }
+                                else
+                                {
+                                    theSQLCommandInner.Parameters.AddWithValue("@IsConfirmed", false);
+                                }
+                                if (theSQLCommandInner.Connection.State == ConnectionState.Closed)
+                                {
+                                    theSQLCommandInner.Connection.Open();
+                                }
+                                theSQLCommandInner.ExecuteNonQuery();
+                            }
+                            catch (Microsoft.Exchange.WebServices.Data.ServiceRequestException ex)
+                            {
+                                calendarOutputForBooking.ErrorSlots.Add(new SlotForBooking()
+                                {
+                                    Message = string.Format("User do not have access on room '{0}'", room.Name),
+                                    StartDateTime = slot.StartDateTime,
+                                    EndDateTime = slot.EndDateTime,
+                                    RoomID = slot.RoomID
+                                });
+                            }
+                            catch (Exception ex)
+                            {
+                                calendarOutputForBooking.ErrorSlots.Add(new SlotForBooking()
+                                {
+                                    Message = string.Format("Error occured to book meeting for room '{0}'", room.Name),
+                                    StartDateTime = slot.StartDateTime,
+                                    EndDateTime = slot.EndDateTime,
+                                    RoomID = slot.RoomID
+                                });
+                            }
+                        }
+                    }
+                    if(calendarOutputForBooking.ErrorSlots!=null && calendarOutputForBooking.ErrorSlots.Count()<=0)
+                    {
+                        scope.Complete();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                calendarOutputForBooking.Message = "Error occured during meeting booking";
+            }
+            finally
+            {
+                if (connection.State != ConnectionState.Closed)
+                {
+                    connection.Close();
+                }
+            }
+            return calendarOutputForBooking;
+        }
+
+
+        private bool BookAppointment(ExchangeService service, SlotForBooking slot, string subject, Room objRoom, List<string> toRecepient, List<string> ccRecepient, int reminderMinutesBeforeStart)
+        {
+            Appointment meeting = new Appointment(service);
+
+            // Set the properties on the meeting object to create the meeting.
+            meeting.Subject = subject;
+            meeting.Body = subject;
+            meeting.Start = slot.StartDateTime;
+            meeting.End = slot.EndDateTime;
+            meeting.Location = objRoom.Name;
+            meeting.RequiredAttendees.Add(objRoom.Email);
+            foreach (var email in toRecepient)
+            {
+                meeting.RequiredAttendees.Add(email);
+            }
+            foreach (var email in ccRecepient)
+            {
+                meeting.RequiredAttendees.Add(email);
+            }
+            meeting.ReminderMinutesBeforeStart = reminderMinutesBeforeStart;
+
+            // Save the meeting to the Calendar folder and send the meeting request.
+            meeting.Save(SendInvitationsMode.SendToAllAndSaveCopy);
+
+            // Verify that the meeting was created.
+            Item item = Item.Bind(service, meeting.Id, new PropertySet(ItemSchema.Subject));
+            if (item != null && !string.IsNullOrWhiteSpace(item.Subject))
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         private ExchangeService GetExchangeService()
         {

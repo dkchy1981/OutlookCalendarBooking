@@ -65,12 +65,22 @@ namespace APIForCalandarOperations.Controllers
         [Route("GetRoomsByFloorId/{floorID}"), HttpGet]
         public async Task<HttpResponseMessage> GetRoomsByFloorId([FromUri] int floorID)
         {
-
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<Room> roomList = getFloorAndRooms.GetRoomsByFloorID(System.Configuration.ConfigurationManager.AppSettings["Connection"], floorID);
             return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
         }
 
+
+
+        [HttpPost]
+        [Route("FetchBookings")]
+        public async Task<HttpResponseMessage> FetchBookings(CalendarInput input)
+        {
+            GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
+            IList<CalendarOutput> calendarOutputList = getFloorAndRooms.GetRoomsAvailabilityByCalendateInput(System.Configuration.ConfigurationManager.AppSettings["Connection"], input);
+
+            return Request.CreateResponse(HttpStatusCode.NotFound, calendarOutputList);
+        }
 
 
         [HttpPost]
@@ -86,5 +96,40 @@ namespace APIForCalandarOperations.Controllers
         public string userName { get; set; }
 
         public string password { get; set; }
+    }
+
+    public class CalendarInput
+    {
+        public int FloorID { get; set; }
+
+        public int Capacity { get; set; }
+
+        public string UserId { get; set; }
+
+        public List<Slot> BookingSlots { get; set; }
+    }
+
+    public class Slot
+    {
+        public DateTime StartDateTime { get; set; }
+
+        public DateTime EndDateTime { get; set; }
+    }
+
+    public class CalendarOutput
+    {
+        
+        public bool IsAvailable { get; set; }
+
+        public string RoomName { get; set; }
+
+        public Slot BookingSlot { get; set; }
+
+        public List<string> Messages { get; set; }
+
+        public CalendarOutput()
+        {
+            this.Messages = new List<string>();
+        }
     }
 }

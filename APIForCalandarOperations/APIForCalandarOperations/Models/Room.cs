@@ -12,5 +12,9 @@ namespace APIForCalandarOperations.Models
         public string Name { get; set; }
 
         public string Email { get; set; }
+
+        public int Capacity { get; set; }
+
+        public int FloorId { get; set; }
     }
 }

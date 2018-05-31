@@ -80,11 +80,7 @@
                 </td>
 
                 <td>
-                    <select id="FloorSelection" class="FullSpread">
-                        <option value="0">All Floors</option>
-                        <option value="1">First Floor</option>
-                        <option value="2">Third Floor</option>
-                    </select>
+                    @Html.DropDownList("FloorSelection1", ViewData["Floors"] as List<SelectListItem>, new { @class = "FullSpread" })                  
                 </td>
 
                 <!--Number of Attendees -->

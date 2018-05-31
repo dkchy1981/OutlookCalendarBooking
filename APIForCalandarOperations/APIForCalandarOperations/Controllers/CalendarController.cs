@@ -42,7 +42,7 @@ namespace APIForCalandarOperations.Controllers
         {
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<Floor> floorList = getFloorAndRooms.GetFloorList(System.Configuration.ConfigurationManager.AppSettings["Connection"]);
-            return Request.CreateResponse(HttpStatusCode.NotFound, floorList);
+            return Request.CreateResponse(HttpStatusCode.OK, floorList);
         }
 
         [Route("GetAllRooms"), HttpGet]
@@ -50,7 +50,7 @@ namespace APIForCalandarOperations.Controllers
         {
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<Room> roomList = getFloorAndRooms.GetAllRooms(System.Configuration.ConfigurationManager.AppSettings["Connection"]);
-            return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
+            return Request.CreateResponse(HttpStatusCode.OK, roomList);
         }
 
         [Route("GetRoomsById/{roomID}"), HttpGet]
@@ -59,7 +59,7 @@ namespace APIForCalandarOperations.Controllers
 
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<Room> roomList = getFloorAndRooms.GetRoomsByID(System.Configuration.ConfigurationManager.AppSettings["Connection"], roomID);
-            return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
+            return Request.CreateResponse(HttpStatusCode.OK, roomList);
         }
 
         [Route("GetRoomsByFloorId/{floorID}"), HttpGet]
@@ -67,7 +67,7 @@ namespace APIForCalandarOperations.Controllers
         {
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<Room> roomList = getFloorAndRooms.GetRoomsByFloorID(System.Configuration.ConfigurationManager.AppSettings["Connection"], floorID);
-            return Request.CreateResponse(HttpStatusCode.NotFound, roomList);
+            return Request.CreateResponse(HttpStatusCode.OK, roomList);
         }
         
         [HttpPost]
@@ -111,7 +111,7 @@ namespace APIForCalandarOperations.Controllers
                 output.Message = "Conflict occured for provided slots against system bookings.";
             }
 
-            return Request.CreateResponse(HttpStatusCode.NotFound, output);
+            return Request.CreateResponse(HttpStatusCode.OK, output);
         }
     }
 

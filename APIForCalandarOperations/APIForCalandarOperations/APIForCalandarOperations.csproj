@@ -170,7 +170,6 @@
     </Compile>
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\Floor.cs" />
-    <Compile Include="Models\Student.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

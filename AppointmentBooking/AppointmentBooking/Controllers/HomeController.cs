@@ -11,6 +11,11 @@ using System.Net;
 using System.DirectoryServices;
 using System.Web.Security;
 using System.Security.Principal;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Configuration;
+using Newtonsoft.Json;
+using AppointmentBooking.Models;
 
 namespace AppointmentBooking.Controllers
 {
@@ -20,6 +25,20 @@ namespace AppointmentBooking.Controllers
         {
             if (Request.IsAuthenticated)
             {
+                using (var client = new HttpClient())
+                {
+                    string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
+                    Task<HttpResponseMessage> response = client.GetAsync(apiURL + "GetFloors");
+                    response.Wait();
+                    if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var floorJsonString = response.Result.Content.ReadAsStringAsync().Result;
+                        var floors = JsonConvert.DeserializeObject<System.Collections.Generic.IList<Floor>>(floorJsonString);
+                        List<SelectListItem> floorsList = floors.Select(bidResult => new SelectListItem { Text = bidResult.Name, Value = bidResult.Id.ToString() }).ToList();
+
+                        ViewData["Floors"] = floorsList;
+                    }
+                }
                 return View();
             }
             else
@@ -75,3 +94,4 @@ namespace AppointmentBooking.Controllers
         }
     }
 }
+

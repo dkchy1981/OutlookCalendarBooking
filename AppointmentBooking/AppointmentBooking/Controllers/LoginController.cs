@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Security;
 using System.Security.Principal;
+using System.Configuration;
 
 namespace AppointmentBooking.Controllers
 {
@@ -31,8 +32,9 @@ namespace AppointmentBooking.Controllers
                     UserLoginInfo userInfo = new UserLoginInfo();
                     userInfo.userName = collection["userName"];
                     userInfo.password = collection["password"];
+                    string apiURL=ConfigurationManager.AppSettings["APIRefenenceURL"];
 
-                    Task<HttpResponseMessage> response = client.PostAsJsonAsync<UserLoginInfo>("http://localhost/APIForCalandarOperations/api/Calendar/ValidateUser", userInfo);
+                    Task<HttpResponseMessage> response = client.PostAsJsonAsync<UserLoginInfo>(apiURL+"ValidateUser", userInfo);
                     response.Wait();
                     if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {

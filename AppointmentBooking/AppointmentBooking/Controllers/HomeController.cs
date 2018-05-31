@@ -47,6 +47,25 @@ namespace AppointmentBooking.Controllers
             }
         }
 
+        // POST: Login/Create
+        [HttpPost]
+        public ActionResult MultipleCommand(FormCollection collection,string Command)
+        {
+            if(string.Compare(Command, "Check Availability",true)==0)
+            {
+                string subject =collection["AppointmentTitle"];
+                string floorID = collection["FloorSelection"];
+                string attendeesCount = collection["NumberOfAttendees"];
+                string startDate = collection["StartDate"];
+                string endDate = collection["EndDate"];
+                string startTime = collection["StartTime"];
+                string endTime = collection["EndTime"];
+                string dailyInput_EveryWorkingDay = collection["EveryWorkingDay"];
+                
+            }
+            return RedirectToAction("Index");
+        }
+
 
         [HttpGet]
         public ActionResult Logout()

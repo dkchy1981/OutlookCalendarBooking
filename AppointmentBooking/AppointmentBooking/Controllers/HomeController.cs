@@ -47,13 +47,94 @@ namespace AppointmentBooking.Controllers
             }
         }
 
+        public JsonResult FetchAvailability(RecurrenceInfo info)
+        {
+            using (var client = new HttpClient())
+            {
+                string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
+                CalendarInput input = new CalendarInput();
+                input.Capacity = info.Capacity;
+                input.FloorID = info.FloorID;
+                input.UserId = (string)Session["UserName"];
+                int durationInMinutes = 0;
+                if (!string.IsNullOrEmpty(info.Duration))
+                {
+                    durationInMinutes = int.Parse(info.Duration.Split(Convert.ToChar(":"))[0]) * 60 + int.Parse(info.Duration.Split(Convert.ToChar(":"))[1]);
+                }
+                List<Slot> slots = new List<Slot>();
+
+                switch (info.RecurrenceType)
+                {
+                    case 1: // For Daily
+                        {
+                            if (info.IsEveryDay || info.IsEveryDayWorking)
+                            {
+                                DateTime start = DateTime.MinValue;
+                                DateTime end = DateTime.MinValue;
+                                if (DateTime.TryParse(info.StartDate + " " + info.StartTime, out start) && DateTime.TryParse(info.EndtDate, out end))
+                                {
+                                    while (start.Date <= end.Date)
+                                    {
+                                        if (info.IsEveryDayWorking && (start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday))
+                                        {
+                                            start = start.AddDays(1);
+                                            continue;
+                                        }
+                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        start = start.AddDays(1);
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case 2: // For Weekly
+                        {
+                        }
+                        break;
+                    case 3: // For Monthly
+                        {
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                input.BookingSlots = slots;
+
+                Task<HttpResponseMessage> response = client.PostAsJsonAsync(apiURL + "FetchBookings", input);
+                response.Wait();
+                if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var floorJsonString = response.Result.Content.ReadAsStringAsync().Result;
+                    var floors = JsonConvert.DeserializeObject<System.Collections.Generic.IList<CalendarOutput>>(floorJsonString);
+
+                    return Json(floors, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            //    //Creating List    
+            //    List<Employee> ObjEmp = new List<Employee>()
+            //{  
+            //    //Adding records to list    
+            //    new Employee
+            //    {
+            //        Id = 1, Name = "Vithal Wadje", City = "Latur", Address = "Kabansangvi"
+            //    },
+            //    new Employee
+            //    {
+            //        Id = 2, Name = "Sudhir Wadje", City = "Mumbai", Address = "Kurla"
+            //    }
+            //};
+            //return list as Json    
+            return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
         // POST: Login/Create
         [HttpPost]
-        public ActionResult MultipleCommand(FormCollection collection,string Command)
+        public ActionResult MultipleCommand(FormCollection collection, string Command)
         {
-            if(string.Compare(Command, "Check Availability",true)==0)
+            if (string.Compare(Command, "Check Availability", true) == 0)
             {
-                string subject =collection["AppointmentTitle"];
+                string subject = collection["AppointmentTitle"];
                 string floorID = collection["FloorSelection"];
                 string attendeesCount = collection["NumberOfAttendees"];
                 string startDate = collection["StartDate"];
@@ -61,7 +142,7 @@ namespace AppointmentBooking.Controllers
                 string startTime = collection["StartTime"];
                 string endTime = collection["EndTime"];
                 string dailyInput_EveryWorkingDay = collection["EveryWorkingDay"];
-                
+
             }
             return RedirectToAction("Index");
         }

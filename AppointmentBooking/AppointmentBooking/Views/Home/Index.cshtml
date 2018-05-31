@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Book Appointment";
 }
 
@@ -31,180 +32,201 @@
 </div>-->
 
 <head>
+    <script src="~/Content/JavaScripts/UIScripts.js"></script>
+    <link href="~/Content/StyleSheets/Default.css" rel="stylesheet" />
+
+    <!--Jquery-->
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+    <!--Date Dropper-->
+    <link href="~/Content/Plugins/Datedropper3/datedropper.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/Datedropper3/datedropper.js"></script>
+    <link href="~/Content/StyleSheets/DateDropperCivica.css" rel="stylesheet" />
+
+    <!--JQuerryTimePicker-->
+    <script src="../../Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.js"></script>
+    <link href="../../Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.css" rel="stylesheet" />
+
+    <!--Duration Picker-->
     <script>
-        function DailyCheck()
+        window.onload = function ()
         {
-            if (document.getElementById("DailyRecursion").checked) {
-                document.getElementById("Weekly").style.visibility = "hidden";
-                document.getElementById("Monthly").style.visibility = "hidden";
-                document.getElementById("Daily").style.visibility = "visible";
-            }
-            else if (document.getElementById("WeeklyRecursion").checked) {
-                document.getElementById("Daily").style.visibility = "hidden";
-                document.getElementById("Monthly").style.visibility = "hidden";
-                document.getElementById("Weekly").style.visibility = "visible";
-            }
-            else if (document.getElementById("MonthlyRecursion").checked) {
-                document.getElementById("Daily").style.visibility = "hidden";
-                document.getElementById("Weekly").style.visibility = "hidden";
-                document.getElementById("Monthly").style.visibility = "visible";
-            }
-            else {
-                document.getElementById("Daily").style.visibility = "hidden";
-                document.getElementById("DemoDiv2").style.visibility = "hidden";
-                document.getElementById("Monthly").style.visibility = "hidden";
-            }
-        }
-
+            document.getElementById("defaultOpen").click();
+        };
     </script>
-    <style>
+    
 
-        .GeneralNumberInput
-        {
-            width:50px;
-        }
-        .mainDivision
-        {
-            margin:20px;
-            background-color:#94CAB5;
-            border-radius:10px;
-            
-        }
-        .RucursionOptions
-        {
-            text-align:center;
-            border-style:solid;
-            border-color:white;
-            border-width:1px;
-        }
-        .RecursionInputElements
-        {
-            margin-top:2px;
-            margin-bottom:2px;
-            margin-left:5px;
-            margin-right:5px;
-        }
-        table
-        {
-            border-spacing:10px;
-            border-collapse:separate;
-        }
-
-
-    </style>
 </head>
-    <div class="mainDivision" style="width:50%;">
-    <form>
+    <div class="mainDivision">
+        <form>
 
-        <table>
+            <table>
+                <!--Meeting Title Iuput-->
+                <tr>
 
-            <tr>
-                <!--Floor Selection Drop Dopwn-->
-                <td>
+                    <td>
+                        Appointment Title : 
+                    </td>
+                    
+                    <td colspan="5" >
+                        <input id="AppointmentTitle" class="FullSpread" type="text"/>
+                    </td>
+                </tr>
 
-                    Select Floor : 
-                    <select id="FloorSelection">
-                        <option value="0">All Floors</option>
-                        <option value="1">First Floor</option>
-                        <option value="2">Third Floor</option>
+                <tr>
+                    <!--Floor Selection Drop Dopwn-->
+                    <td>
+                        Select Floor :
+                    </td>
 
-                    </select>
+                    <td>
+                        <select id="FloorSelection" class="FullSpread">
+                            <option value="0">All Floors</option>
+                            <option value="1">First Floor</option>
+                            <option value="2">Third Floor</option>
+                        </select>
+                    </td>
 
-                </td>
-                <!--Room Capacity Selection-->
-                <td>
-                    Room Capacity : <input id="RoomCapacity" class="GeneralNumberInput" type="number" min="2" value="2">
-                </td>
-             </tr>
-            <!--Start and End Date Inputs-->
+                    <!--Number of Attendees -->
+                    <td>
+                        No. of Attendees : 
+                    </td>
+                    
+                    <td>
+                        <input class="GeneralNumberInput" id="NumberOfAttendees" type="number" min="2" value="2">
+                    </td>
+                </tr>
+
                 <tr>
                     <!--Start Date input-->
                     <td>
-                        Start Date : <input id="StartData" type="date" value=""/>
+                        Start Date : 
                     </td>
+
+                    <td>
+                        <input id="StartDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028"/>
+                            <script>
+                                $('#StartDate').dateDropper();
+                            </script>
+                    </td>
+
                     <!--End Date input-->
                     <td>
-                        End Date : <input id="EndDate" type="date" value=""/>
-                 </td>
-
-             </tr>
-
-            <tr>
-                <!--Start Time Input-->
-                <td>
-                    Start Time : <input id="StartTime" type="Time" />
-
-                </td>
-
-                <td>
-                    Duration : <input id="TimeDuration" type="Time" />
-
-                </td>
-
-            </tr>
-
-            <tr>
-                <!--End Time Input-->
-
-                <td>
-                    End Time : <input id="EndTime" type="Time" />
-
-                </td>
-                <!--use 24 Hour Clock Checkbox-->
-                <td>
-                    <input id="Use24HouseChecBox" type="checkbox" /> Use 24 Hour Format
-
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                <div class="RucursionOptions">
-                    <span class="RecursionInputElements">
-                        <input id="DailyRecursion" name="RecursionType" type="radio"onclick="javascript:DailyCheck();" /> Daily
-                    </span>
-
-                    <span class="RecursionInputElements">
-                        <input id="WeeklyRecursion" type="radio" name="RecursionType" onclick="javascript:DailyCheck();"/> Weekly
-                    </span>
-                    <span class="RecursionInputElements">
-                        <input id="MonthlyRecursion" type="radio" name="RecursionType" onclick="javascript:DailyCheck();"/> Monthly
-                    </span>
-                    <span class="RecursionInputElements">
-                        <input id="CustomRecursion" type="radio" name="RecursionType" onclick="javascript:DailyCheck();"/> Custom
-                    </span>
-                </div>
+                        End Date : 
                     </td>
-            </tr>
+                    
+                    <td>
+                        <input id="EndDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028"/>
 
-            <tr>
-
-                <td colspan="2">
-                    <!--Daily Selection-->
                         <script>
-                            function EveryDayRadioCheck() {
-                                if (document.getElementById("EveryDay").checked) {
-                                    document.getElementById("DailyRepeatFrequency").disabled = "true";
-                                }
-                                
+                            $('#EndDate').dateDropper();
+                        </script>
+                    </td>
+                </tr>
+
+                <tr>
+                    <!--Start Time Input-->
+                    <td>
+                        Start Time : 
+                    </td>
+
+                    <td>
+                        <input id="StartTime" class="TimeInput" type="text"/>
+                        <script>
+                            $('.TimeInput').timepicker({
+                                timeFormat: 'hh:mm p',
+                                interval: 15,
+                                minTime: '10',
+                                maxTime: '10:00pm',
+                                defaultTime: 'now',
+                                startTime: '10:00',
+                                dynamic: false,
+                                dropdown: true,
+                                scrollbar: true
+                            });
+                        </script>
+                    </td>
+
+                    <!--Time Duration-->
+                    <td>
+                        Duration : 
+                    </td>
+
+                    <td>
+                        <input id="Duration" class="TimeInput2" type="text"/>
+                        
+                        <script>
+                            $('.TimeInput2').timepicker(
+                                {
+                                    timeFormat: 'HH:mm',
+                                    interval: 15,
+                                    minTime: '0',
+                                    maxTime: '23:00pm',
+                                    defaultTime: '0:15',
+                                    dynamic: false,
+                                    dropdown: true,
+                                    scrollbar: true
+                            });
+                        </script>
+                       
+                    </td>
+
+                                        
+
+                </tr>
+
+                <tr>
+                    <!--End Time-->
+                    <td>
+                        End Time : 
+                    </td>
+
+                    <td>
+                        <input id="EndTime" class="TimeInput" type="text" disabled />
+                    </td>
+                </tr>
+
+                <tr>
+                    <!--Regression Type Selection Tabs-->
+                    <td id="RegressionTypeSelectionTableData" colspan="6">
+
+                        <!--Selection Tabs-->
+                        <div class="tab">
+                            <input type="button" class="tablinks" onclick="openTab(event, 'Daily')" id="defaultOpen" value="Daily" /><br />
+                            <input type="button" class="tablinks" onclick="openTab(event, 'Weekly')" value="Weekly"><br />
+                            <input type="button" class="tablinks" onclick="openTab(event, 'Monthly')" value="Monthly"><br />
+                            <input type="button" class="tablinks" onclick="openTab(event, 'Custom')" value="Custom"><br />
+                        </div>
+
+                        <!--Daily Selection-->
+                        <div id="Daily" class="tabcontent">
+                            <script>
+                            function EveryDayRadioCheck()
+                            {
+                                document.getElementById("DailyRepeatFrequency").disabled = "true";
                             }
-                            function EveryNDayRadioCheck() {
-                                if (document.getElementById("EveryNDay").checked) {
-                                    document.getElementById("DailyRepeatFrequency").disabled = "false";
-                                }
+                            function EveryNDayRadioCheck()
+                            {
                                 
+                                document.getElementById("DailyRepeatFrequency").disabled =! "true";
+                            }
+                            function EveryWorkingDayRadioCheck()
+                            {
+                                document.getElementById("DailyRepeatFrequency").disabled =! "true";
                             }
                         </script>
-                    <div id="Daily" style="visibility:hidden" class="RecursionTypeSelection">
-                        <input id="EveryDay" name="DailySelectionType" type="radio"  onclick="javascript:EveryDayRadioCheck()"> Every Day
+                        <input id="EveryDay" name="DailySelectionType" type="radio"  onclick="javascript:EveryDayRadioCheck()" checked="checked"> Every Day
                         <br /><br />
-                        <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript: EveryNDayRadioCheck()">
+                        <input id="EveryWorkingDay" name="DailySelectionType" type="radio"  onclick="javascript:EveryDayRadioCheck()"> Every Working Day
+                        <br /><br />
+                        <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript:EveryWorkingDayRadioCheck()">
                         
-                        Every <input id="DailyRepeatFrequency"  type="number" min="1" value =" 1" style="width:50px;"/> Day(s).
+                        Every <input class="GeneralNumberInput" id="DailyRepeatFrequency"  type="number" min="1" value =" 1"/> Day(s).
                         
                     </div>
-                    <!--Weekly Selection-->
-                    <div  id="Weekly" style="visibility:hidden"; class="RecursionTypeSelection">
+
+                        <!--Weekly Selection-->
+                        <div  id="Weekly" class="tabcontent">
                         <div style="float:left;">
                             <input id="Monday" type="checkbox" value="Monday"> Monday<br />
                             <input id="Tuesday" type="checkbox" value="Tuesday"> Tuesday<br />
@@ -212,36 +234,92 @@
                             <input id="Thursday" type="checkbox" value="Thursday"> Thursday<br />
                             <input id="Friday" type="checkbox" value="Friday" > Friday<br />
                         </div>
+
                         <div style="float:right">
                             <input id="Saturday" type="checkbox" value="Saturday"> Saturday<br />
                             <input id="Sunday" type="checkbox" value="Sunday"> Sunday<br />
 
                         </div>
-                        
+                    </div>
+
+                        <!--Monthly Selection-->
+                        <div id="Monthly" class="tabcontent">
+                            <script>
+                            function DayWiseRadioCheck()
+                            {
+                                
+                                document.getElementById("MonthWiseSelection-daytype").disabled = "true";
+                                document.getElementById("MonthWiseSelection-day").disabled = "true";
+                                document.getElementById("MonthWiseSelection-Month").disabled = "true";
+
+                                document.getElementById("DayWiseSelection-Days").disabled =! "true";
+                                document.getElementById("DayWiseSelection-Month").disabled =! "true";
+                            }
+                            function MonthWiseRadioCheck()
+                            {
+                                document.getElementById("DayWiseSelection-Days").disabled = "true";
+                                document.getElementById("DayWiseSelection-Month").disabled = "true";
+                                document.getElementById("MonthWiseSelection-daytype").disabled =! "true";
+                                document.getElementById("MonthWiseSelection-day").disabled =! "true";
+                                document.getElementById("MonthWiseSelection-Month").disabled =! "true";
+                            }
+                        </script>
+
+                        <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript:DayWiseRadioCheck()" /> Day 
+                        <input class="GeneralNumberInput" id="DayWiseSelection-Days" " type="number" value="30" min="1" max="31"/> of every 
+                        <input class="GeneralNumberInput" id="DayWiseSelection-Month" type="number" value="1" min="1"/> Month.
+                        <br />
+                        <br />
+                        <input id="MonthWiseSelection" type="radio" name="MonthlySelectionType" onclick="javascript:MonthWiseRadioCheck()"/> 
+                            <select id="MonthWiseSelection-daytype">
+                                <option>First</option>
+                                <option>Second</option>
+                                <option>Third</option>
+                                <option>Fourth</option>
+                                <option>Last</option>
+
+                            </select>
+
+                            <select id="MonthWiseSelection-day">
+                                <option>Day</option>
+                                <option>WeekDay</option>
+                                <option>Weekend</option>
+
+                                <option>Sunday</option>
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+
+                            </select>
+                            of every
+                            <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1"/> Month.
+
 
                     </div>
-                    <!--Monthly Selection-->
-                    <div id="Monthly" style="visibility:hidden" class="RecursionTypeSelection">
+                    
+                    <!--Custom Selection-->
+                    <div id="Custom" class="tabcontent">
+
+
                         
                     </div>
 
                     </td>
-                </td>
-            </tr>
-
-            <tr>
-                    <!--Book and Cancel Buttons-->
-                    <td colspan="2">
-                        <div>
-                            <input style="float:left;" id ="Cancel" type="submit" value="Cancel" />
-                            <input style="float:right;"id="Submit" type="submit" value="Submit" />
-                        </div>
-
-                    </td>
-
                 </tr>
 
-            </table>
+                <tr>
 
+                    <td colspan="6">
+                        <input style="float:left;" id ="Cancel" type="button" value="Cancel" class="MainButton"/>
+                        <input style="float:right;"id="Submit" type="submit" value="Submit" class="MainButton"/>
+                    </td>
+                </tr>
+                
+
+            </table>
         </form>
+
     </div>

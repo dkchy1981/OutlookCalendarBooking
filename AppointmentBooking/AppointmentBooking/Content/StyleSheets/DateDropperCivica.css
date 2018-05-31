@@ -1,0 +1,68 @@
+/*
+
+	INSTRUCTIONS ---------------------------------------------------------------------------------
+  
+  1. link this stylesheet in the head of your HTML
+  	 <link href="YOUR PATH/DateDropperCivica.css" rel="stylesheet" type="text/css" />
+     
+  2. Set the file name as data-theme attribute on your input
+  	 <input data-theme="DateDropperCivica" />
+     
+  3. That's it!
+  
+  When you run script the style will be automatically applied.
+
+*/
+div.datedropper.DateDropperCivica {
+  border-radius: 10px;
+  width: 180px;
+}
+div.datedropper.DateDropperCivica .picker {
+  border-radius: 10px;
+  box-shadow: 0 0 32px 0px rgba(0, 0, 0, 0.1);
+}
+div.datedropper.DateDropperCivica .pick-l {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+div.datedropper.DateDropperCivica:before,
+div.datedropper.DateDropperCivica .pick-submit,
+div.datedropper.DateDropperCivica .pick-lg-b .pick-sl:before,
+div.datedropper.DateDropperCivica .pick-m,
+div.datedropper.DateDropperCivica .pick-lg-h {
+  background-color: #75AB9F;
+}
+div.datedropper.DateDropperCivica .pick-y.pick-jump,
+div.datedropper.DateDropperCivica .pick li span,
+div.datedropper.DateDropperCivica .pick-lg-b .pick-wke,
+div.datedropper.DateDropperCivica .pick-btn {
+  color: #75AB9F;
+}
+div.datedropper.DateDropperCivica .picker,
+div.datedropper.DateDropperCivica .pick-l {
+  background-color: #FFF;
+}
+div.datedropper.DateDropperCivica .picker,
+div.datedropper.DateDropperCivica .pick-arw,
+div.datedropper.DateDropperCivica .pick-l {
+  color: #000000;
+}
+div.datedropper.DateDropperCivica .pick-m,
+div.datedropper.DateDropperCivica .pick-m .pick-arw,
+div.datedropper.DateDropperCivica .pick-lg-h,
+div.datedropper.DateDropperCivica .pick-lg-b .pick-sl,
+div.datedropper.DateDropperCivica .pick-submit {
+  color: #000;
+}
+div.datedropper.DateDropperCivica.picker-tiny:before,
+div.datedropper.DateDropperCivica.picker-tiny .pick-m {
+  background-color: #FFF;
+}
+div.datedropper.DateDropperCivica.picker-tiny .pick-m,
+div.datedropper.DateDropperCivica.picker-tiny .pick-m .pick-arw {
+  color: #000000;
+}
+div.datedropper.DateDropperCivica.picker-lkd .pick-submit {
+  background-color: #FFF;
+  color: #000000;
+}

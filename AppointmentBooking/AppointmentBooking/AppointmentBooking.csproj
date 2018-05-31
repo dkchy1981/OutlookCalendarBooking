@@ -219,6 +219,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\JavaScripts\" />
+    <Folder Include="Content\Plugins\" />
+    <Folder Include="Content\StyleSheets\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

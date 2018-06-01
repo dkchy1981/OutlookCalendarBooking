@@ -90,75 +90,79 @@
 
 </script>
 
-@using (Html.BeginForm("MultipleCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
-{
-    <div class="mainDivision">
-        <table>
-            <!--Meeting Title Iuput-->
-            <tr>
+    @using (Html.BeginForm("MultipleCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
+    {
+        <div class="mainDivision">
 
-                <td>
-                    Appointment Title :
-                </td>
+            <!--Left Divisions with input fields-->
+            <div style="float:left;">
 
-                <td colspan="5">
-                    <input id="AppointmentTitle" name="AppointmentTitle" class="FullSpread" type="text" />
-                </td>
-            </tr>
+                <table>
+                    <!--Meeting Title Iuput-->
+                    <tr>
 
-            <tr>
-                <!--Floor Selection Drop Dopwn-->
-                <td>
-                    Select Floor :
-                </td>
+                        <td>
+                            Appointment Title :
+                        </td>
 
-                <td>
-                    @Html.DropDownList("FloorSelection", ViewData["Floors"] as List<SelectListItem>, new { @class = "FullSpread" })
-                </td>
+                        <td colspan="5">
+                            <input id="AppointmentTitle" name="AppointmentTitle" class="FullSpread" type="text" />
+                        </td>
+                    </tr>
 
-                <!--Number of Attendees -->
-                <td>
-                    No. of Attendees :
-                </td>
+                    <tr>
+                        <!--Floor Selection Drop Dopwn-->
+                        <td>
+                            Select Floor :
+                        </td>
 
-                <td>
-                    <input class="GeneralNumberInput" id="NumberOfAttendees" name="NumberOfAttendees" type="number" min="2" value="2">
-                </td>
-            </tr>
+                        <td>
+                            @Html.DropDownList("FloorSelection", ViewData["Floors"] as List<SelectListItem>, new { @class = "FullSpread" })
+                        </td>
 
-            <tr>
-                <!--Start Date input-->
-                <td>
-                    Start Date :
-                </td>
+                        <!--Number of Attendees -->
+                        <td>
+                            No. of Attendees :
+                        </td>
 
-                <td>
-                    <input id="StartDate" name="StartDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028" />
-                    <script>
+                        <td>
+                            <input class="GeneralNumberInput" id="NumberOfAttendees" name="NumberOfAttendees" type="number" min="2" value="2">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <!--Start Date input-->
+                        <td>
+                            Start Date :
+                        </td>
+
+                        <td>
+                            <input id="StartDate" name="StartDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028" />
+                            <script>
                         $('#StartDate').dateDropper();
-                    </script>
-                </td>
-                <!--End Date input-->
-                <td>
-                    End Date :
-                </td>
+                            </script>
+                        </td>
+                        <!--End Date input-->
+                        <td>
+                            End Date :
+                        </td>
 
-                <td>
-                    <input id="EndDate" name="EndDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028" />
+                        <td>
+                            <input id="EndDate" name="EndDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028" />
 
-                    <script>
+                            <script>
                         $('#EndDate').dateDropper();
-                    </script>
-                </td>
-            </tr>
-            <tr>
-                <!--Start Time Input-->
-                <td>
-                    Start Time :
-                </td>
-                <td>
-                    <input id="StartTime" name="StartTime" class="TimeInput" type="text" />
-                    <script>
+                            </script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!--Start Time Input-->
+                        <td>
+                            Start Time :
+                        </td>
+                        <td>
+                            <input id="StartTime" name="StartTime" class="TimeInput" type="text" />
+                            <script>
                         $('.TimeInput').timepicker({
                             timeFormat: 'hh:mm p',
                             interval: 15,
@@ -170,18 +174,18 @@
                             dropdown: true,
                             scrollbar: true
                         });
-                    </script>
-                </td>
+                            </script>
+                        </td>
 
-                <!--Time Duration-->
-                <td>
-                    Duration :
-                </td>
+                        <!--Time Duration-->
+                        <td>
+                            Duration :
+                        </td>
 
-                <td>
-                    <input id="Duration" name="Duration" class="TimeInput2" type="text" />
+                        <td>
+                            <input id="Duration" name="Duration" class="TimeInput2" type="text" />
 
-                    <script>
+                            <script>
                         $('.TimeInput2').timepicker(
                             {
                                 timeFormat: 'HH:mm',
@@ -193,163 +197,179 @@
                                 dropdown: true,
                                 scrollbar: true
                             });
-                    </script>
+                            </script>
 
-                </td>
-            </tr>
+                        </td>
+                    </tr>
 
-            <tr>
-                <!--End Time-->
-                <td>
-                    End Time :
-                </td>
+                    <tr>
+                        <!--End Time-->
+                        <td>
+                            End Time :
+                        </td>
 
-                <td>
-                    <input id="EndTime" name="EndTime" class="TimeInput" type="text" disabled />
-                </td>
-            </tr>
+                        <td>
+                            <input id="EndTime" name="EndTime" class="TimeInput" type="text" disabled />
+                        </td>
+                    </tr>
 
-            <tr>
-                <!--Regression Type Selection Tabs-->
-                <td id="RegressionTypeSelectionTableData" colspan="6">
+                    <tr>
+                        <!--Regression Type Selection Tabs-->
+                        <td id="RegressionTypeSelectionTableData" colspan="6">
 
-                    <!--Selection Tabs-->
-                    <div class="tab">
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Daily')" id="defaultOpen" value="Daily" /><br />
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Weekly')" value="Weekly"><br />
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Monthly')" value="Monthly"><br />
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Custom')" value="Custom"><br />
-                    </div>
+                            <!--Selection Tabs-->
+                            <div class="tab">
+                                <input type="button" class="tablinks" onclick="openTab(event, 'Daily')" id="defaultOpen" value="Daily" /><br />
+                                <input type="button" class="tablinks" onclick="openTab(event, 'Weekly')" value="Weekly"><br />
+                                <input type="button" class="tablinks" onclick="openTab(event, 'Monthly')" value="Monthly"><br />
+                                <input type="button" class="tablinks" onclick="openTab(event, 'Custom')" value="Custom"><br />
+                            </div>
 
-                    <!--Daily Selection-->
-                    <div id="Daily" class="tabcontent">
-                        <script>
-                            function EveryDayRadioCheck() {
-                                document.getElementById("DailyRepeatFrequency").disabled = "true";
-                            }
-                            function EveryNDayRadioCheck() {
+                            <!--Daily Selection-->
+                            <div id="Daily" class="tabcontent">
+                                <script>
+                                    function EveryDayRadioCheck() {
+                                        document.getElementById("DailyRepeatFrequency").disabled = "true";
+                                    }
+                                    function EveryNDayRadioCheck() {
 
-                                document.getElementById("DailyRepeatFrequency").disabled = ! "true";
-                            }
-                            function EveryWorkingDayRadioCheck() {
-                                document.getElementById("DailyRepeatFrequency").disabled = ! "true";
-                            }
-                        </script>
-                        <input id="EveryDay" name="DailySelectionType" type="radio" onclick="javascript:EveryDayRadioCheck()" checked="checked" value="1"> Every Day
-                        <br /><br />
-                        <input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript:EveryDayRadioCheck()" value="2"> Every Working Day
-                        <br /><br />
-                        <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript:EveryWorkingDayRadioCheck()" value="3">
+                                        document.getElementById("DailyRepeatFrequency").disabled = ! "true";
+                                    }
+                                    function EveryWorkingDayRadioCheck() {
+                                        document.getElementById("DailyRepeatFrequency").disabled = ! "true";
+                                    }
+                                </script>
+                                <input id="EveryDay" name="DailySelectionType" type="radio" onclick="javascript:EveryDayRadioCheck()" checked="checked" value="1"> Every Day
+                                <br /><br />
+                                <input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript:EveryDayRadioCheck()" value="2"> Every Working Day
+                                <br /><br />
+                                <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript:EveryWorkingDayRadioCheck()" value="3">
 
-                        Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="1" value="1" /> Day(s).
+                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="1" value="1" /> Day(s).
 
-                    </div>
+                            </div>
 
-                    <!--Weekly Selection-->
-                    <div id="Weekly" class="tabcontent">
-                        <div style="float:left;">
-                            <input id="Monday" type="checkbox" value="Monday"> Monday<br />
-                            <input id="Tuesday" type="checkbox" value="Tuesday"> Tuesday<br />
-                            <input id="Wednesday" type="checkbox" value="Wednesday"> Wednesday<br />
-                            <input id="Thursday" type="checkbox" value="Thursday"> Thursday<br />
-                            <input id="Friday" type="checkbox" value="Friday"> Friday<br />
-                        </div>
+                            <!--Weekly Selection-->
+                            <div id="Weekly" class="tabcontent">
+                                <div style="float:left;">
+                                    <input id="Monday" type="checkbox" value="Monday"> Monday<br />
+                                    <input id="Tuesday" type="checkbox" value="Tuesday"> Tuesday<br />
+                                    <input id="Wednesday" type="checkbox" value="Wednesday"> Wednesday<br />
+                                    <input id="Thursday" type="checkbox" value="Thursday"> Thursday<br />
+                                    <input id="Friday" type="checkbox" value="Friday"> Friday<br />
+                                </div>
 
-                        <div style="float:right">
-                            <input id="Saturday" type="checkbox" value="Saturday"> Saturday<br />
-                            <input id="Sunday" type="checkbox" value="Sunday"> Sunday<br />
+                                <div style="float:right">
+                                    <input id="Saturday" type="checkbox" value="Saturday"> Saturday<br />
+                                    <input id="Sunday" type="checkbox" value="Sunday"> Sunday<br />
 
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
-                    <!--Monthly Selection-->
-                    <div id="Monthly" class="tabcontent">
-                        <script>
-                            function DayWiseRadioCheck() {
+                            <!--Monthly Selection-->
+                            <div id="Monthly" class="tabcontent">
+                                <script>
+                                    function DayWiseRadioCheck() {
 
-                                document.getElementById("MonthWiseSelection-daytype").disabled = "true";
-                                document.getElementById("MonthWiseSelection-day").disabled = "true";
-                                document.getElementById("MonthWiseSelection-Month").disabled = "true";
+                                        document.getElementById("MonthWiseSelection-daytype").disabled = "true";
+                                        document.getElementById("MonthWiseSelection-day").disabled = "true";
+                                        document.getElementById("MonthWiseSelection-Month").disabled = "true";
 
-                                document.getElementById("DayWiseSelection-Days").disabled = ! "true";
-                                document.getElementById("DayWiseSelection-Month").disabled = ! "true";
-                            }
-                            function MonthWiseRadioCheck() {
-                                document.getElementById("DayWiseSelection-Days").disabled = "true";
-                                document.getElementById("DayWiseSelection-Month").disabled = "true";
-                                document.getElementById("MonthWiseSelection-daytype").disabled = ! "true";
-                                document.getElementById("MonthWiseSelection-day").disabled = ! "true";
-                                document.getElementById("MonthWiseSelection-Month").disabled = ! "true";
-                            }
-                        </script>
-                        <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript:DayWiseRadioCheck()" /> Day
-                        <input class="GeneralNumberInput" id="DayWiseSelection-Days" type="number" value="30" min="1" max="31" /> of every
-                        <input class="GeneralNumberInput" id="DayWiseSelection-Month" type="number" value="1" min="1" /> Month.
-                        <br />
-                        <br />
-                        <input id="MonthWiseSelection" type="radio" name="MonthlySelectionType" onclick="javascript:MonthWiseRadioCheck()" />
-                        <select id="MonthWiseSelection-daytype">
-                            <option>First</option>
-                            <option>Second</option>
-                            <option>Third</option>
-                            <option>Fourth</option>
-                            <option>Last</option>
+                                        document.getElementById("DayWiseSelection-Days").disabled = ! "true";
+                                        document.getElementById("DayWiseSelection-Month").disabled = ! "true";
+                                    }
+                                    function MonthWiseRadioCheck() {
+                                        document.getElementById("DayWiseSelection-Days").disabled = "true";
+                                        document.getElementById("DayWiseSelection-Month").disabled = "true";
+                                        document.getElementById("MonthWiseSelection-daytype").disabled = ! "true";
+                                        document.getElementById("MonthWiseSelection-day").disabled = ! "true";
+                                        document.getElementById("MonthWiseSelection-Month").disabled = ! "true";
+                                    }
+                                </script>
+                                <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript:DayWiseRadioCheck()" /> Day
+                                <input class="GeneralNumberInput" id="DayWiseSelection-Days" type="number" value="30" min="1" max="31" /> of every
+                                <input class="GeneralNumberInput" id="DayWiseSelection-Month" type="number" value="1" min="1" /> Month.
+                                <br />
+                                <br />
+                                <input id="MonthWiseSelection" type="radio" name="MonthlySelectionType" onclick="javascript:MonthWiseRadioCheck()" />
+                                <select id="MonthWiseSelection-daytype">
+                                    <option>First</option>
+                                    <option>Second</option>
+                                    <option>Third</option>
+                                    <option>Fourth</option>
+                                    <option>Last</option>
 
-                        </select>
+                                </select>
 
-                        <select id="MonthWiseSelection-day">
-                            <option>Day</option>
-                            <option>WeekDay</option>
-                            <option>Weekend</option>
+                                <select id="MonthWiseSelection-day">
+                                    <option>Day</option>
+                                    <option>WeekDay</option>
+                                    <option>Weekend</option>
 
-                            <option>Sunday</option>
-                            <option>Monday</option>
-                            <option>Tuesday</option>
-                            <option>Wednesday</option>
-                            <option>Thursday</option>
-                            <option>Friday</option>
-                            <option>Saturday</option>
+                                    <option>Sunday</option>
+                                    <option>Monday</option>
+                                    <option>Tuesday</option>
+                                    <option>Wednesday</option>
+                                    <option>Thursday</option>
+                                    <option>Friday</option>
+                                    <option>Saturday</option>
 
-                        </select>
-                        of every
-                        <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" /> Month.
-
-
-                    </div>
-
-                    <!--Custom Selection-->
-                    <div id="Custom" class="tabcontent">
+                                </select>
+                                of every
+                                <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" /> Month.
 
 
+                            </div>
 
-                    </div>
-
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6">
-                    <input style="float:right;width:140px;" id="Fetch" type="button" value="Check Availability" class="MainButton" onclick="checkAvailability()" />
-                </td>
-            </tr>
-            <tr id="CalendarTable" style="display:none">
-                <td>
-                    <table class="table table-striped table-bordered table-hover table-condensed" id="Cal"></table>
-                </td>
-            </tr>
-            <tr>
-
-                <td colspan="6">
-                    <input style="float:left;" id="Cancel" type="button" value="Cancel" class="MainButton" name="Command" />
-                    <input style="float:right;" id="Submit" type="submit" value="Submit" class="MainButton" name="Command" />
-                </td>
-            </tr>
+                            <!--Custom Selection-->
+                            <div id="Custom" class="tabcontent">
 
 
-        </table>
+
+                            </div>
+
+                        </td>
+                    </tr>
+                        </table>
+            </div>
+
+            <!--Right division for Messages-->
+            <div style="float:right;">
+                <h3>Messages</h3>
+
+            </div>
+
+            <div>
+                <table>
+                    <tr>
+                        <td colspan="6">
+                            <input style="float:right;width:140px;" id="Fetch" type="button" value="Check Availability" class="MainButton" onclick="checkAvailability()" />
+                        </td>
+                    </tr>
+                    <tr id="CalendarTable" style="display:none">
+                        <td>
+                            <table class="table table-striped table-bordered table-hover table-condensed" id="Cal"></table>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td colspan="6">
+                            <input style="float:left;" id="Cancel" type="button" value="Cancel" class="MainButton" name="Command" />
+                            <input style="float:right;" id="Submit" type="submit" value="Submit" class="MainButton" name="Command" />
+                        </td>
+                    </tr>
 
 
-    </div>
-}
+                </table>
+            </div>
+
+           
+
+
+        </div>
+    }
+
+
 
 <!--Duration Picker-->
 <script>

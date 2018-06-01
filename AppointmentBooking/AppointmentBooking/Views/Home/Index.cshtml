@@ -63,26 +63,30 @@
         $("#Cal").empty();
 
         var tr;
-        tr = $('<tr/>');
-        tr.append("<th>Room Name</th>");
-        tr.append("<th>Available</th>");
-        tr.append("<th>Star tDate</th>");
-        tr.append("<th>Start Time</th>");
-        tr.append("<th>End Date</th>");
-        tr.append("<th>End Time</th>");
+        tr = $('<tr class=\'trRoomHeader\'/>');
+        tr.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
         $('#Cal').append(tr);
         //Append each row to html table
         for (var i = 0; i < json.length; i++) {
-            tr = $('<tr/>');
-            tr.append("<td>" + json[i].RoomName + "</td>");
-            tr.append("<td>" + json[i].IsAvailable + "</td>");
-            tr.append("<td>" + json[i].BookingSlot.StartDate + "</td>");
-            tr.append("<td>" + json[i].BookingSlot.StartTime + "</td>");
-            tr.append("<td>" + json[i].BookingSlot.EndDate + "</td>");
-            tr.append("<td>" + json[i].BookingSlot.EndTime + "</td>");
+            if (json[i].IsAvailable == true) {
+                tr = $('<tr/>');
+            }
+            else
+            {
+                tr = $('<tr class=\'trRoom\'/>');
+            }
+            tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndDate + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
             $('#Cal').append(tr);
         }
-        if (json.length > 1) {
+        if (json.length > 0) {
             $('#CalendarTable').css('display', 'block');
         }
     });
@@ -332,8 +336,10 @@
                 </td>
             </tr>
             <tr id="CalendarTable" style="display:none">
-                <td>
-                    <table class="table table-striped table-bordered table-hover table-condensed" id="Cal"></table>
+                <td colspan="6">
+                    <div class="ex1">
+                        <table class="Rooms" id="Cal"></table>
+                    </div>                    
                 </td>
             </tr>
             <tr>

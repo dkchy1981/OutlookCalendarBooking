@@ -67,12 +67,13 @@ namespace AppointmentBooking.Controllers
                 {
                     case 1: // For Daily
                         {
-                            if (info.IsEveryDay || info.IsEveryDayWorking)
+                            DateTime start = DateTime.MinValue;
+                            DateTime end = DateTime.MinValue;
+                            if (DateTime.TryParse(info.StartDate + " " + info.StartTime, out start) && DateTime.TryParse(info.EndtDate, out end))
                             {
-                                DateTime start = DateTime.MinValue;
-                                DateTime end = DateTime.MinValue;
-                                if (DateTime.TryParse(info.StartDate + " " + info.StartTime, out start) && DateTime.TryParse(info.EndtDate, out end))
+                                if (info.IsEveryDay || info.IsEveryDayWorking)
                                 {
+
                                     while (start.Date <= end.Date)
                                     {
                                         if (info.IsEveryDayWorking && (start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday))
@@ -82,6 +83,16 @@ namespace AppointmentBooking.Controllers
                                         }
                                         slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
                                         start = start.AddDays(1);
+                                    }
+                                }
+                                else if (info.EverySpecifiedWorkingDate > 0)
+                                {
+                                    slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                    start = start.AddDays(info.EverySpecifiedWorkingDate);
+                                    while (start.Date <= end.Date)
+                                    {
+                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        start = start.AddDays(info.EverySpecifiedWorkingDate);
                                     }
                                 }
                             }

@@ -22,21 +22,116 @@
         var isEveryDayWorking = false;
         var isEveryDay = false;
         var everySpecifiedWorkingDate = -1;
-        switch ($('input[name=DailySelectionType]:checked').val()) {
-            case '1':
-                {
-                    isEveryDay = true;
-                }
+
+        var isSunday = false;
+        var isMonday = false;
+        var isTuesday = false;
+        var isWednesday = false;
+        var isThursday = false;
+        var isFriday = false;
+        var isSaturday = false;
+
+        var dayVise = false;
+        var dayTypeVise = false;
+
+        var Nthday = -1;
+        var DayMonth = -1;
+
+        var NthMonthDay = "";
+        var DayTypeMonth = "";
+        var MonthNumber = -1;
+
+        
+
+        switch ($('input[name=ActiveSelectionTab]:checked').val()) {
+
+            //Daily
+            case '1': switch ($('input[name=DailySelectionType]:checked').val()) {
+                        case '1':
+                            {
+                                isEveryDay = true;
+                            }
+                            break;
+                        case '2':
+                            {
+                                isEveryDayWorking = true;
+                            }
+                            break;
+                        case '3':
+                            {
+                                everySpecifiedWorkingDate = $('#DailyRepeatFrequency').val();
+                            }
+                            break;
+
+                    }
                 break;
+
+            //Weekly
             case '2':
-                {
-                    isEveryDayWorking = true;
+                switch ($('input[name=WeeklySelectionType]:checked').val()) {
+                    case '1':
+                        {
+                            var isSunday = true;
+                        }
+                        break;
+                    case '2':
+                        {
+                            var isMonday = true;
+                        }
+                        break;
+                    case '3':
+                        {
+                            var isTuesday = true;
+                        }
+                        break;
+                    case '4':
+                        {
+                            var isWednesday = true;
+                        }
+                        break;
+                    case '5':
+                        {
+                            var isThursday = true;
+                        }
+                        break;
+                    case '6':
+                        {
+                            var isFriday = true;
+                        }
+                    case '7':
+                        {
+                            var isSaturday = true;
+
+                        }
+                        break;
                 }
                 break;
-            case '3':
+
+            //Monthly
+            case '3': switch ($('input[name=MonthlySelectionType]:checked').val())
                 {
-                    everySpecifiedWorkingDate = $('#DailyRepeatFrequency').val();
-                }
+                case '1':
+                    {
+                        var dayVise = true;
+                        Nthday = $('#DayWiseSelection-Days').val();
+                        DayMonth = $('#DayWiseSelection-Months').val();
+                    }
+                    break;
+
+                case '2':
+                    {
+                        dayTypeVise = true;
+                        NthMonthDay = $('#MonthWiseSelection-daytype').val();
+                        NthMonthDay = $('#MonthWiseSelection-day').val();
+                        MonthNumber = $('#MonthWiseSelection-Month').val();
+                    }
+                    break;
+
+            }
+                break;
+
+                //Custom
+            case '4':
                 break;
 
         }
@@ -48,7 +143,7 @@
             EndtDate: $('#EndDate').val(),
             StartTime: $('#StartTime').val(),
             Duration: $('#Duration').val(),
-            RecurrenceType: 1,
+            RecurrenceType: $('#ActiveSelectionTab').val(),
             IsEveryDay: isEveryDay,
             IsEveryDayWorking: isEveryDayWorking,
             EverySpecifiedWorkingDate: everySpecifiedWorkingDate
@@ -213,12 +308,29 @@
                 <!--Regression Type Selection Tabs-->
                 <td id="RegressionTypeSelectionTableData" colspan="6">
 
+                    <input type="hidden" id="ActiveSelectionTab" name="ActiveSelectionTab" value="1">
+                    <script>
+                        function SelectDaily()
+                        {
+                            document.getElementById("ActiveSelectionTab").value = 1;
+
+                        }
+                        function SelectWeekly() {
+                            document.getElementById("ActiveSelectionTab").value = 2;
+                        }
+                        function SelectMonthly() {
+                            document.getElementById("ActiveSelectionTab").value = 3;
+                        }
+                        function SelectCustom() {
+                            document.getElementById("ActiveSelectionTab").value = 4;
+                        }
+                    </script>
                     <!--Selection Tabs-->
                     <div class="tab">
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Daily')" id="defaultOpen" value="Daily" /><br />
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Weekly')" value="Weekly"><br />
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Monthly')" value="Monthly"><br />
-                        <input type="button" class="tablinks" onclick="openTab(event, 'Custom')" value="Custom"><br />
+                        <input type="button" class="tablinks" onclick="SelectDaily();openTab(event, 'Daily')" id="defaultOpen" value="Daily" /><br />
+                        <input type="button" class="tablinks" onclick="SelectWeekly(); openTab(event, 'Weekly')" value="Weekly"><br />
+                        <input type="button" class="tablinks" onclick="SelectMonthly();openTab(event, 'Monthly')" value="Monthly"><br />
+                        <input type="button" class="tablinks" onclick="SelectCustom();openTab(event, 'Custom')" value="Custom"><br />
                     </div>
 
                     <!--Daily Selection-->
@@ -234,6 +346,7 @@
                             function EveryWorkingDayRadioCheck() {
                                 document.getElementById("DailyRepeatFrequency").disabled = ! "true";
                             }
+
                         </script>
                         <input id="EveryDay" name="DailySelectionType" type="radio" onclick="javascript:EveryDayRadioCheck()" checked="checked" value="1"> Every Day
                         <br /><br />
@@ -248,16 +361,16 @@
                     <!--Weekly Selection-->
                     <div id="Weekly" class="tabcontent">
                         <div style="float:left;">
-                            <input id="Monday" type="checkbox" value="Monday"> Monday<br />
-                            <input id="Tuesday" type="checkbox" value="Tuesday"> Tuesday<br />
-                            <input id="Wednesday" type="checkbox" value="Wednesday"> Wednesday<br />
-                            <input id="Thursday" type="checkbox" value="Thursday"> Thursday<br />
-                            <input id="Friday" type="checkbox" value="Friday"> Friday<br />
+                            <input id="Monday" name="WeeklySelectionType" type="checkbox" value="2"> Monday<br />
+                            <input id="Tuesday" name="WeeklySelectionType" type="checkbox" value="3"> Tuesday<br />
+                            <input id="Wednesday" name="WeeklySelectionType" type="checkbox" value="4"> Wednesday<br />
+                            <input id="Thursday" name="WeeklySelectionType" type="checkbox" value="5"> Thursday<br />
+                            <input id="Friday" name="WeeklySelectionType" type="checkbox" value="6"> Friday<br />
                         </div>
 
                         <div style="float:right">
-                            <input id="Saturday" type="checkbox" value="Saturday"> Saturday<br />
-                            <input id="Sunday" type="checkbox" value="Sunday"> Sunday<br />
+                            <input id="Saturday" name="WeeklySelectionType" type="checkbox" value="7"> Saturday<br />
+                            <input id="Sunday"  name="WeeklySelectionType" type="checkbox" value="1"> Sunday<br />
 
                         </div>
                     </div>

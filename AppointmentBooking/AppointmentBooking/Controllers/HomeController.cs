@@ -203,6 +203,11 @@ namespace AppointmentBooking.Controllers
                 throw;
             }
         }
+
+        public ActionResult Popup()
+        {
+            return View();
+        }
     }
 }
 

@@ -16,7 +16,23 @@
 
 <script>
 
+    function CancelFetchAppointment()
+    {
+        $('#availableRooms').css('display', 'none');
+    }
+
     function checkAvailability() {
+
+        $("#Cal").empty();
+
+        var tr;
+        tr = $('<tr class=\'trRoomHeader\'/>');
+        tr.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
+        $('#Cal').append(tr);
 
         var isEveryDay = false;
         var isEveryDayWorking = false;
@@ -75,8 +91,7 @@
             if (json[i].IsAvailable == true) {
                 tr = $('<tr/>');
             }
-            else
-            {
+            else {
                 tr = $('<tr class=\'trRoom\'/>');
             }
             tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
@@ -87,20 +102,20 @@
             $('#Cal').append(tr);
         }
         if (json.length > 0) {
-            $('#CalendarTable').css('display', 'block');
+            $('#availableRooms').css('display', 'block');
         }
     });
     };
 
 </script>
 
-    @using (Html.BeginForm("MultipleCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
-    {
-        <div class="mainDivision">
+@using (Html.BeginForm("MultipleCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
+{
+    <div class="mainDivision">
 
+        <div>
             <!--Left Divisions with input fields-->
-            <div style="float:left;">
-
+            <div style="float:left;" class="innerDivisionleft">
                 <table>
                     <!--Meeting Title Iuput-->
                     <tr>
@@ -143,7 +158,7 @@
                         <td>
                             <input id="StartDate" name="StartDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028" />
                             <script>
-                        $('#StartDate').dateDropper();
+                                $('#StartDate').dateDropper();
                             </script>
                         </td>
                         <!--End Date input-->
@@ -155,7 +170,7 @@
                             <input id="EndDate" name="EndDate" class="DateInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028" />
 
                             <script>
-                        $('#EndDate').dateDropper();
+                                $('#EndDate').dateDropper();
                             </script>
                         </td>
                     </tr>
@@ -167,17 +182,17 @@
                         <td>
                             <input id="StartTime" name="StartTime" class="TimeInput" type="text" />
                             <script>
-                        $('.TimeInput').timepicker({
-                            timeFormat: 'hh:mm p',
-                            interval: 15,
-                            minTime: '10',
-                            maxTime: '10:00pm',
-                            defaultTime: 'now',
-                            startTime: '10:00',
-                            dynamic: false,
-                            dropdown: true,
-                            scrollbar: true
-                        });
+                                $('.TimeInput').timepicker({
+                                    timeFormat: 'hh:mm p',
+                                    interval: 15,
+                                    minTime: '10',
+                                    maxTime: '10:00pm',
+                                    defaultTime: 'now',
+                                    startTime: '10:00',
+                                    dynamic: false,
+                                    dropdown: true,
+                                    scrollbar: true
+                                });
                             </script>
                         </td>
 
@@ -190,17 +205,17 @@
                             <input id="Duration" name="Duration" class="TimeInput2" type="text" />
 
                             <script>
-                        $('.TimeInput2').timepicker(
-                            {
-                                timeFormat: 'HH:mm',
-                                interval: 15,
-                                minTime: '0',
-                                maxTime: '23:00pm',
-                                defaultTime: '0:15',
-                                dynamic: false,
-                                dropdown: true,
-                                scrollbar: true
-                            });
+                                $('.TimeInput2').timepicker(
+                                    {
+                                        timeFormat: 'HH:mm',
+                                        interval: 15,
+                                        minTime: '0',
+                                        maxTime: '23:00pm',
+                                        defaultTime: '0:15',
+                                        dynamic: false,
+                                        dropdown: true,
+                                        scrollbar: true
+                                    });
                             </script>
 
                         </td>
@@ -334,33 +349,33 @@
 
                         </td>
                     </tr>
-                        </table>
-            </div>
-
-            <!--Right division for Messages-->
-            <div style="float:right;">
-                <h3>Messages</h3>
-
-            </div>
-
-            <div>
-                <table>
                     <tr>
                         <td colspan="6">
                             <input style="float:right;width:140px;" id="Fetch" type="button" value="Check Availability" class="MainButton" onclick="checkAvailability()" />
                         </td>
                     </tr>
-                    <tr id="CalendarTable" style="display:none">
-                        <td colspan="6">
+                </table>
+            </div>
+
+            <!--Right division for Messages-->
+            <div style="float:right;" class="innerDivisionright">
+                <h3>Messages</h3>
+
+            </div>
+        </div>
+        <div id="availableRooms" style="display:none">
+            <div class="innerDivisionLower">
+                <table style="width:98%">
+                    <tr id="CalendarTable">
+                        <td >
                             <div class="ex1">
                                 <table class="Rooms" id="Cal"></table>
                             </div>
                         </td>
                     </tr>
                     <tr>
-
-                        <td colspan="6">
-                            <input style="float:left;" id="Cancel" type="button" value="Cancel" class="MainButton" name="Command" />
+                        <td style="align-items:flex-end">
+                            <input style="float:left;" id="Cancel" type="button" value="Cancel" class="MainButton" name="Command" onclick="CancelFetchAppointment()" />
                             <input style="float:right;" id="Submit" type="submit" value="Submit" class="MainButton" name="Command" />
                         </td>
                     </tr>
@@ -368,12 +383,10 @@
 
                 </table>
             </div>
-
-           
-
-
         </div>
-    }
+    </div>
+
+}
 
 
 

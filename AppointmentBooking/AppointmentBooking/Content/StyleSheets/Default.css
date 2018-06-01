@@ -1,9 +1,45 @@
 ﻿
 .mainDivision {
     margin-top: 5px;
+    background-color: #d6dcdd;
+    border-radius: 15px;
+    display: inline-block;
+    width:100%;
+    height:100%;
+}
+
+.innerDivisionleft {
+    margin-top: 7px;
+    margin-left:7px;
+    margin-bottom:7px;
+    margin-right:0px;
+    background-color: white;
+    border-radius: 10px;
+    display: inline-block;
+    width:49%;
+    height:100%;
+}
+.innerDivisionright {
+    margin-top: 7px;
+    margin-left:0px;
+    margin-bottom:7px;
+    margin-right:7px;
+    background-color: white;
+    border-radius: 10px;
+    display: inline-block;
+    width:49%;
+    height:100%;
+}
+.innerDivisionLower
+{
+    margin-top: 5px;
     background-color: white;
     border-radius: 15px;
     display: inline-block;
+    width:99.6%;
+    height:100%;
+    margin-left:2px;
+    margin-right:2px;
 }
 
 .GeneralNumberInput
@@ -62,7 +98,7 @@ table {
 
 .tabcontent {
     padding-top: 30px;
-    padding-left: 150px;
+    padding-left: 120px;
     background-color: white;
 }
 

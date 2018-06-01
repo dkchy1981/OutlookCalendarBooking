@@ -59,10 +59,11 @@
 
         
 
-        switch ($('input[name=ActiveSelectionTab]:checked').val()) {
+        switch ($("#ActiveSelectionTab").val()) {
 
             //Daily
-            case '1': switch ($('input[name=DailySelectionType]:checked').val()) {
+            case '1':
+                switch ($('input[name=DailySelectionType]:checked').val()) {
                         case '1':
                             {
                                 isEveryDay = true;
@@ -84,44 +85,46 @@
 
             //Weekly
             case '2':
-                switch ($('input[name=WeeklySelectionType]:checked').val()) {
+                $("input:checkbox[name=WeeklySelectionType]:checked").each(function () {
+                switch ($(this).val()) {
                     case '1':
                         {
-                            var isSunday = true;
+                            isSunday = true;
                         }
                         break;
                     case '2':
                         {
-                            var isMonday = true;
+                            isMonday = true;
                         }
                         break;
                     case '3':
                         {
-                            var isTuesday = true;
+                            isTuesday = true;
                         }
                         break;
                     case '4':
                         {
-                            var isWednesday = true;
+                            isWednesday = true;
                         }
                         break;
                     case '5':
                         {
-                            var isThursday = true;
+                            isThursday = true;
                         }
                         break;
                     case '6':
                         {
-                            var isFriday = true;
+                            isFriday = true;
                         }
+                        break;
                     case '7':
                         {
-                            var isSaturday = true;
+                            isSaturday = true;
 
                         }
                         break;
                 }
-                break;
+                });
 
             //Monthly
             case '3': switch ($('input[name=MonthlySelectionType]:checked').val())
@@ -159,10 +162,21 @@
             EndtDate: $('#EndDate').val(),
             StartTime: $('#StartTime').val(),
             Duration: $('#Duration').val(),
+
             RecurrenceType: $('#ActiveSelectionTab').val(),
+            //ForDaily
             IsEveryDay: isEveryDay,
             IsEveryDayWorking: isEveryDayWorking,
-            EverySpecifiedWorkingDate: everySpecifiedWorkingDate
+            EverySpecifiedWorkingDate: everySpecifiedWorkingDate,
+            //ForWeekly
+            IsSunday: isSunday,
+            IsMonday: isMonday,
+            IsTuesday: isTuesday,
+            IsWednesday: isWednesday,
+            IsThursday: isThursday,
+            IsFriday: isFriday,
+            IsSaturday: isSaturday
+
         };
         var jqxhr = $.post("FetchAvailability", data, function () { }, 'json')
     .done(function (response) {

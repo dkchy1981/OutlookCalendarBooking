@@ -62,14 +62,13 @@ namespace AppointmentBooking.Controllers
                     durationInMinutes = int.Parse(info.Duration.Split(Convert.ToChar(":"))[0]) * 60 + int.Parse(info.Duration.Split(Convert.ToChar(":"))[1]);
                 }
                 List<Slot> slots = new List<Slot>();
-
-                switch (info.RecurrenceType)
+                DateTime start = DateTime.MinValue;
+                DateTime end = DateTime.MinValue;
+                if (DateTime.TryParse(info.StartDate + " " + info.StartTime, out start) && DateTime.TryParse(info.EndtDate, out end))
                 {
-                    case 1: // For Daily
-                        {
-                            DateTime start = DateTime.MinValue;
-                            DateTime end = DateTime.MinValue;
-                            if (DateTime.TryParse(info.StartDate + " " + info.StartTime, out start) && DateTime.TryParse(info.EndtDate, out end))
+                    switch (info.RecurrenceType)
+                    {
+                        case 1: // For Daily
                             {
                                 if (info.IsEveryDay || info.IsEveryDayWorking)
                                 {
@@ -95,19 +94,37 @@ namespace AppointmentBooking.Controllers
                                         start = start.AddDays(info.EverySpecifiedWorkingDate);
                                     }
                                 }
+
                             }
-                        }
-                        break;
-                    case 2: // For Weekly
-                        {
-                        }
-                        break;
-                    case 3: // For Monthly
-                        {
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 2: // For Weekly
+                            {
+                                do
+                                {
+                                    if (
+                                        (info.IsSaturday && start.DayOfWeek == DayOfWeek.Saturday) ||
+                                        (info.IsSunday && start.DayOfWeek == DayOfWeek.Sunday) ||
+                                        (info.IsMonday && start.DayOfWeek == DayOfWeek.Monday) ||
+                                        (info.IsTuesday && start.DayOfWeek == DayOfWeek.Tuesday) ||
+                                        (info.IsWednesday && start.DayOfWeek == DayOfWeek.Wednesday) ||
+                                        (info.IsThursday && start.DayOfWeek == DayOfWeek.Thursday) ||
+                                        (info.IsFriday && start.DayOfWeek == DayOfWeek.Friday)
+                                        )
+                                    {
+                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });                                        
+                                    }
+                                    start = start.AddDays(1);
+                                }
+                                while (start.Date <= end.Date);
+                            }
+                            break;
+                        case 3: // For Monthly
+                            {
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 input.BookingSlots = slots;
 

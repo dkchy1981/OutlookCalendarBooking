@@ -111,7 +111,7 @@ namespace AppointmentBooking.Controllers
                                         (info.IsFriday && start.DayOfWeek == DayOfWeek.Friday)
                                         )
                                     {
-                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });                                        
+                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
                                     }
                                     start = start.AddDays(1);
                                 }
@@ -120,6 +120,207 @@ namespace AppointmentBooking.Controllers
                             break;
                         case 3: // For Monthly
                             {
+                                if (info.DayVise)
+                                {
+                                    start = start.AddDays(info.Nthday-1);
+                                    while (start.Date <= end.Date)
+                                    {
+                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        start = start.AddMonths(info.DayMonth);
+                                    }
+                                }
+                                else if (info.DayTypeVise)
+                                {
+                                    List<string> weekAllDays = new List<string>() { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+                                    
+                                    DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1);
+
+                                    if (info.DayTypeMonth == "Day")
+                                    {
+                                        do
+                                        {
+                                            if (info.NthMonthDay == "First")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(0);
+                                            }
+                                            else if (info.NthMonthDay == "Second")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                            }
+                                            else if (info.NthMonthDay == "Third")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(2);
+                                            }
+                                            else if (info.NthMonthDay == "Fourth")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(3);
+                                            }
+                                            else if (info.NthMonthDay == "Last")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(1).AddDays(-1);
+                                            }
+                                            if (startDateAsPerCriteria <= end.Date)
+                                            {
+                                                slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
+                                            }
+                                            startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                        }
+                                        while (startDateAsPerCriteria <= end.Date);
+                                    }
+                                    else if (info.DayTypeMonth == "WeekDay")
+                                    {
+                                        do
+                                        {
+                                            startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+                                            if (info.NthMonthDay == "First")
+                                            {
+                                                //Do Nothing
+                                            }
+                                            else if (info.NthMonthDay == "Second")
+                                            {
+                                                for (int i = 0; i < 1; i++)
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                                    startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+                                                }
+                                            }
+                                            else if (info.NthMonthDay == "Third")
+                                            {
+                                                for (int i = 0; i < 2; i++)
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                                    startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+                                                }
+                                            }
+                                            else if (info.NthMonthDay == "Fourth")
+                                            {
+                                                for (int i = 0; i < 3; i++)
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                                    startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+                                                }
+                                            }
+                                            else if (info.NthMonthDay == "Last")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(1).AddDays(-1);
+                                                while ((startDateAsPerCriteria.DayOfWeek == DayOfWeek.Saturday) || (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday))
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(-1);
+                                                }
+                                            }
+                                            if ((startDateAsPerCriteria <= end.Date))
+                                            {
+                                                slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
+                                            }
+                                            startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                        }
+                                        while (startDateAsPerCriteria <= end.Date);
+                                    }
+                                    if (info.DayTypeMonth == "Weekend")
+                                    {
+                                        do
+                                        {
+                                            startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
+                                            if (info.NthMonthDay == "First")
+                                            {
+                                                //Do Nothing
+                                            }
+                                            else if (info.NthMonthDay == "Second")
+                                            {
+                                                for (int i = 0; i < 1; i++)
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                                    startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
+                                                }
+                                            }
+                                            else if (info.NthMonthDay == "Third")
+                                            {
+                                                for (int i = 0; i < 2; i++)
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                                    startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
+                                                }
+                                            }
+                                            else if (info.NthMonthDay == "Fourth")
+                                            {
+                                                for (int i = 0; i < 3; i++)
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                                    startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
+                                                }
+                                            }
+                                            else if (info.NthMonthDay == "Last")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(1).AddDays(-1);
+                                                while (!((startDateAsPerCriteria.DayOfWeek == DayOfWeek.Saturday) || (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday)))
+                                                {
+                                                    startDateAsPerCriteria = startDateAsPerCriteria.AddDays(-1);
+                                                }
+                                            }
+                                            if ((startDateAsPerCriteria <= end.Date))
+                                            {
+                                                slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
+                                            }
+                                            startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                        }
+                                        while (startDateAsPerCriteria <= end.Date);
+                                    }
+                                    else if (weekAllDays.Contains(info.DayTypeMonth))
+                                    {
+                                        do
+                                        {
+                                            if (info.NthMonthDay == "First")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(0);
+                                            }
+                                            else if (info.NthMonthDay == "Second")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(7);
+                                            }
+                                            else if (info.NthMonthDay == "Third")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(14);
+                                            }
+                                            else if (info.NthMonthDay == "Fourth")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(21);
+                                            }
+                                            else if (info.NthMonthDay == "Last")
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(1).AddDays(-8);
+                                            }
+
+                                            for (int i = 0; i < 7; i++)
+                                            {
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+                                                if (
+                                                    (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday && info.DayTypeMonth == "Sunday") ||
+                                                    (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Monday && info.DayTypeMonth == "Monday") ||
+                                                    (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Tuesday && info.DayTypeMonth == "Tuesday") ||
+                                                    (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Wednesday && info.DayTypeMonth == "Wednesday") ||
+                                                    (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Thursday && info.DayTypeMonth == "Thursday") ||
+                                                    (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Friday && info.DayTypeMonth == "Friday") ||
+                                                    (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Saturday && info.DayTypeMonth == "Saturday")
+                                                   )
+                                                {
+                                                    break;
+                                                }
+                                                
+                                            }
+                                            if ((startDateAsPerCriteria <= end.Date))
+                                            {
+                                                slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
+                                            }
+                                            startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                        }
+                                        while (startDateAsPerCriteria <= end.Date);
+                                    }
+
+                                }
                             }
                             break;
                         default:
@@ -154,6 +355,26 @@ namespace AppointmentBooking.Controllers
             //};
             //return list as Json    
             return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+        private static DateTime GetNextWeekDays(DateTime startDateAsPerCriteria)
+        {
+            while ((startDateAsPerCriteria.DayOfWeek == DayOfWeek.Saturday) || (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday))
+            {
+                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+            }
+
+            return startDateAsPerCriteria;
+        }
+
+        private static DateTime GetNextWeekendDate(DateTime startDateAsPerCriteria)
+        {
+            while (!((startDateAsPerCriteria.DayOfWeek == DayOfWeek.Saturday) || (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday)))
+            {
+                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
+            }
+
+            return startDateAsPerCriteria;
         }
 
         // POST: Login/Create

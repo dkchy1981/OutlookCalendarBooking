@@ -123,5 +123,18 @@ namespace AppointmentBooking.Models
         public bool IsFriday { get; set; }
         public bool IsSaturday { get; set; }
 
+        public bool DayVise { get; set; }
+
+        public bool DayTypeVise { get; set; }
+
+        public int Nthday { get; set; }
+
+        public int DayMonth { get; set; }
+
+        public string NthMonthDay { get; set; }
+
+        public string DayTypeMonth { get; set; }
+
+        public int MonthNumber { get; set; }
     }
 }

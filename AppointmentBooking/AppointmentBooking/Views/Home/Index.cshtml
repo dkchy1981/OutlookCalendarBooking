@@ -18,6 +18,19 @@
         $('#availableRooms').css('display', 'none');
     }
 
+    function bookAppointment() {
+
+        var data = {};
+        var jqxhr = $.post("BookAppointments", data, function () { }, 'json')
+    .done(function (response) {
+        if (response instanceof Object)
+            var json = response;
+        else
+            var json = $.parseJSON(response);       
+    });
+    };
+    
+
     function checkAvailability() {
 
         $("#Cal").empty();

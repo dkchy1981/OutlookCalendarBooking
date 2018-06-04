@@ -120,6 +120,8 @@ namespace AppointmentBooking.Controllers
                             break;
                         case 3: // For Monthly
                             {
+                                DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1);
+                                start = startDateAsPerCriteria;
                                 if (info.DayVise)
                                 {
                                     start = start.AddDays(info.Nthday-1);
@@ -133,7 +135,7 @@ namespace AppointmentBooking.Controllers
                                 {
                                     List<string> weekAllDays = new List<string>() { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
                                     
-                                    DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1);
+                                    
 
                                     if (info.DayTypeMonth == "Day")
                                     {
@@ -172,13 +174,14 @@ namespace AppointmentBooking.Controllers
                                     {
                                         do
                                         {
-                                            startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
                                             if (info.NthMonthDay == "First")
                                             {
-                                                //Do Nothing
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
                                             }
                                             else if (info.NthMonthDay == "Second")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 1; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -187,6 +190,8 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Third")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 2; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -195,6 +200,8 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Fourth")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 3; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -222,13 +229,14 @@ namespace AppointmentBooking.Controllers
                                     {
                                         do
                                         {
-                                            startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                             if (info.NthMonthDay == "First")
                                             {
-                                                //Do Nothing
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                             }
                                             else if (info.NthMonthDay == "Second")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 1; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -237,6 +245,7 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Third")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                                 for (int i = 0; i < 2; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -245,6 +254,7 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Fourth")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                                 for (int i = 0; i < 3; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);

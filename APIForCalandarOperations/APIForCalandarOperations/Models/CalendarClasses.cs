@@ -37,6 +37,8 @@ namespace APIForCalandarOperations.Models
 
         public string RoomName { get; set; }
 
+        public int RoomID { get; set; }
+
         public Slot BookingSlot { get; set; }
 
         public List<string> Messages { get; set; }

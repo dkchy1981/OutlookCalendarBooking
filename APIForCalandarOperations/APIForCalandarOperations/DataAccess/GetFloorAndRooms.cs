@@ -199,6 +199,7 @@ namespace APIForCalandarOperations.DataAccess
                 foreach (CalendarOutput calendarOutput in calendarOutputList.Where(i => i.IsAvailable == false).ToList())
                 {
                     calendarOutput.RoomName = room.Name;
+                    calendarOutput.RoomID = room.Id;
                     try
                     {
                         if (CheckRoomAvailability(room.Name, room.Email, calendarOutput.BookingSlot, service, startDate, endtDate, ref fapts))
@@ -289,7 +290,10 @@ namespace APIForCalandarOperations.DataAccess
                     foreach (SlotForBooking slot in input.BookingSlots)
                     {
                         Room room = lstRooms.Where(t => t.Id == slot.RoomID).FirstOrDefault();
-                        input.RecipientsTo.Add(input.UserId);
+                        if (input.UserId.Contains("@"))
+                        {
+                            input.RecipientsTo.Add(input.UserId);
+                        }
                         string strSQLInner = @"INSERT INTO Recurrence (RoomID,BookedMeetingID,StartDateTime,EndDateTime,IsConfirmed) VALUES(@RoomID,@BookedMeetingID,@StartDateTime,@EndDateTime,@IsConfirmed)";
 
                         using (SqlCommand theSQLCommandInner = new SqlCommand(strSQLInner, connection))
@@ -368,13 +372,19 @@ namespace APIForCalandarOperations.DataAccess
             meeting.End = slot.EndDateTime;
             meeting.Location = objRoom.Name;
             meeting.RequiredAttendees.Add(objRoom.Email);
-            foreach (var email in toRecepient)
+            if (toRecepient != null)
             {
-                meeting.RequiredAttendees.Add(email);
+                foreach (var email in toRecepient)
+                {
+                    meeting.RequiredAttendees.Add(email);
+                }
             }
-            foreach (var email in ccRecepient)
+            if (ccRecepient != null)
             {
-                meeting.RequiredAttendees.Add(email);
+                foreach (var email in ccRecepient)
+                {
+                    meeting.RequiredAttendees.Add(email);
+                }
             }
             meeting.ReminderMinutesBeforeStart = reminderMinutesBeforeStart;
 

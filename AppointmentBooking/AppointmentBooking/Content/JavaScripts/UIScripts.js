@@ -21,3 +21,9 @@
 
     evt.currentTarget.className += " active";
 }
+
+function EndDateUpdate()
+{
+    //alert("Called");
+    document.getElementById("EndTime").value = document.getElementById("StartTime").value;
+}

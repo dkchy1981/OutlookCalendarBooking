@@ -18,9 +18,23 @@
         $('#availableRooms').css('display', 'none');
     }
 
+    function bookAppointment() {
+
+        var data = {};
+        var jqxhr = $.post("BookAppointments", data, function () { }, 'json')
+    .done(function (response) {
+        if (response instanceof Object)
+            var json = response;
+        else
+            var json = $.parseJSON(response);       
+    });
+    };
+    
+
     function checkAvailability() {
 
         $("#Cal").empty();
+        $("#CalForNotMatched").empty();        
 
         var tr;
         tr = $('<tr class=\'trRoomHeader\'/>');
@@ -30,6 +44,15 @@
         tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
         tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
         $('#Cal').append(tr);
+
+        var trForNotMatched;
+        trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
+        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
+        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
+        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>");
+        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
+        $('#CalForNotMatched').append(trForNotMatched);
+        
 
         //For Daily
         var isEveryDay = false;
@@ -179,11 +202,11 @@
             DayVise: dayVise,
             Nthday: Nthday,
             DayMonth: DayMonth,
-            DayTypeVise: dayTypeVise,            
+            DayTypeVise: dayTypeVise,
             NthMonthDay: NthMonthDay,
             DayTypeMonth: DayTypeMonth,
             MonthNumber: MonthNumber
-            
+
 
         };
         var jqxhr = $.post("FetchAvailability", data, function () { }, 'json')
@@ -194,6 +217,8 @@
             var json = $.parseJSON(response);
 
         $("#Cal").empty();
+        $("#CalForNotMatched").empty();
+        
 
         var tr;
         tr = $('<tr class=\'trRoomHeader\'/>');
@@ -220,6 +245,28 @@
         }
         if (json.length > 0) {
             $('#availableRooms').css('display', 'block');
+        }
+
+
+
+        var trForNotMatched;
+        trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
+        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
+        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
+        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>")
+        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
+
+        $('#CalForNotMatched').append(trForNotMatched);
+        //Append each row to html table
+        for (var i = 0; i < json.length; i++) {
+            if (json[i].IsAvailable == false) {
+                trForNotMatched = $('<tr/>');
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'></td>");
+            }
+            $('#CalForNotMatched').append(trForNotMatched);
         }
     });
     };
@@ -458,7 +505,16 @@
             </div>
             <!--Right division for Messages-->
             <div style="float:right;" class="innerDivisionright">
-                <h3>Messages</h3>
+                <h3>Before proceed, please select different slots for below dates.</h3>
+                <table style="width:98%">
+                    <tr id="CalendarTableForNotMatched">
+                        <td>
+                            <div class="ex1">
+                                <table class="RoomsNotAvailable" id="CalForNotMatched"></table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div id="availableRooms" style="display:none">

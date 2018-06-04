@@ -1,21 +1,15 @@
-﻿using System;
+﻿using AppointmentBooking.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-//using System.DirectoryServices.Protocols;
-using System.Data.SqlClient;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Net;
-using System.DirectoryServices;
-using System.Web.Security;
+using System.Net.Http;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.Configuration;
-using Newtonsoft.Json;
-using AppointmentBooking.Models;
+using System.Web.Mvc;
+using System.Web.Security;
+using System.Web.UI.WebControls;
 
 namespace AppointmentBooking.Controllers
 {
@@ -47,6 +41,35 @@ namespace AppointmentBooking.Controllers
             }
         }
 
+        public JsonResult BookAppointments(RecurrenceInfo info)
+        {
+            using (var client = new HttpClient())
+            {
+                string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
+                CalendarInputForBooking input = new CalendarInputForBooking();
+                input.Capacity = info.Capacity;
+                input.FloorID = info.FloorID;
+                input.UserId = (string)Session["UserName"];
+                int durationInMinutes = 0;
+                if (!string.IsNullOrEmpty(info.Duration))
+                {
+                    durationInMinutes = int.Parse(info.Duration.Split(Convert.ToChar(":"))[0]) * 60 + int.Parse(info.Duration.Split(Convert.ToChar(":"))[1]);
+                }                
+
+                Task<HttpResponseMessage> response = client.PostAsJsonAsync(apiURL + "BookCalandar", input);
+                response.Wait();
+                if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var floorJsonString = response.Result.Content.ReadAsStringAsync().Result;
+                    var floors = JsonConvert.DeserializeObject<System.Collections.Generic.IList<CalendarOutput>>(floorJsonString);
+
+                    return Json(floors, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult FetchAvailability(RecurrenceInfo info)
         {
             using (var client = new HttpClient())
@@ -68,6 +91,7 @@ namespace AppointmentBooking.Controllers
                 {
                     switch (info.RecurrenceType)
                     {
+                        #region For Daily
                         case 1: // For Daily
                             {
                                 if (info.IsEveryDay || info.IsEveryDayWorking)
@@ -97,6 +121,9 @@ namespace AppointmentBooking.Controllers
 
                             }
                             break;
+                        #endregion For Daily
+
+                        #region For Weekly
                         case 2: // For Weekly
                             {
                                 do
@@ -118,25 +145,32 @@ namespace AppointmentBooking.Controllers
                                 while (start.Date <= end.Date);
                             }
                             break;
+                        #endregion For Weekly
+
+                        #region For Monthly
                         case 3: // For Monthly
                             {
+                                DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1);
+                                start = startDateAsPerCriteria;
                                 if (info.DayVise)
                                 {
+                                    #region For Monthly Day wise
                                     start = start.AddDays(info.Nthday-1);
                                     while (start.Date <= end.Date)
                                     {
                                         slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
                                         start = start.AddMonths(info.DayMonth);
                                     }
+                                    #endregion For Monthly Day wise
                                 }
                                 else if (info.DayTypeVise)
                                 {
+                                    #region For Monthly Day Type wise
                                     List<string> weekAllDays = new List<string>() { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-                                    
-                                    DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1);
 
                                     if (info.DayTypeMonth == "Day")
                                     {
+                                        #region For Monthly Day Type wise -Day
                                         do
                                         {
                                             if (info.NthMonthDay == "First")
@@ -167,18 +201,22 @@ namespace AppointmentBooking.Controllers
                                             startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
+
+                                        #endregion For Monthly Day Type wise -Day
                                     }
                                     else if (info.DayTypeMonth == "WeekDay")
                                     {
+                                        #region For Monthly Day Type wise -Weekday
                                         do
                                         {
-                                            startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
                                             if (info.NthMonthDay == "First")
                                             {
-                                                //Do Nothing
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
                                             }
                                             else if (info.NthMonthDay == "Second")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 1; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -187,6 +225,8 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Third")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 2; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -195,6 +235,8 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Fourth")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekDays(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 3; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -217,18 +259,21 @@ namespace AppointmentBooking.Controllers
                                             startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
+                                        #endregion For Monthly Day Type wise -Weekday
                                     }
                                     if (info.DayTypeMonth == "Weekend")
                                     {
+                                        #region For Monthly Day Type wise -Weekend
                                         do
                                         {
-                                            startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                             if (info.NthMonthDay == "First")
                                             {
-                                                //Do Nothing
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                             }
                                             else if (info.NthMonthDay == "Second")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
+
                                                 for (int i = 0; i < 1; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -237,6 +282,7 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Third")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                                 for (int i = 0; i < 2; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -245,6 +291,7 @@ namespace AppointmentBooking.Controllers
                                             }
                                             else if (info.NthMonthDay == "Fourth")
                                             {
+                                                startDateAsPerCriteria = GetNextWeekendDate(startDateAsPerCriteria);
                                                 for (int i = 0; i < 3; i++)
                                                 {
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
@@ -267,9 +314,11 @@ namespace AppointmentBooking.Controllers
                                             startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
+                                        #endregion For Monthly Day Type wise -Weekend
                                     }
                                     else if (weekAllDays.Contains(info.DayTypeMonth))
                                     {
+                                        #region For Monthly Day Type wise -SpecificDay
                                         do
                                         {
                                             if (info.NthMonthDay == "First")
@@ -318,11 +367,13 @@ namespace AppointmentBooking.Controllers
                                             startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
+                                        #endregion For Monthly Day Type wise -SpecificDay
                                     }
-
+                                    #endregion For Monthly Day Type wise
                                 }
                             }
                             break;
+                        #endregion For Monthly
                         default:
                             break;
                     }

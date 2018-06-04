@@ -69,6 +69,11 @@ table .Rooms {
     border-collapse: separate;
     width:900px;
 }
+table .RoomsNotAvailable {
+    border-spacing: 0px;
+    border-collapse: separate;
+    width:500px;
+}
 .trRoomHeader
 {
     background-color:  #297689;

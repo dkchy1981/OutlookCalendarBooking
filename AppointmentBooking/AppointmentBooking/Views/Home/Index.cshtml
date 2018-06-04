@@ -21,7 +21,7 @@
 
     function bookAppointment() {
 
-        $("#messages").empty();
+        $("#errorList").empty();
 
         var data = {
             FloorID: $('#FloorSelection').val(),
@@ -40,19 +40,19 @@
             $('#unAvailableRoomsDiv').css("display", "none");
 
             for (var i = 0; i < json.Errors.length; i++) {
-                $('#messages').append(json.Errors[i]+'<br />' + "\n");
+                $('#errorList').append('<li>'+json.Errors[i] + '</li>');
             }
         }
-        else if (json.Output.Message!=null && json.Output.Message != '') {
+        else if (json.Output.Message != null && json.Output.Message != '') {
             $('#messages').css('display', 'block');
             $('#unAvailableRoomsDiv').css("display", "none");
-            $('#messages').append(json.Output.Message);
+            $('#errorList').append('<li>' + json.Output.Message + '</li>');
         }
-        else if (json.Errors.length == 0 && (json.Output.Message==null || json.Output.Message==''))
-        {
+        else if (json.Errors.length == 0 && (json.Output.Message == null || json.Output.Message == '')) {
             $('#messages').css('display', 'block');
             $('#unAvailableRoomsDiv').css("display", "none");
-            $('#messages').append("Room booked successfully.");
+            $('#errorList').append("<li>Room booked successfully.</li>");
+            CancelFetchAppointment();
         }
     });
     };
@@ -299,7 +299,7 @@
             $('#CalForNotMatched').append(trForNotMatched);
         }
         if (countForunAvailableRooms > 0) {
-            $('#unAvailableRoomsDiv').css("display", "block");           
+            $('#unAvailableRoomsDiv').css("display", "block");
         }
     });
     };
@@ -456,7 +456,7 @@
                                 <input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript:EveryDayRadioCheck()" value="2"> Every Working Day
                                 <br /><br />
                                 <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript:EveryWorkingDayRadioCheck()" value="3">
-                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="2" value="2" disabled/> Day(s).
+                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="2" value="2" disabled /> Day(s).
 
                             </div>
                             <!--Weekly Selection-->
@@ -493,7 +493,7 @@
                                         document.getElementById("MonthWiseSelection-Month").disabled = ! "true";
                                     }
                                 </script>
-                                <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript:DayWiseRadioCheck()" value="1" checked="checked"/> Day
+                                <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript:DayWiseRadioCheck()" value="1" checked="checked" /> Day
                                 <input class="GeneralNumberInput" id="DayWiseSelection-Days" type="number" value="30" min="1" max="31" /> of every
                                 <input class="GeneralNumberInput" id="DayWiseSelection-Month" type="number" value="1" min="1" /> Month.
                                 <br />
@@ -519,13 +519,12 @@
                                     <option>Saturday</option>
                                 </select>
                                 of every
-                                <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" disabled/> Month.
+                                <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" disabled /> Month.
 
 
                             </div>
                             <!--Custom Selection-->
                             <div id="Custom" class="tabcontent">
-
                             </div>
                         </td>
                     </tr>
@@ -539,7 +538,7 @@
             <!--Right division for Messages-->
             <div style="float:right;" class="innerDivisionright">
                 <div id="messages" style="display:none">
-
+                    <label id="errorList" name="errorList" class="errorList"></label>
                 </div>
                 <div id="unAvailableRoomsDiv" style="display:none">
                     <h3>Before proceed, please select different slots for below dates.</h3>
@@ -571,7 +570,6 @@
                             <input style="float:right;" id="Submit" type="button" value="Submit" class="MainButton" name="Command" onclick="bookAppointment()" />
                         </td>
                     </tr>
-
                 </table>
             </div>
         </div>

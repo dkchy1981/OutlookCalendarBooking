@@ -24,6 +24,6 @@
 
 function EndDateUpdate()
 {
-    //alert("Called");
-    document.getElementById("EndTime").value = document.getElementById("StartTime").value;
+    alert("Called");
+    //document.getElementById("EndTime").value = document.getElementById("StartTime").value;
 }

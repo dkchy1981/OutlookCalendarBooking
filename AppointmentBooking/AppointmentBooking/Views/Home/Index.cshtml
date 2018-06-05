@@ -14,14 +14,15 @@
 <link href="~/Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.css" rel="stylesheet" />
 <script>
 
+
     function CancelFetchAppointment() {
         $('#availableRooms').css('display', 'none');
     }
-
+    var json;
     function checkAvailability() {
 
         $("#Cal").empty();
-        $("#CalForNotMatched").empty();        
+        $("#CalForNotMatched").empty();
 
         var tr;
         tr = $('<tr class=\'trRoomHeader\'/>');
@@ -39,7 +40,7 @@
         trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>");
         trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
         $('#CalForNotMatched').append(trForNotMatched);
-        
+
 
         //For Daily
         var isEveryDay = false;
@@ -65,7 +66,7 @@
         var NthMonthDay = "";
         var DayTypeMonth = "";
         var MonthNumber = -1;
-
+       
 
 
         switch ($("#ActiveSelectionTab").val()) {
@@ -197,74 +198,271 @@
 
         };
         var jqxhr = $.post("FetchAvailability", data, function () { }, 'json')
-    .done(function (response) {
-        if (response instanceof Object)
-            var json = response;
-        else
-            var json = $.parseJSON(response);
+        .done(function (response) {
+            if (response instanceof Object)
+                json = response;
+            else
+                json = $.parseJSON(response);
 
-        $("#Cal").empty();
-        $("#CalForNotMatched").empty();
-        
+            $("#Cal").empty();
+            $("#CalForNotMatched").empty();
 
-        var tr;
-        tr = $('<tr class=\'trRoomHeader\'/>');
-        tr.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
-        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
-        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
-        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
-        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
-        $('#Cal').append(tr);
-        //Append each row to html table
-        for (var i = 0; i < json.length; i++) {
-            if (json[i].IsAvailable == true) {
-                tr = $('<tr/>');
-            }
-            else {
-                tr = $('<tr class=\'trRoom\'/>');
-            }
-            tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
-            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
-            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndDate + "</td>");
-            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
+
+            var tr;
+            tr = $('<tr class=\'trRoomHeader\'/>');
+            tr.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
+            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
+            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
+            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
+            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
             $('#Cal').append(tr);
-        }
-        if (json.length > 0) {
-            $('#availableRooms').css('display', 'block');
-        }
+            //Append each row to html table
+            for (var i = 0; i < json.length; i++) {
+                if (json[i].IsAvailable == true) {
+                    tr = $('<tr/>');
+                    $('#message').html("Messages");
 
+                }
+                else {
+                    tr = $('<tr class=\'trRoom\'/>');
 
-
-        var trForNotMatched;
-        trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
-        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
-        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
-        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>")
-        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
-
-        $('#CalForNotMatched').append(trForNotMatched);
-        //Append each row to html table
-        for (var i = 0; i < json.length; i++) {
-            if (json[i].IsAvailable == false) {
-                trForNotMatched = $('<tr/>');
-                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
-                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
-                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'></td>");
+                }
+                tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
+                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
+                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
+                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndDate + "</td>");
+                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
+                $('#Cal').append(tr);
             }
+            if (json.length > 0) {
+                $('#availableRooms').css('display', 'block');
+            }
+
+
+
+            var trForNotMatched;
+            trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
+            trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
+            trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
+            trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>")
+            trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
+
             $('#CalForNotMatched').append(trForNotMatched);
-        }
-    });
+            //Append each row to html table
+            for (var i = 0; i < json.length; i++) {
+                var temp = json[i];
+                if (json[i].IsAvailable == false) {
+                    $('#message').html("");
+                    $('#message').html("Before proceed, please select different slots for below dates.");
+                    trForNotMatched = $('<tr/>');
+                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
+                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
+                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
+                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\' width='100px' src=\'../Content/Images/CheckAvailablity.JPG\' onclick=checkTimeSlotforConflict('" + temp.BookingSlot.StartDate + "','" + i + "') /> </td>");
+                }
+                $('#CalForNotMatched').append(trForNotMatched);
+            }
+
+            var strScript = "<script src=\'http://localhost/AppointmentBooking/Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.js\'><";
+            strScript += "/script>";
+
+            strScript += "<script>$('.TimeInputGrd').timepicker({  timeFormat: 'H:i' , step: 15, minTime: '10', maxTime: '10:00pm', defaultTime: 'now', startTime: '10:00', dynamic: false, dropdown: true, scrollbar: true, scrollDefault : 'now' });";
+            strScript += "<";
+            strScript += "/script>";
+
+            $("#editTimeSlot").append(strScript);
+        });
+
     };
+
+    var editJson;
+    function checkTimeSlotforConflict(startDate,id) {
+
+      
+
+        //For Daily
+        var isEveryDay = false;
+        var isEveryDayWorking = false;
+        var everySpecifiedWorkingDate = -1;
+
+        //For Weekly
+        var isSunday = false;
+        var isMonday = false;
+        var isTuesday = false;
+        var isWednesday = false;
+        var isThursday = false;
+        var isFriday = false;
+        var isSaturday = false;
+
+        //For Monthly
+        var dayVise = false;
+        var dayTypeVise = false;
+
+        var Nthday = -1;
+        var DayMonth = -1;
+
+        var NthMonthDay = "";
+        var DayTypeMonth = "";
+        var MonthNumber = -1;
+
+
+
+        switch ($("#ActiveSelectionTab").val()) {
+
+            //Daily
+            case '1':
+                switch ($('input[name=DailySelectionType]:checked').val()) {
+                    case '1':
+                        {
+                            isEveryDay = true;
+                        }
+                        break;
+                    case '2':
+                        {
+                            isEveryDayWorking = true;
+                        }
+                        break;
+                    case '3':
+                        {
+                            everySpecifiedWorkingDate = $('#DailyRepeatFrequency').val();
+                        }
+                        break;
+
+                }
+                break;
+
+                //Weekly
+            case '2':
+                $("input:checkbox[name=WeeklySelectionType]:checked").each(function () {
+                    switch ($(this).val()) {
+                        case '1':
+                            {
+                                isSunday = true;
+                            }
+                            break;
+                        case '2':
+                            {
+                                isMonday = true;
+                            }
+                            break;
+                        case '3':
+                            {
+                                isTuesday = true;
+                            }
+                            break;
+                        case '4':
+                            {
+                                isWednesday = true;
+                            }
+                            break;
+                        case '5':
+                            {
+                                isThursday = true;
+                            }
+                            break;
+                        case '6':
+                            {
+                                isFriday = true;
+                            }
+                            break;
+                        case '7':
+                            {
+                                isSaturday = true;
+
+                            }
+                            break;
+                    }
+                });
+                break;
+
+                //Monthly
+            case '3': switch ($('input[name=MonthlySelectionType]:checked').val()) {
+                case '1':
+                    {
+                        var dayVise = true;
+                        Nthday = $('#DayWiseSelection-Days').val();
+                        DayMonth = $('#DayWiseSelection-Month').val();
+                    }
+                    break;
+
+                case '2':
+                    {
+                        dayTypeVise = true;
+                        NthMonthDay = $('#MonthWiseSelection-daytype').val();
+                        DayTypeMonth = $('#MonthWiseSelection-day').val();
+                        MonthNumber = $('#MonthWiseSelection-Month').val();
+                    }
+                    break;
+
+            }
+                break;
+
+                //Custom
+            case '4':
+                break;
+
+        }
+
+        var data = {
+            Capacity: $('#NumberOfAttendees').val(),
+            FloorID: $('#FloorSelection').val(),
+            StartDate: startDate,
+            EndtDate: startDate,
+            StartTime: $('#StartTime'+id).val(),
+            Duration: $('#Duration').val(),
+
+            RecurrenceType: $('#ActiveSelectionTab').val(),
+            //ForDaily
+            IsEveryDay: isEveryDay,
+            IsEveryDayWorking: isEveryDayWorking,
+            EverySpecifiedWorkingDate: everySpecifiedWorkingDate,
+            //ForWeekly
+            IsSunday: isSunday,
+            IsMonday: isMonday,
+            IsTuesday: isTuesday,
+            IsWednesday: isWednesday,
+            IsThursday: isThursday,
+            IsFriday: isFriday,
+            IsSaturday: isSaturday,
+            //For Weekly
+            DayVise: dayVise,
+            Nthday: Nthday,
+            DayMonth: DayMonth,
+            DayTypeVise: dayTypeVise,
+            NthMonthDay: NthMonthDay,
+            DayTypeMonth: DayTypeMonth,
+            MonthNumber: MonthNumber
+
+
+        };
+        
+        var jqexhr = $.post("FetchAvailability", data, function () { }, 'json')
+        .done(function (response) {
+            if (response instanceof Object)
+                editJson = response;
+            else
+                editJson = $.parseJSON(response);
+
+
+            for (var k = 0; k < editJson.length; k++) {
+                if (editJson[k].IsAvailable == true) {
+                    $("#actionImg" + id).attr('src', '../Content/Images/ConfirmImg.JPG');
+                }
+            }
+        });
+
+    };
+ 
 
 </script>
 @using (Html.BeginForm("MultipleCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
 {
     <div class="mainDivision">
         <div>
+            
+            
             <!--Left Divisions with input fields-->
-            <div style="float:left;" class="innerDivisionleft">
+            <div style="float:left;" class="innerDivisionleft" >
                 <table>
                     <!--Meeting Title Iuput-->
                     <tr>
@@ -320,19 +518,6 @@
                         </td>
                         <td>
                             <input id="StartTime" name="StartTime" class="TimeInput" type="text" />
-                            <script>
-                                $('.TimeInput').timepicker({
-                                    timeFormat: 'hh:mm p',
-                                    interval: 15,
-                                    minTime: '10',
-                                    maxTime: '10:00pm',
-                                    defaultTime: 'now',
-                                    startTime: '10:00',
-                                    dynamic: false,
-                                    dropdown: true,
-                                    scrollbar: true
-                                });
-                            </script>
                         </td>
                         <!--Time Duration-->
                         <td>
@@ -342,16 +527,16 @@
                             <input id="Duration" name="Duration" class="TimeInput2" type="text" />
                             <script>
                                 $('.TimeInput2').timepicker(
-                                    {
-                                        timeFormat: 'HH:mm',
-                                        interval: 15,
-                                        minTime: '0',
-                                        maxTime: '23:00pm',
-                                        defaultTime: '0:15',
-                                        dynamic: false,
-                                        dropdown: true,
-                                        scrollbar: true
-                                    });
+                                 {
+                                     timeFormat: 'H:i',
+                                     step: 15,
+                                     minTime: '0',
+                                     maxTime: '23:00pm',
+                                     defaultTime: '0:15',
+                                     dynamic: false,
+                                     dropdown: true,
+                                     scrollbar: true
+                                 });
                             </script>
                         </td>
                     </tr>
@@ -479,7 +664,6 @@
                             </div>
                             <!--Custom Selection-->
                             <div id="Custom" class="tabcontent">
-
                             </div>
                         </td>
                     </tr>
@@ -492,12 +676,15 @@
             </div>
             <!--Right division for Messages-->
             <div style="float:right;" class="innerDivisionright">
-                <h3>Before proceed, please select different slots for below dates.</h3>
+                <h3><span id="message"></span></h3>
                 <table style="width:98%">
                     <tr id="CalendarTableForNotMatched">
                         <td>
                             <div class="ex1">
                                 <table class="RoomsNotAvailable" id="CalForNotMatched"></table>
+                                <span id="editTimeSlot"></span>
+                                @*<img src="~/Content/Images/CheckAvailablity.JPG" />
+                                <img src="~/Content/Images/ConfirmImg.jpg" />*@
                             </div>
                         </td>
                     </tr>
@@ -520,7 +707,6 @@
                             <input style="float:right;" id="Submit" type="submit" value="Submit" class="MainButton" name="Command" />
                         </td>
                     </tr>
-
                 </table>
             </div>
         </div>
@@ -529,6 +715,19 @@
 }
 <!--Duration Picker-->
 <script>
+    $('.TimeInput').timepicker({
+        step: 15,
+        minTime: '10',
+        maxTime: '10:00pm',
+        defaultTime: 'now',
+        startTime: '10:00',
+        dynamic: false,
+        dropdown: true,
+        scrollbar: true,
+        timeFormat: 'H:i',
+        scrollDefault : 'now'
+    });
+
     window.onload = function () {
         document.getElementById("defaultOpen").click();
     };

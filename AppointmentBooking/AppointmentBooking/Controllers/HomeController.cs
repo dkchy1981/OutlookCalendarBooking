@@ -17,7 +17,7 @@ namespace AppointmentBooking.Controllers
     {
         public ActionResult Index()
         {
-            if (Request.IsAuthenticated)
+            if (Request.IsAuthenticated && Session["UserName"] != null)
             {
                 using (var client = new HttpClient())
                 {
@@ -41,33 +41,61 @@ namespace AppointmentBooking.Controllers
             }
         }
 
-        public JsonResult BookAppointments(RecurrenceInfo info)
+        public JsonResult BookAppointments(CalendarInputForBooking info)
         {
+            BookingResponse output = new BookingResponse();
+
+            if ((Session["floors"] as System.Collections.Generic.IList<CalendarOutput>).Any(i => i.IsAvailable == false))
+            {
+                output.Errors.Add("For booking all slots whould be available. Please re-check availability.");                
+            }
+            if (string.IsNullOrWhiteSpace(info.Subject))
+            {
+                output.Errors.Add("Appointment title is required field.");
+            }
+            if (string.IsNullOrWhiteSpace(Convert.ToString(Session["UserName"])))
+            {
+                output.Errors.Add("Username cannot be empty.");
+            }
+            if (!Request.IsAuthenticated)
+            {
+                output.Errors.Add("Invalid Request.");
+            }
+            if (!(Session["floors"] != null && (Session["floors"] is System.Collections.Generic.IList<CalendarOutput>) && (Session["floors"] as System.Collections.Generic.IList<CalendarOutput>).Count > 0))
+            {
+                output.Errors.Add("Session Expired.");
+            }          
+
+            if (output.Errors.Count > 0)
+            {
+                return Json(output, JsonRequestBehavior.AllowGet);
+            }
+
             using (var client = new HttpClient())
             {
                 string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
-                CalendarInputForBooking input = new CalendarInputForBooking();
-                input.Capacity = info.Capacity;
-                input.FloorID = info.FloorID;
-                input.UserId = (string)Session["UserName"];
-                int durationInMinutes = 0;
-                if (!string.IsNullOrEmpty(info.Duration))
-                {
-                    durationInMinutes = int.Parse(info.Duration.Split(Convert.ToChar(":"))[0]) * 60 + int.Parse(info.Duration.Split(Convert.ToChar(":"))[1]);
-                }                
+                info.UserId = (string)Session["UserName"];
 
-                Task<HttpResponseMessage> response = client.PostAsJsonAsync(apiURL + "BookCalandar", input);
+                foreach (CalendarOutput item in (Session["floors"] as System.Collections.Generic.IList<CalendarOutput>))
+                {
+                    info.BookingSlots.Add(new SlotForBooking() { StartDateTime = item.BookingSlot.StartDateTime, EndDateTime = item.BookingSlot.EndDateTime, RoomID = item.RoomId });
+                }
+
+                Task<HttpResponseMessage> response = client.PostAsJsonAsync(apiURL + "BookCalandar", info);
                 response.Wait();
                 if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var floorJsonString = response.Result.Content.ReadAsStringAsync().Result;
-                    var floors = JsonConvert.DeserializeObject<System.Collections.Generic.IList<CalendarOutput>>(floorJsonString);
+                    var calendarOutputForBooking = JsonConvert.DeserializeObject<CalendarOutputForBooking>(floorJsonString);
+                    output.Output = calendarOutputForBooking;
 
-                    return Json(floors, JsonRequestBehavior.AllowGet);
+                    return Json(output, JsonRequestBehavior.AllowGet);
                 }
             }
 
-            return Json(null, JsonRequestBehavior.AllowGet);
+            output.Errors.Add("Session Expired.");
+            return Json(output, JsonRequestBehavior.AllowGet);
+
         }
 
         public JsonResult FetchAvailability(RecurrenceInfo info)
@@ -150,12 +178,12 @@ namespace AppointmentBooking.Controllers
                         #region For Monthly
                         case 3: // For Monthly
                             {
-                                DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1);
+                                DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1, start.Hour, start.Minute, start.Second);
                                 start = startDateAsPerCriteria;
                                 if (info.DayVise)
                                 {
                                     #region For Monthly Day wise
-                                    start = start.AddDays(info.Nthday-1);
+                                    start = start.AddDays(info.Nthday - 1);
                                     while (start.Date <= end.Date)
                                     {
                                         slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
@@ -357,7 +385,7 @@ namespace AppointmentBooking.Controllers
                                                 {
                                                     break;
                                                 }
-                                                
+
                                             }
                                             if ((startDateAsPerCriteria <= end.Date))
                                             {
@@ -384,27 +412,14 @@ namespace AppointmentBooking.Controllers
                 response.Wait();
                 if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    var floorJsonString = response.Result.Content.ReadAsStringAsync().Result;
-                    var floors = JsonConvert.DeserializeObject<System.Collections.Generic.IList<CalendarOutput>>(floorJsonString);
+                    var roomsJsonString = response.Result.Content.ReadAsStringAsync().Result;
+                    var availableRooms = JsonConvert.DeserializeObject<System.Collections.Generic.IList<CalendarOutput>>(roomsJsonString);
 
-                    return Json(floors, JsonRequestBehavior.AllowGet);
+                    Session["floors"] = availableRooms;
+
+                    return Json(availableRooms, JsonRequestBehavior.AllowGet);
                 }
             }
-
-            //    //Creating List    
-            //    List<Employee> ObjEmp = new List<Employee>()
-            //{  
-            //    //Adding records to list    
-            //    new Employee
-            //    {
-            //        Id = 1, Name = "Vithal Wadje", City = "Latur", Address = "Kabansangvi"
-            //    },
-            //    new Employee
-            //    {
-            //        Id = 2, Name = "Sudhir Wadje", City = "Mumbai", Address = "Kurla"
-            //    }
-            //};
-            //return list as Json    
             return Json(null, JsonRequestBehavior.AllowGet);
         }
 

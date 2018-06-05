@@ -23,17 +23,171 @@
 
     function CancelFetchAppointment() {
         $('#availableRooms').css('display', 'none');
+        $('#unAvailableRoomsDiv').css("display", "none");
     }
 
     function bookAppointment() {
 
-        var data = {};
+        $("#errorList").empty();
+
+        var recurrenceType = 'DailyEveryDay';
+        var everySpecifiedWorkingDate = 1;
+
+        //For Weekly
+        var selectedWeekDays = [];
+
+        //For Monthly
+        var dayVise = false;
+        var dayTypeVise = false;
+
+        var Nthday = -1;
+        var DayMonth = -1;
+
+        var NthMonthDay = "";
+        var DayTypeMonth = "";
+        var MonthNumber = -1;
+
+
+
+        switch ($("#ActiveSelectionTab").val()) {
+
+            //Daily
+            case '1':
+                switch ($('input[name=DailySelectionType]:checked').val()) {
+                    case '1':
+                        {
+                            recurrenceType = 'DailyEveryDay';
+                        }
+                        break;
+                    case '2':
+                        {
+                            recurrenceType = 'DailyEveryWorkingDay';
+                        }
+                        break;
+                    case '3':
+                        {
+                            recurrenceType = 'DailyEveryNDay';
+                            everySpecifiedWorkingDate = $('#DailyRepeatFrequency').val();
+                        }
+                        break;
+                }
+                break;
+
+                //Weekly
+            case '2':
+                $("input:checkbox[name=WeeklySelectionType]:checked").each(function () {
+                    switch ($(this).val()) {
+                        case '1':
+                            {
+                                selectedWeekDays.push(0);
+                            }
+                            break;
+                        case '2':
+                            {
+                                selectedWeekDays.push(1);
+                            }
+                            break;
+                        case '3':
+                            {
+                                selectedWeekDays.push(2);
+                            }
+                            break;
+                        case '4':
+                            {
+                                selectedWeekDays.push(3);
+                            }
+                            break;
+                        case '5':
+                            {
+                                selectedWeekDays.push(4);
+                            }
+                            break;
+                        case '6':
+                            {
+                                selectedWeekDays.push(5);
+                            }
+                            break;
+                        case '7':
+                            {
+                                selectedWeekDays.push(6);
+
+                            }
+                            break;
+                    }
+                    recurrenceType = 'Weekly';
+                });
+                break;
+
+                //Monthly
+            case '3':
+                {
+                    recurrenceType = "Monthly";
+
+                    switch ($('input[name=MonthlySelectionType]:checked').val()) {
+                        case '1':
+                            {
+                                var dayVise = true;
+                                Nthday = $('#DayWiseSelection-Days').val();
+                                DayMonth = $('#DayWiseSelection-Month').val();
+                            }
+                            break;
+
+                        case '2':
+                            {
+                                dayTypeVise = true;
+                                NthMonthDay = $('#MonthWiseSelection-daytype').val();
+                                DayTypeMonth = $('#MonthWiseSelection-day').val();
+                                MonthNumber = $('#MonthWiseSelection-Month').val();
+                            }
+                            break;
+
+                    }
+
+                }
+                break;
+
+                //Custom
+            case '4':
+                break;
+
+        }
+
+        
+        var data = {
+            FloorID: $('#FloorSelection').val(),
+            Capacity: $('#NumberOfAttendees').val(),
+            Subject: $('#AppointmentTitle').val(),
+            RecurrenceType: recurrenceType,
+            DailyNDayInterval: everySpecifiedWorkingDate,
+            DayofWeeksForWeekly: selectedWeekDays
+
+        };
         var jqxhr = $.post("BookAppointments", data, function () { }, 'json')
     .done(function (response) {
         if (response instanceof Object)
             var json = response;
         else
             var json = $.parseJSON(response);
+
+        if (json.Errors.length > 0) {
+            $('#messages').css('display', 'block');
+            $('#unAvailableRoomsDiv').css("display", "none");
+
+            for (var i = 0; i < json.Errors.length; i++) {
+                $('#errorList').append('<li>' + json.Errors[i] + '</li>');
+            }
+        }
+        else if (json.Output.Message != null && json.Output.Message != '') {
+            $('#messages').css('display', 'block');
+            $('#unAvailableRoomsDiv').css("display", "none");
+            $('#errorList').append('<li>' + json.Output.Message + '</li>');
+        }
+        else if (json.Errors.length == 0 && (json.Output.Message == null || json.Output.Message == '')) {
+            $('#messages').css('display', 'block');
+            $('#unAvailableRoomsDiv').css("display", "none");
+            $('#errorList').append("<li>Room booked successfully.</li>");
+            CancelFetchAppointment();
+        }
     });
     };
 
@@ -42,6 +196,7 @@
 
         $("#Cal").empty();
         $("#CalForNotMatched").empty();
+        $('#messages').css('display', 'none');
 
         var tr;
         tr = $('<tr class=\'trRoomHeader\'/>');
@@ -264,6 +419,7 @@
         trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
 
         $('#CalForNotMatched').append(trForNotMatched);
+        var countForunAvailableRooms = 0;
         //Append each row to html table
         for (var i = 0; i < json.length; i++) {
             if (json[i].IsAvailable == false) {
@@ -272,8 +428,12 @@
                 trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
                 trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
                 trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'></td>");
+                countForunAvailableRooms++;
             }
             $('#CalForNotMatched').append(trForNotMatched);
+        }
+        if (countForunAvailableRooms > 0) {
+            $('#unAvailableRoomsDiv').css("display", "block");
         }
     });
     };
@@ -609,16 +769,21 @@
             </div>
             <!--Right division for Messages-->
             <div style="float:right;" class="innerDivisionright">
-                <h3>Before proceed, please select different slots for below dates.</h3>
-                <table style="width:98%">
-                    <tr id="CalendarTableForNotMatched">
-                        <td>
-                            <div class="ex1">
-                                <table class="RoomsNotAvailable" id="CalForNotMatched"></table>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div id="messages" style="display:none">
+                    <label id="errorList" name="errorList" class="errorList"></label>
+                </div>
+                <div id="unAvailableRoomsDiv" style="display:none">
+                    <h3>Before proceed, please select different slots for below dates.</h3>
+                    <table style="width:98%">
+                        <tr id="CalendarTableForNotMatched">
+                            <td>
+                                <div class="ex1">
+                                    <table class="RoomsNotAvailable" id="CalForNotMatched"></table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
         <div id="availableRooms" style="display:none">
@@ -634,7 +799,7 @@
                     <tr>
                         <td style="align-items:flex-end">
                             <input style="float:left;" id="Cancel" type="button" value="Cancel" class="MainButton" name="Command" onclick="CancelFetchAppointment()" />
-                            <input style="float:right;" id="Submit" type="submit" value="Submit" class="MainButton" name="Command" />
+                            <input style="float:right;" id="Submit" type="button" value="Submit" class="MainButton" name="Command" onclick="bookAppointment()" />
                         </td>
                     </tr>
                 </table>

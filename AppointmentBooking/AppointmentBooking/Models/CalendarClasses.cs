@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Exchange.WebServices.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -36,6 +37,8 @@ namespace AppointmentBooking.Models
 
         public string RoomName { get; set; }
 
+        public int RoomId { get; set; }
+
         public Slot BookingSlot { get; set; }
 
         public List<string> Messages { get; set; }
@@ -65,8 +68,30 @@ namespace AppointmentBooking.Models
         public List<string> RecipientsCC { get; set; }
 
         public int ReminderMinutesBeforeStart { get; set; }
+
+        public CalendarInputForBooking()
+        {
+            BookingSlots = new List<SlotForBooking>();
+        }
+
+        public string RecurrenceType { get; set; }
+
+        public int DailyNDayInterval { get; set; }
+
+        public DayOfTheWeek[] DayofWeeksForWeekly { get; set; }
     }
 
+    public class BookingResponse
+    {
+        public List<string> Errors { get; set; }
+
+        public CalendarOutputForBooking Output { get; set; }
+
+        public BookingResponse()
+        {
+            Errors = new List<string>();
+        }
+    }
 
     public class SlotForBooking
     {
@@ -104,7 +129,7 @@ namespace AppointmentBooking.Models
         public string EndtDate { get; set; }
 
         public string StartTime { get; set; }
-                
+
         public string Duration { get; set; }
 
         public int RecurrenceType { get; set; }

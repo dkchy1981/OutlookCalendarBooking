@@ -226,7 +226,7 @@ namespace AppointmentBooking.Controllers
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
                                             startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
-                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1, startDateAsPerCriteria.Hour, startDateAsPerCriteria.Minute, startDateAsPerCriteria.Second);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
 
@@ -284,7 +284,7 @@ namespace AppointmentBooking.Controllers
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
                                             startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
-                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1, startDateAsPerCriteria.Hour, startDateAsPerCriteria.Minute, startDateAsPerCriteria.Second);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
                                         #endregion For Monthly Day Type wise -Weekday
@@ -339,7 +339,7 @@ namespace AppointmentBooking.Controllers
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
                                             startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
-                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1, startDateAsPerCriteria.Hour, startDateAsPerCriteria.Minute, startDateAsPerCriteria.Second);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
                                         #endregion For Monthly Day Type wise -Weekend
@@ -392,7 +392,7 @@ namespace AppointmentBooking.Controllers
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
                                             startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(info.MonthNumber);
-                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1);
+                                            startDateAsPerCriteria = new DateTime(startDateAsPerCriteria.Year, startDateAsPerCriteria.Month, 1, startDateAsPerCriteria.Hour, startDateAsPerCriteria.Minute, startDateAsPerCriteria.Second);
                                         }
                                         while (startDateAsPerCriteria <= end.Date);
                                         #endregion For Monthly Day Type wise -SpecificDay

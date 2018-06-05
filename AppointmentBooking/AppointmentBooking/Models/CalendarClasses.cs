@@ -79,6 +79,16 @@ namespace AppointmentBooking.Models
         public int DailyNDayInterval { get; set; }
 
         public DayOfTheWeek[] DayofWeeksForWeekly { get; set; }
+        
+        public int DayOfMonth_Month { get; set; }
+
+        public int DayOfMonthInterval_Month { get; set; }
+
+        public int DayOfTheWeekIndex_Month { get; set; }
+
+        public int DayOfTheWeek_Month { get; set; }
+
+        public int CustomMonthInterval_Month { get; set; }
     }
 
     public class BookingResponse

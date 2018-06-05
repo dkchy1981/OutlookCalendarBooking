@@ -126,7 +126,6 @@
                     switch ($('input[name=MonthlySelectionType]:checked').val()) {
                         case '1':
                             {
-                                var dayVise = true;
                                 Nthday = $('#DayWiseSelection-Days').val();
                                 DayMonth = $('#DayWiseSelection-Month').val();
                             }
@@ -159,7 +158,12 @@
             Subject: $('#AppointmentTitle').val(),
             RecurrenceType: recurrenceType,
             DailyNDayInterval: everySpecifiedWorkingDate,
-            DayofWeeksForWeekly: selectedWeekDays
+            DayofWeeksForWeekly: selectedWeekDays,
+            DayOfMonth_Month: Nthday,
+            DayOfMonthInterval_Month: DayMonth,
+            DayOfTheWeekIndex_Month: NthMonthDay,
+            DayOfTheWeek_Month: DayTypeMonth,
+            CustomMonthInterval_Month: MonthNumber,
 
         };
         var jqxhr = $.post("BookAppointments", data, function () { }, 'json')
@@ -324,8 +328,8 @@
                 case '2':
                     {
                         dayTypeVise = true;
-                        NthMonthDay = $('#MonthWiseSelection-daytype').val();
-                        DayTypeMonth = $('#MonthWiseSelection-day').val();
+                        NthMonthDay = $("#MonthWiseSelection-daytype option:selected").text();
+                        DayTypeMonth = $("#MonthWiseSelection-day option:selected").text();
                         MonthNumber = $('#MonthWiseSelection-Month').val();
                     }
                     break;
@@ -718,23 +722,23 @@
                                 <br />
                                 <input id="MonthWiseSelection" type="radio" name="MonthlySelectionType" onclick="javascript:MonthWiseRadioCheck()" value="2" />
                                 <select id="MonthWiseSelection-daytype" disabled>
-                                    <option>First</option>
-                                    <option>Second</option>
-                                    <option>Third</option>
-                                    <option>Fourth</option>
-                                    <option>Last</option>
+                                    <option value="0">First</option>
+                                    <option value="1">Second</option>
+                                    <option value="2">Third</option>
+                                    <option value="3">Fourth</option>
+                                    <option value="4">Last</option>
                                 </select>
                                 <select id="MonthWiseSelection-day" disabled>
-                                    <option>Day</option>
-                                    <option>WeekDay</option>
-                                    <option>Weekend</option>
-                                    <option>Sunday</option>
-                                    <option>Monday</option>
-                                    <option>Tuesday</option>
-                                    <option>Wednesday</option>
-                                    <option>Thursday</option>
-                                    <option>Friday</option>
-                                    <option>Saturday</option>
+                                    <option value="7">Day</option>
+                                    <option value="8">WeekDay</option>
+                                    <option value="9">Weekend</option>
+                                    <option value="0">Sunday</option>
+                                    <option value="1">Monday</option>
+                                    <option value="2">Tuesday</option>
+                                    <option value="3">Wednesday</option>
+                                    <option value="4">Thursday</option>
+                                    <option value="5">Friday</option>
+                                    <option value="6">Saturday</option>
                                 </select>
                                 of every
                                 <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" disabled /> Month.

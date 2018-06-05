@@ -750,15 +750,26 @@
                             <div id="Custom" class="tabcontent">
 
                                 <input type="text" id="MultiDate"/>
+
+                                <style>
+                                    
+
+                                  .ui-datepicker .ui-datepicker-header { 
+                                        background-color:#95CBB5;
+                                        border-radius:3px;
+                                    }
+                                </style>
                                 
                                 <script>
                                     $('#MultiDate').multiDatesPicker(
                                         {
-                                            dateFormat: "d-M-yy",
-                                            minDate: 0
+                                            dateFormat: "dd/M/yy",
+                                            minDate: 0,
+                                            changeMonth: true,
+                                            changeYear: true
+                                            
                                         });
-                                </script>
-                                    
+                                </script>                                                     
 
                             </div>
                             

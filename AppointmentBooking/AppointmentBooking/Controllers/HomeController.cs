@@ -178,7 +178,7 @@ namespace AppointmentBooking.Controllers
                         #region For Monthly
                         case 3: // For Monthly
                             {
-                                DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1);
+                                DateTime startDateAsPerCriteria = new DateTime(start.Year, start.Month, 1, start.Hour, start.Minute, start.Second);
                                 start = startDateAsPerCriteria;
                                 if (info.DayVise)
                                 {

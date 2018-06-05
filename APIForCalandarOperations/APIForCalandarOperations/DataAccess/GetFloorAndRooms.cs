@@ -15,6 +15,9 @@ namespace APIForCalandarOperations.DataAccess
 {
     public class GetFloorAndRooms
     {
+        string timeFormat = "HH:mm";
+        string dateFormat = "yyyy/MM/dd ";
+
         public GetFloorAndRooms()
         {
 
@@ -287,7 +290,10 @@ namespace APIForCalandarOperations.DataAccess
                         }
                         bookedMeetingID = (int)theSQLCommand.ExecuteScalar();
                     }
-                    foreach (SlotForBooking slot in input.BookingSlots)
+
+                    List<SlotForBooking> recurrSlots = ExtractGroupsBasedOnRoomAndStartEndTime(input.BookingSlots, input.RecurrenceType);
+
+                    foreach (SlotForBooking slot in recurrSlots)
                     {
                         Room room = lstRooms.Where(t => t.Id == slot.RoomID).FirstOrDefault();
                         if (input.UserId.Contains("@"))
@@ -304,7 +310,7 @@ namespace APIForCalandarOperations.DataAccess
                             theSQLCommandInner.Parameters.AddWithValue("@EndDateTime", slot.EndDateTime);
                             try
                             {
-                                if (BookAppointment(service, slot, input.Subject, room, input.RecipientsTo, input.RecipientsCC, input.ReminderMinutesBeforeStart))
+                                if (BookAppointment(service, slot, input.Subject, room, input.RecipientsTo, input.RecipientsCC, input.ReminderMinutesBeforeStart, input.RecurrenceType, input.DailyNDayInterval,input.DayofWeeksForWeekly))
                                 {
                                     theSQLCommandInner.Parameters.AddWithValue("@IsConfirmed", true);
                                 }
@@ -340,7 +346,7 @@ namespace APIForCalandarOperations.DataAccess
                             }
                         }
                     }
-                    if(calendarOutputForBooking.ErrorSlots!=null && calendarOutputForBooking.ErrorSlots.Count()<=0)
+                    if (calendarOutputForBooking.ErrorSlots != null && calendarOutputForBooking.ErrorSlots.Count() <= 0)
                     {
                         scope.Complete();
                     }
@@ -360,17 +366,66 @@ namespace APIForCalandarOperations.DataAccess
             return calendarOutputForBooking;
         }
 
+        private List<SlotForBooking> ExtractGroupsBasedOnRoomAndStartEndTime(List<SlotForBooking> bookingSlots, string recurrenceType)
+        {
+            if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryWorkingDay" || recurrenceType == "DailyEveryNDay" || recurrenceType == "Weekly")
+            {
+                List<SlotForBooking> groupsBasedOnRoomAndStartEndTime = new List<SlotForBooking>();
 
-        private bool BookAppointment(ExchangeService service, SlotForBooking slot, string subject, Room objRoom, List<string> toRecepient, List<string> ccRecepient, int reminderMinutesBeforeStart)
+                int roomId = 0;
+                DateTime startDate = DateTime.MinValue;
+                DateTime endtDate = DateTime.MinValue;
+                string startTime = "";
+                string endTime = "";                
+                foreach (SlotForBooking item in bookingSlots.OrderBy(t => t.RoomID).OrderBy(t => t.StartDateTime).ToList())
+                {
+                    if (roomId == 0)
+                    {
+                        roomId = item.RoomID;
+                    }
+                    if (startDate == DateTime.MinValue)
+                    {
+                        startDate = item.StartDateTime.Date;
+                    }
+                    if (string.IsNullOrWhiteSpace(startTime))
+                    {
+                        startTime = item.StartDateTime.ToString(timeFormat);
+                    }
+                    if (string.IsNullOrWhiteSpace(endTime))
+                    {
+                        endTime = item.EndDateTime.ToString(timeFormat);
+                    }
+                    if (roomId != item.RoomID || startTime != item.StartDateTime.ToString(timeFormat))
+                    {
+                        groupsBasedOnRoomAndStartEndTime.Add(new SlotForBooking() { RoomID = roomId, StartDateTime = DateTime.Parse(startDate.ToString(dateFormat) + startTime), EndDateTime = DateTime.Parse(endtDate.ToString(dateFormat) + endTime) });
+                        roomId = item.RoomID;
+                        startDate = item.StartDateTime.Date;
+                        startTime = item.StartDateTime.ToString(timeFormat);
+                        endTime = item.EndDateTime.ToString(timeFormat);
+                    }
+                    endtDate = item.EndDateTime.Date;
+                }
+                groupsBasedOnRoomAndStartEndTime.Add(new SlotForBooking() { RoomID = roomId, StartDateTime = DateTime.Parse(startDate.ToString(dateFormat) + startTime), EndDateTime = DateTime.Parse(endtDate.ToString(dateFormat) + endTime) });
+
+                return groupsBasedOnRoomAndStartEndTime;
+            }
+            else
+            {
+                return bookingSlots;
+            }
+        }
+
+        private bool BookAppointment(ExchangeService service, SlotForBooking slot, string subject, Room objRoom, List<string> toRecepient, List<string> ccRecepient, int reminderMinutesBeforeStart, string recurrenceType, int dailyNDayInterval, DayOfTheWeek[] dayofWeeksForWeekly)
         {
             Appointment meeting = new Appointment(service);
 
             // Set the properties on the meeting object to create the meeting.
             meeting.Subject = subject;
             meeting.Body = subject;
-            meeting.Start = slot.StartDateTime;
-            meeting.End = slot.EndDateTime;
             meeting.Location = objRoom.Name;
+            meeting.Start = slot.StartDateTime;
+            DateTime startDateWithEndTime = DateTime.Parse(slot.StartDateTime.ToString(dateFormat) + slot.EndDateTime.ToString(timeFormat));
+            meeting.End = startDateWithEndTime;
             meeting.RequiredAttendees.Add(objRoom.Email);
             if (toRecepient != null)
             {
@@ -387,6 +442,29 @@ namespace APIForCalandarOperations.DataAccess
                 }
             }
             meeting.ReminderMinutesBeforeStart = reminderMinutesBeforeStart;
+
+
+            if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryWorkingDay" || recurrenceType == "DailyEveryNDay" || recurrenceType == "Weekly")
+            {
+                if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryNDay")
+                {
+                    meeting.Recurrence = new Recurrence.DailyPattern(meeting.Start.Date, dailyNDayInterval);
+                    meeting.Recurrence.StartDate = slot.StartDateTime.Date;
+                    meeting.Recurrence.EndDate = slot.EndDateTime.Date;
+                }
+                else if (recurrenceType == "DailyEveryWorkingDay" )
+                {
+                    meeting.Recurrence = new Recurrence.WeeklyPattern(meeting.Start.Date, 1,new DayOfTheWeek[] { DayOfTheWeek.Monday, DayOfTheWeek.Tuesday, DayOfTheWeek.Wednesday, DayOfTheWeek.Thursday, DayOfTheWeek.Friday});
+                    meeting.Recurrence.StartDate = slot.StartDateTime.Date;
+                    meeting.Recurrence.EndDate = slot.EndDateTime.Date;
+                }
+                else if (recurrenceType == "Weekly")
+                {
+                    meeting.Recurrence = new Recurrence.WeeklyPattern(meeting.Start.Date, 1, dayofWeeksForWeekly);
+                    meeting.Recurrence.StartDate = slot.StartDateTime.Date;
+                    meeting.Recurrence.EndDate = slot.EndDateTime.Date;
+                }
+            }
 
             // Save the meeting to the Calendar folder and send the meeting request.
             meeting.Save(SendInvitationsMode.SendToAllAndSaveCopy);

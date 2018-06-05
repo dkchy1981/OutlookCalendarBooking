@@ -5,24 +5,198 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script src="~/Content/Plugins/Multiple-Dates-Picker-for-jQuery-UI-latest/jquery-ui.multidatespicker.js"></script>
+<link href="~/Scripts/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
+
 <!--Date Dropper-->
 <link href="~/Content/Plugins/Datedropper3/datedropper.css" rel="stylesheet" />
 <script src="~/Content/Plugins/Datedropper3/datedropper.js"></script>
 <link href="~/Content/StyleSheets/DateDropperCivica.css" rel="stylesheet" />
+
 <!--JQuerryTimePicker-->
 <script src="~/Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.js"></script>
 <link href="~/Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.css" rel="stylesheet" />
-<script>
 
+<script>
 
     function CancelFetchAppointment() {
         $('#availableRooms').css('display', 'none');
+        $('#unAvailableRoomsDiv').css("display", "none");
     }
-    var json;
+
+    function bookAppointment() {
+
+        $("#errorList").empty();
+
+        var recurrenceType = 'DailyEveryDay';
+        var everySpecifiedWorkingDate = 1;
+
+        //For Weekly
+        var selectedWeekDays = [];
+
+        //For Monthly
+        var dayVise = false;
+        var dayTypeVise = false;
+
+        var Nthday = -1;
+        var DayMonth = -1;
+
+        var NthMonthDay = "";
+        var DayTypeMonth = "";
+        var MonthNumber = -1;
+
+
+
+        switch ($("#ActiveSelectionTab").val()) {
+
+            //Daily
+            case '1':
+                switch ($('input[name=DailySelectionType]:checked').val()) {
+                    case '1':
+                        {
+                            recurrenceType = 'DailyEveryDay';
+                        }
+                        break;
+                    case '2':
+                        {
+                            recurrenceType = 'DailyEveryWorkingDay';
+                        }
+                        break;
+                    case '3':
+                        {
+                            recurrenceType = 'DailyEveryNDay';
+                            everySpecifiedWorkingDate = $('#DailyRepeatFrequency').val();
+                        }
+                        break;
+                }
+                break;
+
+                //Weekly
+            case '2':
+                $("input:checkbox[name=WeeklySelectionType]:checked").each(function () {
+                    switch ($(this).val()) {
+                        case '1':
+                            {
+                                selectedWeekDays.push(0);
+                            }
+                            break;
+                        case '2':
+                            {
+                                selectedWeekDays.push(1);
+                            }
+                            break;
+                        case '3':
+                            {
+                                selectedWeekDays.push(2);
+                            }
+                            break;
+                        case '4':
+                            {
+                                selectedWeekDays.push(3);
+                            }
+                            break;
+                        case '5':
+                            {
+                                selectedWeekDays.push(4);
+                            }
+                            break;
+                        case '6':
+                            {
+                                selectedWeekDays.push(5);
+                            }
+                            break;
+                        case '7':
+                            {
+                                selectedWeekDays.push(6);
+
+                            }
+                            break;
+                    }
+                    recurrenceType = 'Weekly';
+                });
+                break;
+
+                //Monthly
+            case '3':
+                {
+                    recurrenceType = "Monthly";
+
+                    switch ($('input[name=MonthlySelectionType]:checked').val()) {
+                        case '1':
+                            {
+                                var dayVise = true;
+                                Nthday = $('#DayWiseSelection-Days').val();
+                                DayMonth = $('#DayWiseSelection-Month').val();
+                            }
+                            break;
+
+                        case '2':
+                            {
+                                dayTypeVise = true;
+                                NthMonthDay = $('#MonthWiseSelection-daytype').val();
+                                DayTypeMonth = $('#MonthWiseSelection-day').val();
+                                MonthNumber = $('#MonthWiseSelection-Month').val();
+                            }
+                            break;
+
+                    }
+
+                }
+                break;
+
+                //Custom
+            case '4':
+                break;
+
+        }
+
+        
+        var data = {
+            FloorID: $('#FloorSelection').val(),
+            Capacity: $('#NumberOfAttendees').val(),
+            Subject: $('#AppointmentTitle').val(),
+            RecurrenceType: recurrenceType,
+            DailyNDayInterval: everySpecifiedWorkingDate,
+            DayofWeeksForWeekly: selectedWeekDays
+
+        };
+        var jqxhr = $.post("BookAppointments", data, function () { }, 'json')
+    .done(function (response) {
+        if (response instanceof Object)
+            var json = response;
+        else
+            var json = $.parseJSON(response);
+
+        if (json.Errors.length > 0) {
+            $('#messages').css('display', 'block');
+            $('#unAvailableRoomsDiv').css("display", "none");
+
+            for (var i = 0; i < json.Errors.length; i++) {
+                $('#errorList').append('<li>' + json.Errors[i] + '</li>');
+            }
+        }
+        else if (json.Output.Message != null && json.Output.Message != '') {
+            $('#messages').css('display', 'block');
+            $('#unAvailableRoomsDiv').css("display", "none");
+            $('#errorList').append('<li>' + json.Output.Message + '</li>');
+        }
+        else if (json.Errors.length == 0 && (json.Output.Message == null || json.Output.Message == '')) {
+            $('#messages').css('display', 'block');
+            $('#unAvailableRoomsDiv').css("display", "none");
+            $('#errorList').append("<li>Room booked successfully.</li>");
+            CancelFetchAppointment();
+        }
+    });
+    };
+
+
     function checkAvailability() {
 
         $("#Cal").empty();
         $("#CalForNotMatched").empty();
+        $('#messages').css('display', 'none');
 
         var tr;
         tr = $('<tr class=\'trRoomHeader\'/>');
@@ -66,7 +240,7 @@
         var NthMonthDay = "";
         var DayTypeMonth = "";
         var MonthNumber = -1;
-       
+
 
 
         switch ($("#ActiveSelectionTab").val()) {
@@ -198,271 +372,79 @@
 
         };
         var jqxhr = $.post("FetchAvailability", data, function () { }, 'json')
-        .done(function (response) {
-            if (response instanceof Object)
-                json = response;
-            else
-                json = $.parseJSON(response);
+    .done(function (response) {
+        if (response instanceof Object)
+            var json = response;
+        else
+            var json = $.parseJSON(response);
 
-            $("#Cal").empty();
-            $("#CalForNotMatched").empty();
+        $("#Cal").empty();
+        $("#CalForNotMatched").empty();
 
 
-            var tr;
-            tr = $('<tr class=\'trRoomHeader\'/>');
-            tr.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
-            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
-            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
-            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
-            tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
+        var tr;
+        tr = $('<tr class=\'trRoomHeader\'/>');
+        tr.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
+        tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
+        $('#Cal').append(tr);
+        //Append each row to html table
+        for (var i = 0; i < json.length; i++) {
+            if (json[i].IsAvailable == true) {
+                tr = $('<tr/>');
+            }
+            else {
+                tr = $('<tr class=\'trRoom\'/>');
+            }
+            tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndDate + "</td>");
+            tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
             $('#Cal').append(tr);
-            //Append each row to html table
-            for (var i = 0; i < json.length; i++) {
-                if (json[i].IsAvailable == true) {
-                    tr = $('<tr/>');
-                    $('#message').html("Messages");
-
-                }
-                else {
-                    tr = $('<tr class=\'trRoom\'/>');
-
-                }
-                tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
-                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
-                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndDate + "</td>");
-                tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
-                $('#Cal').append(tr);
-            }
-            if (json.length > 0) {
-                $('#availableRooms').css('display', 'block');
-            }
-
-
-
-            var trForNotMatched;
-            trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
-            trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
-            trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
-            trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>")
-            trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
-
-            $('#CalForNotMatched').append(trForNotMatched);
-            //Append each row to html table
-            for (var i = 0; i < json.length; i++) {
-                var temp = json[i];
-                if (json[i].IsAvailable == false) {
-                    $('#message').html("");
-                    $('#message').html("Before proceed, please select different slots for below dates.");
-                    trForNotMatched = $('<tr/>');
-                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
-                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
-                    trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\' width='100px' src=\'../Content/Images/CheckAvailablity.JPG\' onclick=checkTimeSlotforConflict('" + temp.BookingSlot.StartDate + "','" + i + "') /> </td>");
-                }
-                $('#CalForNotMatched').append(trForNotMatched);
-            }
-
-            var strScript = "<script src=\'http://localhost/AppointmentBooking/Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.js\'><";
-            strScript += "/script>";
-
-            strScript += "<script>$('.TimeInputGrd').timepicker({  timeFormat: 'H:i' , step: 15, minTime: '10', maxTime: '10:00pm', defaultTime: 'now', startTime: '10:00', dynamic: false, dropdown: true, scrollbar: true, scrollDefault : 'now' });";
-            strScript += "<";
-            strScript += "/script>";
-
-            $("#editTimeSlot").append(strScript);
-        });
-
-    };
-
-    var editJson;
-    function checkTimeSlotforConflict(startDate,id) {
-
-      
-
-        //For Daily
-        var isEveryDay = false;
-        var isEveryDayWorking = false;
-        var everySpecifiedWorkingDate = -1;
-
-        //For Weekly
-        var isSunday = false;
-        var isMonday = false;
-        var isTuesday = false;
-        var isWednesday = false;
-        var isThursday = false;
-        var isFriday = false;
-        var isSaturday = false;
-
-        //For Monthly
-        var dayVise = false;
-        var dayTypeVise = false;
-
-        var Nthday = -1;
-        var DayMonth = -1;
-
-        var NthMonthDay = "";
-        var DayTypeMonth = "";
-        var MonthNumber = -1;
-
-
-
-        switch ($("#ActiveSelectionTab").val()) {
-
-            //Daily
-            case '1':
-                switch ($('input[name=DailySelectionType]:checked').val()) {
-                    case '1':
-                        {
-                            isEveryDay = true;
-                        }
-                        break;
-                    case '2':
-                        {
-                            isEveryDayWorking = true;
-                        }
-                        break;
-                    case '3':
-                        {
-                            everySpecifiedWorkingDate = $('#DailyRepeatFrequency').val();
-                        }
-                        break;
-
-                }
-                break;
-
-                //Weekly
-            case '2':
-                $("input:checkbox[name=WeeklySelectionType]:checked").each(function () {
-                    switch ($(this).val()) {
-                        case '1':
-                            {
-                                isSunday = true;
-                            }
-                            break;
-                        case '2':
-                            {
-                                isMonday = true;
-                            }
-                            break;
-                        case '3':
-                            {
-                                isTuesday = true;
-                            }
-                            break;
-                        case '4':
-                            {
-                                isWednesday = true;
-                            }
-                            break;
-                        case '5':
-                            {
-                                isThursday = true;
-                            }
-                            break;
-                        case '6':
-                            {
-                                isFriday = true;
-                            }
-                            break;
-                        case '7':
-                            {
-                                isSaturday = true;
-
-                            }
-                            break;
-                    }
-                });
-                break;
-
-                //Monthly
-            case '3': switch ($('input[name=MonthlySelectionType]:checked').val()) {
-                case '1':
-                    {
-                        var dayVise = true;
-                        Nthday = $('#DayWiseSelection-Days').val();
-                        DayMonth = $('#DayWiseSelection-Month').val();
-                    }
-                    break;
-
-                case '2':
-                    {
-                        dayTypeVise = true;
-                        NthMonthDay = $('#MonthWiseSelection-daytype').val();
-                        DayTypeMonth = $('#MonthWiseSelection-day').val();
-                        MonthNumber = $('#MonthWiseSelection-Month').val();
-                    }
-                    break;
-
-            }
-                break;
-
-                //Custom
-            case '4':
-                break;
-
+        }
+        if (json.length > 0) {
+            $('#availableRooms').css('display', 'block');
         }
 
-        var data = {
-            Capacity: $('#NumberOfAttendees').val(),
-            FloorID: $('#FloorSelection').val(),
-            StartDate: startDate,
-            EndtDate: startDate,
-            StartTime: $('#StartTime'+id).val(),
-            Duration: $('#Duration').val(),
-
-            RecurrenceType: $('#ActiveSelectionTab').val(),
-            //ForDaily
-            IsEveryDay: isEveryDay,
-            IsEveryDayWorking: isEveryDayWorking,
-            EverySpecifiedWorkingDate: everySpecifiedWorkingDate,
-            //ForWeekly
-            IsSunday: isSunday,
-            IsMonday: isMonday,
-            IsTuesday: isTuesday,
-            IsWednesday: isWednesday,
-            IsThursday: isThursday,
-            IsFriday: isFriday,
-            IsSaturday: isSaturday,
-            //For Weekly
-            DayVise: dayVise,
-            Nthday: Nthday,
-            DayMonth: DayMonth,
-            DayTypeVise: dayTypeVise,
-            NthMonthDay: NthMonthDay,
-            DayTypeMonth: DayTypeMonth,
-            MonthNumber: MonthNumber
 
 
-        };
-        
-        var jqexhr = $.post("FetchAvailability", data, function () { }, 'json')
-        .done(function (response) {
-            if (response instanceof Object)
-                editJson = response;
-            else
-                editJson = $.parseJSON(response);
+        var trForNotMatched;
+        trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
+        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
+        trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
+        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>")
+        trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
 
-
-            for (var k = 0; k < editJson.length; k++) {
-                if (editJson[k].IsAvailable == true) {
-                    $("#actionImg" + id).attr('src', '../Content/Images/ConfirmImg.JPG');
-                }
+        $('#CalForNotMatched').append(trForNotMatched);
+        var countForunAvailableRooms = 0;
+        //Append each row to html table
+        for (var i = 0; i < json.length; i++) {
+            if (json[i].IsAvailable == false) {
+                trForNotMatched = $('<tr/>');
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
+                trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'></td>");
+                countForunAvailableRooms++;
             }
-        });
-
+            $('#CalForNotMatched').append(trForNotMatched);
+        }
+        if (countForunAvailableRooms > 0) {
+            $('#unAvailableRoomsDiv').css("display", "block");
+        }
+    });
     };
- 
 
 </script>
 @using (Html.BeginForm("MultipleCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
 {
     <div class="mainDivision">
         <div>
-            
-            
             <!--Left Divisions with input fields-->
-            <div style="float:left;" class="innerDivisionleft" >
+            <div style="float:left;" class="innerDivisionleft">
                 <table>
                     <!--Meeting Title Iuput-->
                     <tr>
@@ -518,6 +500,58 @@
                         </td>
                         <td>
                             <input id="StartTime" name="StartTime" class="TimeInput" type="text" />
+                            <script>
+
+                                function UpdateEndTime()
+                                {
+
+                                }
+                                $('.TimeInput').timepicker({
+                                    timeFormat: 'hh:mm p',
+                                    interval: 15,
+                                    minTime: '10',
+                                    maxTime: '10:00pm',
+                                    defaultTime: 'now',
+                                    startTime: '10:00',
+                                    dynamic: false,
+                                    dropdown: true,
+                                    scrollbar: true,
+                                    change: function (time) {
+
+                                        DurationTime = String($('#Duration').val()).split(":");
+                                        var DurHour = parseInt(DurationTime[0]);
+                                        var DurMin = parseInt(DurationTime[1]);
+
+                                        
+                                        var hours = time.getHours() + DurHour;
+                                        var minutes = time.getMinutes() + DurMin;
+                                        var ampm = hours >= 12 ? 'PM' : 'AM';
+                                        
+                                        minutes = minutes < 10 ? '0' + minutes : minutes;
+                                        if (minutes >= 60)
+                                        {
+                                            hours = hours + (minutes / 60);
+                                            minutes = minutes % 60;
+                                        }
+                                        hours = hours % 12;
+                                        hours = hours ? hours : 12; // the hour '0' should be '12'
+                                        var strTime = hours + ':' ;
+                                        if (String(minutes).length < 2)
+                                        {
+                                            strTime = strTime + '0' + minutes;
+                                        }
+                                        else
+                                        {
+                                            strTime = strTime + minutes;
+                                        }
+                                        strTime = strTime + ' ' + ampm;
+                                        
+
+                                        
+                                        $('#EndTime').val(strTime).trigger('change');
+                                    }
+                                });
+                            </script>
                         </td>
                         <!--Time Duration-->
                         <td>
@@ -527,16 +561,51 @@
                             <input id="Duration" name="Duration" class="TimeInput2" type="text" />
                             <script>
                                 $('.TimeInput2').timepicker(
-                                 {
-                                     timeFormat: 'H:i',
-                                     step: 15,
-                                     minTime: '0',
-                                     maxTime: '23:00pm',
-                                     defaultTime: '0:15',
-                                     dynamic: false,
-                                     dropdown: true,
-                                     scrollbar: true
-                                 });
+                                    {
+                                        timeFormat: 'HH:mm',
+                                        interval: 15,
+                                        minTime: '0',
+                                        maxTime: '23:00pm',
+                                        defaultTime: '0:15',
+                                        dynamic: false,
+                                        dropdown: true,
+                                        scrollbar: true,
+                                        change: function (time) {
+
+                                            time.setHours(parseInt(String($('#StartTime').val()).split(":")[0]));
+                                            time.setMinutes(parseInt(String($('#StartTime').val()).split(":")[1]));
+                                            //alert();
+
+                                            DurationTime = String($('#Duration').val()).split(":");
+                                            var DurHour = parseInt(DurationTime[0]);
+                                            var DurMin = parseInt(DurationTime[1]);
+
+
+                                            var hours = time.getHours() + DurHour;
+                                            var minutes = time.getMinutes() + DurMin;
+                                            var ampm = hours >= 12 ? 'PM' : 'AM';
+
+                                            minutes = minutes < 10 ? '0' + minutes : minutes;
+                                            if (minutes >= 60) {
+                                                hours = hours + (minutes / 60);
+                                                minutes = minutes % 60;
+                                            }
+                                            hours = hours % 12;
+                                            hours = hours ? hours : 12; // the hour '0' should be '12'
+                                            var strTime = hours + ':';
+                                            if (String(minutes).length < 2) {
+                                                strTime = strTime + '0' + minutes;
+                                            }
+                                            else {
+                                                strTime = strTime + minutes;
+                                            }
+                                            strTime = strTime + ' ' + ampm;
+
+
+
+                                            $('#EndTime').val(strTime).trigger('change');
+                                        }
+                                    });
                             </script>
                         </td>
                     </tr>
@@ -546,7 +615,8 @@
                             End Time :
                         </td>
                         <td>
-                            <input id="EndTime" name="EndTime" class="TimeInput" type="text" disabled />
+                            <input id="EndTime" name="EndTime" class="TimeInput" type="text"  disabled/>
+                            
                         </td>
                     </tr>
                     <tr>
@@ -595,7 +665,7 @@
                                 <input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript:EveryDayRadioCheck()" value="2"> Every Working Day
                                 <br /><br />
                                 <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript:EveryWorkingDayRadioCheck()" value="3">
-                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="1" value="1" /> Day(s).
+                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="2" value="2" disabled /> Day(s).
 
                             </div>
                             <!--Weekly Selection-->
@@ -631,21 +701,30 @@
                                         document.getElementById("MonthWiseSelection-day").disabled = ! "true";
                                         document.getElementById("MonthWiseSelection-Month").disabled = ! "true";
                                     }
+
+                                    function LimitDays()
+                                    {
+                                        if(document.getElementById("DayWiseSelection-Days").value > 31)
+                                        {
+                                            document.getElementById("DayWiseSelection-Days").value = 31;
+                                        }
+                                        
+                                    }
                                 </script>
-                                <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript:DayWiseRadioCheck()" value="1" /> Day
-                                <input class="GeneralNumberInput" id="DayWiseSelection-Days" type="number" value="30" min="1" max="31" /> of every
+                                <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript:DayWiseRadioCheck()" value="1" checked="checked" /> Day
+                                <input class="GeneralNumberInput" id="DayWiseSelection-Days" type="number" value="30" min="1" max="31" onblur="javascript: LimitDays()"/> of every
                                 <input class="GeneralNumberInput" id="DayWiseSelection-Month" type="number" value="1" min="1" /> Month.
                                 <br />
                                 <br />
                                 <input id="MonthWiseSelection" type="radio" name="MonthlySelectionType" onclick="javascript:MonthWiseRadioCheck()" value="2" />
-                                <select id="MonthWiseSelection-daytype">
+                                <select id="MonthWiseSelection-daytype" disabled>
                                     <option>First</option>
                                     <option>Second</option>
                                     <option>Third</option>
                                     <option>Fourth</option>
                                     <option>Last</option>
                                 </select>
-                                <select id="MonthWiseSelection-day">
+                                <select id="MonthWiseSelection-day" disabled>
                                     <option>Day</option>
                                     <option>WeekDay</option>
                                     <option>Weekend</option>
@@ -658,13 +737,27 @@
                                     <option>Saturday</option>
                                 </select>
                                 of every
-                                <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" /> Month.
+                                <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" disabled /> Month.
 
 
                             </div>
                             <!--Custom Selection-->
+                            
                             <div id="Custom" class="tabcontent">
+
+                                <input type="text" id="MultiDate"/>
+                                
+                                <script>
+                                    $('#MultiDate').multiDatesPicker(
+                                        {
+                                            dateFormat: "d-M-yy",
+                                            minDate: 0
+                                        });
+                                </script>
+                                    
+
                             </div>
+                            
                         </td>
                     </tr>
                     <tr>
@@ -676,19 +769,21 @@
             </div>
             <!--Right division for Messages-->
             <div style="float:right;" class="innerDivisionright">
-                <h3><span id="message"></span></h3>
-                <table style="width:98%">
-                    <tr id="CalendarTableForNotMatched">
-                        <td>
-                            <div class="ex1">
-                                <table class="RoomsNotAvailable" id="CalForNotMatched"></table>
-                                <span id="editTimeSlot"></span>
-                                @*<img src="~/Content/Images/CheckAvailablity.JPG" />
-                                <img src="~/Content/Images/ConfirmImg.jpg" />*@
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div id="messages" style="display:none">
+                    <label id="errorList" name="errorList" class="errorList"></label>
+                </div>
+                <div id="unAvailableRoomsDiv" style="display:none">
+                    <h3>Before proceed, please select different slots for below dates.</h3>
+                    <table style="width:98%">
+                        <tr id="CalendarTableForNotMatched">
+                            <td>
+                                <div class="ex1">
+                                    <table class="RoomsNotAvailable" id="CalForNotMatched"></table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
         <div id="availableRooms" style="display:none">
@@ -704,7 +799,7 @@
                     <tr>
                         <td style="align-items:flex-end">
                             <input style="float:left;" id="Cancel" type="button" value="Cancel" class="MainButton" name="Command" onclick="CancelFetchAppointment()" />
-                            <input style="float:right;" id="Submit" type="submit" value="Submit" class="MainButton" name="Command" />
+                            <input style="float:right;" id="Submit" type="button" value="Submit" class="MainButton" name="Command" onclick="bookAppointment()" />
                         </td>
                     </tr>
                 </table>
@@ -715,20 +810,9 @@
 }
 <!--Duration Picker-->
 <script>
-    $('.TimeInput').timepicker({
-        step: 15,
-        minTime: '10',
-        maxTime: '10:00pm',
-        defaultTime: 'now',
-        startTime: '10:00',
-        dynamic: false,
-        dropdown: true,
-        scrollbar: true,
-        timeFormat: 'H:i',
-        scrollDefault : 'now'
-    });
 
     window.onload = function () {
         document.getElementById("defaultOpen").click();
     };
+     
 </script>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Exchange.WebServices.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -37,6 +38,8 @@ namespace APIForCalandarOperations.Models
 
         public string RoomName { get; set; }
 
+        public int RoomID { get; set; }
+
         public Slot BookingSlot { get; set; }
 
         public List<string> Messages { get; set; }
@@ -66,8 +69,13 @@ namespace APIForCalandarOperations.Models
         public List<string> RecipientsCC { get; set; }
 
         public int ReminderMinutesBeforeStart { get; set; }
-    }
 
+        public string RecurrenceType { get; set; }
+
+        public int DailyNDayInterval { get; set; }
+
+        public DayOfTheWeek[] DayofWeeksForWeekly { get; set; }
+    }
 
     public class SlotForBooking
     {

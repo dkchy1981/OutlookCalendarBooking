@@ -5,14 +5,11 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<!--BootStrap-->
-@*<link href="~/Content/bootstrap.css" rel="stylesheet" />*@
-
-<!--Jquery-3.3.1-->
 <script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script src="~/Content/Plugins/Multiple-Dates-Picker-for-jQuery-UI-latest/jquery-ui.multidatespicker.js"></script>
+<link href="~/Scripts/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
 
-<
 <!--Date Dropper-->
 <link href="~/Content/Plugins/Datedropper3/datedropper.css" rel="stylesheet" />
 <script src="~/Content/Plugins/Datedropper3/datedropper.js"></script>
@@ -585,12 +582,22 @@
 
                             </div>
                             <!--Custom Selection-->
+                            
                             <div id="Custom" class="tabcontent">
 
-                                <div id="mdp-demo"></div>
+                                <input type="text" id="MultiDate"/>
+                                
+                                <script>
+                                    $('#MultiDate').multiDatesPicker(
+                                        {
+                                            dateFormat: "d-M-yy",
+                                            minDate: 0
+                                        });
+                                </script>
                                     
 
                             </div>
+                            
                         </td>
                     </tr>
                     <tr>
@@ -638,18 +645,9 @@
 }
 <!--Duration Picker-->
 <script>
+
     window.onload = function () {
         document.getElementById("defaultOpen").click();
     };
-
-    //var viewModel = {
-    //    name: ko.observable()
-    //};
-    //ko.applyBindings(viewModel);
-
-    //document.getElementById('StartTime').onchange = function () {
-    //    document.getElementById('EndTime').value = document.getElementById('StartTime').value;
-    //}
-
-
+     
 </script>

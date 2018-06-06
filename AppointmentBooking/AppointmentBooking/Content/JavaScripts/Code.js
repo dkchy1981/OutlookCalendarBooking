@@ -158,16 +158,20 @@ function bookAppointment() {
         for (var i = 0; i < json.Errors.length; i++) {
             $('#errorList').append('<li>' + json.Errors[i] + '</li>');
         }
+        $('#errorList').css('color', 'red');
     }
     else if (json.Output.Message != null && json.Output.Message != '') {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
         $('#errorList').append('<li>' + json.Output.Message + '</li>');
+        $('#errorList').css('color', 'red');
     }
     else if (json.Errors.length == 0 && (json.Output.Message == null || json.Output.Message == '')) {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
         $('#errorList').append("<li>Room booked successfully.</li>");
+        $('#errorList').css('color','green');
+
         CancelFetchAppointment();
     }
     $(".overlay").hide();

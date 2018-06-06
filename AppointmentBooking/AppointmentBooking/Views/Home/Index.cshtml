@@ -61,7 +61,7 @@
                             Start Date :
                         </td>
                         <td>
-                            <input id="StartDate" name="StartDate" class="FormInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028" />
+                            <input id="StartDate" name="StartDate" class="FormInput" type="text" data-format="d/M/Y" data-large-mode="true" data-large-default="true" data-lock="from" data-theme="DateDropperCivica" data-min-year="2018" data-max-year="2028"/>
                         </td>
                         <!--End Date input-->
                         <td>
@@ -79,6 +79,7 @@
                         <td>
                             <input id="StartTime" name="StartTime" class="TimeInput FormInput" type="text" />
                         </td>
+
                         <!--Time Duration-->
                         <td>
                             Duration :
@@ -93,7 +94,7 @@
                             End Time :
                         </td>
                         <td>
-                            <input id="EndTime" name="EndTime" class="TimeInput FormInput" type="text"  disabled/>
+                            <input id="EndTime" name="EndTime" class="TimeInput FormInput" type="text" disabled/>
                             
                         </td>
                     </tr>
@@ -281,7 +282,10 @@
         $('#MultiDate').multiDatesPicker(
                                 {
                                     dateFormat: "d-M-yy",
-                                    minDate: 0
+                                    minDate: 0,
+                                    changeYear: true,
+                                    changeMonth: true
+                                    
                                 });
 
         $('.TimeInput2').timepicker(

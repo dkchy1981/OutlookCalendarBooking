@@ -505,8 +505,6 @@
         for (var i = 0; i < json.length; i++) {
             if (json[i].IsAvailable == false) {
                 var changeSlot = json[i];
-                $('#messages').html("");
-                $('#messages').html("Before proceed, please select different slots for below dates.");
                 trForNotMatched = $('<tr/>');
                 trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
                 trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
@@ -585,6 +583,21 @@
 
             BindGrid(editJson);
 
+            var allNotAvailable = true;
+
+            for (var k = 0; k < editJson.length; k++) {
+                if (editJson[k].IsAvailable != true) {
+                    allNotAvailable = false;
+                    break;
+                }
+            }
+
+            if (allNotAvailable) {
+                $("#CalForNotMatched").empty();
+                $('#unAvailableRoomsDiv').css("display", "none");
+                $('#conflictResolve').css("display", "block");
+                
+            }
         });
 
     };
@@ -934,6 +947,9 @@
             <div style="float:right;" class="innerDivisionright">
                 <div id="messages" style="display:none">
                     <label id="errorList" name="errorList" class="errorList"></label>
+                </div>
+                <div id="conflictResolve" style="display:none">
+                    <h3> All conflict are resolved, you are good to go.</h3>
                 </div>
                 <div id="unAvailableRoomsDiv" style="display:none">
                     <h3>Before proceed, please select different slots for below dates.</h3>

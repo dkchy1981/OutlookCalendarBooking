@@ -493,10 +493,10 @@ namespace AppointmentBooking.Controllers
                 var availableRooms = (List<CalendarOutput>)Session["floors"];
                 var newFetchRoom = (List<CalendarOutput>)Session["newfloor"];
 
-                var abc = newFetchRoom.FirstOrDefault();
+                var fetchRoom = newFetchRoom.FirstOrDefault();
 
-                availableRooms.RemoveAll(x => x.BookingSlot.StartDate == abc.BookingSlot.StartDate);
-                availableRooms.Add(abc);
+                availableRooms.RemoveAll(x => x.BookingSlot.StartDate == fetchRoom.BookingSlot.StartDate);
+                availableRooms.Add(fetchRoom);
 
                 Session["floors"] = availableRooms;
                 

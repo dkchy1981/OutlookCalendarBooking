@@ -60,6 +60,8 @@ namespace APIForCalandarOperations.Models
 
         public string UserId { get; set; }
 
+        public string Password { get; set; }
+
         public List<SlotForBooking> BookingSlots { get; set; }
 
         public string Subject { get; set; }
@@ -86,6 +88,11 @@ namespace APIForCalandarOperations.Models
 
         public int CustomMonthInterval_Month { get; set; }
 
+        public CalendarInputForBooking()
+        {
+            RecipientsTo = new List<string>();
+            RecipientsCC = new List<string>();
+        }
     }
 
     public class SlotForBooking

@@ -56,6 +56,44 @@ namespace AppointmentBooking.Controllers
             }
         }
 
+        // POST: Login/Create
+        [HttpPost]
+        public ActionResult ValidateUserOutlookConnection(FormCollection collection)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return View();
+
+                using (var client = new HttpClient())
+                {
+                    UserLoginInfo userInfo = new UserLoginInfo();
+                    userInfo.userName = collection["userName"];
+                    userInfo.password = collection["password"];
+                    string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
+
+                    Task<HttpResponseMessage> response = client.PostAsJsonAsync<UserLoginInfo>(apiURL + "ValidateUserForOutlookConnection", userInfo);
+                    response.Wait();
+                    if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        Session["UserName"] = userInfo.userName;
+                        FormsAuthentication.SignOut();
+                        FormsAuthentication.SetAuthCookie(userInfo.userName, true);
+                        return Redirect("~/Home/Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("FullName", "Invalid Credentials");
+                        return View("Login");
+                    }
+                }
+            }
+            catch
+            {
+                return View("Login");
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Logout()

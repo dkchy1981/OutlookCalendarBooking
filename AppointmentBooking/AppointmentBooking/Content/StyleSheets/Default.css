@@ -81,6 +81,7 @@ table {
 
 .tab input:hover {
     background-color: #ddd;
+    color:black;
 }
 
 .tabcontent {

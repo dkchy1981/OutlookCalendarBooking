@@ -55,6 +55,12 @@
     min-width:100%;
 }
 
+.DissabledOptions
+{
+    color:white;
+    background-color:darkgray;
+}
+
 table {
     border-spacing: 8px;
     border-collapse: separate;

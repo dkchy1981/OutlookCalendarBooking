@@ -267,7 +267,16 @@
                             
                             <div id="Custom" class="tabcontent">
 
-                                Select Dates : 
+                                Select Dates : <input type="text" id="MultiDate" />
+
+                                <script>
+                                $('#MultiDate').multiDatesPicker(
+                                {
+                                    dateFormat: "d-M-yy",
+                                    minDate: 0
+                                });
+                                </script>
+
                                                              
 
                             </div>

@@ -360,69 +360,7 @@ function checkAvailability() {
         var json = $.parseJSON(response);
 
     BindGrid(json);
-
-    //$("#Cal").empty();
-    //$("#CalForNotMatched").empty();
-
-
-    //var tr;
-    //tr = $('<tr class=\'trRoomHeader\'/>');
-    //tr.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
-    //tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
-    //tr.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
-    //tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Date</th>");
-    //tr.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>");
-    //$('#Cal').append(tr);
-    ////Append each row to html table
-    //for (var i = 0; i < json.length; i++) {
-    //    if (json[i].IsAvailable == true) {
-    //        tr = $('<tr/>');
-    //    }
-    //    else {
-    //        tr = $('<tr class=\'trRoom\'/>');
-    //    }
-    //    tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
-    //    tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-    //    tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
-    //    tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndDate + "</td>");
-    //    tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
-    //    $('#Cal').append(tr);
-    //}
-    //if (json.length > 0) {
-    //    $('#availableRooms').css('display', 'block');
-    //}
-
-
-
-    //var trForNotMatched;
-    //trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
-    //trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
-    //trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
-    //trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>")
-    //trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
-
-    //$('#CalForNotMatched').append(trForNotMatched);
-    //var countForunAvailableRooms = 0;
-    ////Append each row to html table
-    //for (var i = 0; i < json.length; i++) {
-    //    if (json[i].IsAvailable == false) {
-    //        trForNotMatched = $('<tr/>');
-    //        trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-    //        trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
-    //        trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
-    //        trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:25%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
-    //        trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:25%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
-
-    //        countForunAvailableRooms++;
-    //    }
-    //    $('#CalForNotMatched').append(trForNotMatched);
-    //}
-    //if (countForunAvailableRooms > 0) {
-    //    $('#unAvailableRoomsDiv').css("display", "block");
-    //}
 });
-
-
 };
 
 

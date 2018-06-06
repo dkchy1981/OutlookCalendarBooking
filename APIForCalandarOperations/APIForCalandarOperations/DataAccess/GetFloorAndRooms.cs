@@ -268,7 +268,7 @@ namespace APIForCalandarOperations.DataAccess
             try
             {
                 IList<Room> lstRooms = GetRoomsByFloorID(connKey, input.FloorID);
-                ExchangeService service = GetExchangeService();
+                ExchangeService service = GetExchangeService(input.UserId, input.Password);
 
                 DateTime startDate = input.BookingSlots.OrderBy(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
                 DateTime endtDate = input.BookingSlots.OrderByDescending(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
@@ -296,10 +296,6 @@ namespace APIForCalandarOperations.DataAccess
                     foreach (SlotForBooking slot in recurrSlots)
                     {
                         Room room = lstRooms.Where(t => t.Id == slot.RoomID).FirstOrDefault();
-                        if (input.UserId.Contains("@"))
-                        {
-                            input.RecipientsTo.Add(input.UserId);
-                        }
                         string strSQLInner = @"INSERT INTO Recurrence (RoomID,BookedMeetingID,StartDateTime,EndDateTime,IsConfirmed) VALUES(@RoomID,@BookedMeetingID,@StartDateTime,@EndDateTime,@IsConfirmed)";
 
                         using (SqlCommand theSQLCommandInner = new SqlCommand(strSQLInner, connection))
@@ -333,6 +329,7 @@ namespace APIForCalandarOperations.DataAccess
                                     EndDateTime = slot.EndDateTime,
                                     RoomID = slot.RoomID
                                 });
+                                calendarOutputForBooking.Message = string.Format("User do not have access on room '{0}'", room.Name);
                             }
                             catch (Exception ex)
                             {
@@ -343,6 +340,7 @@ namespace APIForCalandarOperations.DataAccess
                                     EndDateTime = slot.EndDateTime,
                                     RoomID = slot.RoomID
                                 });
+                                calendarOutputForBooking.Message = string.Format("Error occured to book meeting for room '{0}'", room.Name);
                             }
                         }
                     }
@@ -376,7 +374,7 @@ namespace APIForCalandarOperations.DataAccess
                 DateTime startDate = DateTime.MinValue;
                 DateTime endtDate = DateTime.MinValue;
                 string startTime = "";
-                string endTime = "";                
+                string endTime = "";
                 foreach (SlotForBooking item in bookingSlots.OrderBy(t => t.RoomID).OrderBy(t => t.StartDateTime).ToList())
                 {
                     if (roomId == 0)
@@ -452,9 +450,9 @@ namespace APIForCalandarOperations.DataAccess
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }
-                else if (input.RecurrenceType == "DailyEveryWorkingDay" )
+                else if (input.RecurrenceType == "DailyEveryWorkingDay")
                 {
-                    meeting.Recurrence = new Recurrence.WeeklyPattern(meeting.Start.Date, 1,new DayOfTheWeek[] { DayOfTheWeek.Monday, DayOfTheWeek.Tuesday, DayOfTheWeek.Wednesday, DayOfTheWeek.Thursday, DayOfTheWeek.Friday});
+                    meeting.Recurrence = new Recurrence.WeeklyPattern(meeting.Start.Date, 1, new DayOfTheWeek[] { DayOfTheWeek.Monday, DayOfTheWeek.Tuesday, DayOfTheWeek.Wednesday, DayOfTheWeek.Thursday, DayOfTheWeek.Friday });
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }
@@ -464,15 +462,15 @@ namespace APIForCalandarOperations.DataAccess
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }
-                else if (input.RecurrenceType == "Monthly" && input.DayOfMonth_Month>0 && input.DayOfMonthInterval_Month>0)
+                else if (input.RecurrenceType == "Monthly" && input.DayOfMonth_Month > 0 && input.DayOfMonthInterval_Month > 0)
                 {
                     meeting.Recurrence = new Recurrence.MonthlyPattern(meeting.Start.Date, input.DayOfMonthInterval_Month, input.DayOfMonth_Month);
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }
-                else if (input.RecurrenceType == "Monthly" && input.CustomMonthInterval_Month>0)
+                else if (input.RecurrenceType == "Monthly" && input.CustomMonthInterval_Month > 0)
                 {
-                    meeting.Recurrence = new Recurrence.RelativeMonthlyPattern(meeting.Start.Date, input.CustomMonthInterval_Month, (DayOfTheWeek)input.DayOfTheWeek_Month,(DayOfTheWeekIndex)input.DayOfTheWeekIndex_Month);
+                    meeting.Recurrence = new Recurrence.RelativeMonthlyPattern(meeting.Start.Date, input.CustomMonthInterval_Month, (DayOfTheWeek)input.DayOfTheWeek_Month, (DayOfTheWeekIndex)input.DayOfTheWeekIndex_Month);
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }
@@ -491,10 +489,16 @@ namespace APIForCalandarOperations.DataAccess
         }
 
 
-        private ExchangeService GetExchangeService()
+        private ExchangeService GetExchangeService(string userEmail = "", string userPassword = "")
         {
-            string userEmail = System.Configuration.ConfigurationManager.AppSettings["UserAccountEmail"];
-            string userPassword = System.Configuration.ConfigurationManager.AppSettings["Password"];
+            if (string.IsNullOrWhiteSpace(userEmail))
+            {
+                userEmail = System.Configuration.ConfigurationManager.AppSettings["UserAccountEmail"];
+            }
+            if (string.IsNullOrWhiteSpace(userPassword))
+            {
+                userPassword = System.Configuration.ConfigurationManager.AppSettings["Password"];
+            }
 
             ExchangeService service = new ExchangeService();
 
@@ -512,6 +516,32 @@ namespace APIForCalandarOperations.DataAccess
 
             #endregion Endpoint management
             return service;
+        }
+
+        public bool CheckExchangeServiceForProvidedUserDetails(string userEmail, string userPassword)
+        {
+            try
+            {
+                ExchangeService service = new ExchangeService();
+
+                // Set specific credentials.
+                service.Credentials = new NetworkCredential(userEmail, userPassword);
+
+                // Look up the user's EWS endpoint by using Autodiscover.
+                //service.AutodiscoverUrl(userEmailAddress, RedirectionCallback);
+                service.Url = new Uri("https://mail.civica.com/ews/exchange.asmx");
+
+                FolderId CalendarFolderId = new FolderId(WellKnownFolderName.Calendar, userEmail);
+                CalendarView cv = new CalendarView(DateTime.Now, DateTime.Now.AddHours(1));
+                service.FindAppointments(CalendarFolderId, cv);
+
+
+                return true;
+            }
+            catch (Microsoft.Exchange.WebServices.Data.ServiceRequestException ex)
+            {
+                return false;
+            }
         }
 
 

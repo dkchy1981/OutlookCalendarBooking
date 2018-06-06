@@ -37,6 +37,28 @@ namespace APIForCalandarOperations.Controllers
             }
         }
 
+        [Route("ValidateUserForOutlookConnection"), HttpPost]
+        public async Task<HttpResponseMessage> ValidateUserForOutlookConnection(UserLoginInfo user)
+        {
+            try
+            {
+                GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
+                bool returnVal = getFloorAndRooms.CheckExchangeServiceForProvidedUserDetails(user.userName, user.password);
+                if (returnVal)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, returnVal);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, false);
+                }
+            }
+            catch
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, false);
+            }
+        }
+
         [Route("GetFloors"), HttpGet]
         public HttpResponseMessage GetFloors()
         {
@@ -69,7 +91,7 @@ namespace APIForCalandarOperations.Controllers
             IList<Room> roomList = getFloorAndRooms.GetRoomsByFloorID(System.Configuration.ConfigurationManager.AppSettings["Connection"], floorID);
             return Request.CreateResponse(HttpStatusCode.OK, roomList);
         }
-        
+
         [HttpPost]
         [Route("FetchBookings")]
         public async Task<HttpResponseMessage> FetchBookings(CalendarInput input)
@@ -93,7 +115,7 @@ namespace APIForCalandarOperations.Controllers
                 {
                     StartDateTime = q.StartDateTime,
                     EndDateTime = q.EndDateTime
-                    
+
                 }).ToList();
             input.Capacity = inputForRoomBooking.Capacity;
             input.FloorID = inputForRoomBooking.FloorID;
@@ -101,10 +123,10 @@ namespace APIForCalandarOperations.Controllers
 
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<CalendarOutput> calendarOutputList = getFloorAndRooms.GetRoomsAvailabilityByCalendateInput(System.Configuration.ConfigurationManager.AppSettings["Connection"], input);
-                        
-            if (calendarOutputList.Count>0 && !(calendarOutputList.Any(t=>t.IsAvailable==false)))
+
+            if (calendarOutputList.Count > 0 && !(calendarOutputList.Any(t => t.IsAvailable == false)))
             {
-                output= getFloorAndRooms.BookRooms(System.Configuration.ConfigurationManager.AppSettings["Connection"], inputForRoomBooking);
+                output = getFloorAndRooms.BookRooms(System.Configuration.ConfigurationManager.AppSettings["Connection"], inputForRoomBooking);                
             }
             else
             {

@@ -75,6 +75,7 @@ namespace AppointmentBooking.Controllers
             {
                 string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
                 info.UserId = (string)Session["UserName"];
+                info.Password = (string)Session["Password"];
 
                 foreach (CalendarOutput item in (Session["floors"] as System.Collections.Generic.IList<CalendarOutput>))
                 {
@@ -372,7 +373,6 @@ namespace AppointmentBooking.Controllers
 
                                             for (int i = 0; i < 7; i++)
                                             {
-                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
                                                 if (
                                                     (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday && info.DayTypeMonth == "Sunday") ||
                                                     (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Monday && info.DayTypeMonth == "Monday") ||
@@ -385,7 +385,7 @@ namespace AppointmentBooking.Controllers
                                                 {
                                                     break;
                                                 }
-
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
                                             }
                                             if ((startDateAsPerCriteria <= end.Date))
                                             {

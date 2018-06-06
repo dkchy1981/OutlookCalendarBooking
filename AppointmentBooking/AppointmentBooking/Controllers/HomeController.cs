@@ -372,7 +372,6 @@ namespace AppointmentBooking.Controllers
 
                                             for (int i = 0; i < 7; i++)
                                             {
-                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
                                                 if (
                                                     (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday && info.DayTypeMonth == "Sunday") ||
                                                     (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Monday && info.DayTypeMonth == "Monday") ||
@@ -385,7 +384,7 @@ namespace AppointmentBooking.Controllers
                                                 {
                                                     break;
                                                 }
-
+                                                startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
                                             }
                                             if ((startDateAsPerCriteria <= end.Date))
                                             {

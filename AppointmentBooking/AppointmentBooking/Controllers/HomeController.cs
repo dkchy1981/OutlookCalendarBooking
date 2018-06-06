@@ -423,6 +423,89 @@ namespace AppointmentBooking.Controllers
             return Json(null, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult FetchNewAvailableSlot(RecurrenceInfo info)
+        {
+            using (var client = new HttpClient())
+            {
+                string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
+                CalendarInput input = new CalendarInput();
+                input.Capacity = info.Capacity;
+                input.FloorID = info.FloorID;
+                input.UserId = (string)Session["UserName"];
+                int durationInMinutes = 0;
+                if (!string.IsNullOrEmpty(info.Duration))
+                {
+                    durationInMinutes = int.Parse(info.Duration.Split(Convert.ToChar(":"))[0]) * 60 + int.Parse(info.Duration.Split(Convert.ToChar(":"))[1]);
+                }
+                List<Slot> slots = new List<Slot>();
+                DateTime start = DateTime.MinValue;
+                DateTime end = DateTime.MinValue;
+
+                if (DateTime.TryParse(info.StartDate + " " + info.StartTime, out start) && DateTime.TryParse(info.EndtDate, out end))
+                {
+                    if (info.IsEveryDay || info.IsEveryDayWorking)
+                    {
+
+                        while (start.Date <= end.Date)
+                        {
+                            if (info.IsEveryDayWorking && (start.DayOfWeek == DayOfWeek.Saturday || start.DayOfWeek == DayOfWeek.Sunday))
+                            {
+                                start = start.AddDays(1);
+                                continue;
+                            }
+                            slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                            start = start.AddDays(1);
+                        }
+                    }
+                    else if (info.EverySpecifiedWorkingDate > 0)
+                    {
+                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                        start = start.AddDays(info.EverySpecifiedWorkingDate);
+                        while (start.Date <= end.Date)
+                        {
+                            slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                            start = start.AddDays(info.EverySpecifiedWorkingDate);
+                        }
+                    }
+                }
+
+                input.BookingSlots = slots;
+
+                Task<HttpResponseMessage> response = client.PostAsJsonAsync(apiURL + "FetchBookings", input);
+                response.Wait();
+                if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var roomsJsonString = response.Result.Content.ReadAsStringAsync().Result;
+                    var availableRooms = JsonConvert.DeserializeObject<IList<CalendarOutput>>(roomsJsonString);
+
+                    Session["newfloor"] = availableRooms;
+
+                    return Json(availableRooms, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult ConfirmNewAvailableSlot()
+        {
+            if (Session["floors"] != null && Session["newfloor"] != null)
+            {
+                var availableRooms = (List<CalendarOutput>)Session["floors"];
+                var newFetchRoom = (List<CalendarOutput>)Session["newfloor"];
+
+                var fetchRoom = newFetchRoom.FirstOrDefault();
+
+                availableRooms.RemoveAll(x => x.BookingSlot.StartDate == fetchRoom.BookingSlot.StartDate);
+                availableRooms.Add(fetchRoom);
+
+                Session["floors"] = availableRooms;
+                
+                return Json(availableRooms.OrderBy(x => x.BookingSlot.StartDate), JsonRequestBehavior.AllowGet);
+            }
+            else
+                return Json(null, JsonRequestBehavior.AllowGet);
+        }
+
         private static DateTime GetNextWeekDays(DateTime startDateAsPerCriteria)
         {
             while ((startDateAsPerCriteria.DayOfWeek == DayOfWeek.Saturday) || (startDateAsPerCriteria.DayOfWeek == DayOfWeek.Sunday))

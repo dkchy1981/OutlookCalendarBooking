@@ -19,11 +19,11 @@
     <div class="containerTop">
         <div class="containerTopText">
             <label class="navbar-brand">Book Appointment</label>
-            <label id="LoggedInUser" class="navbar-brand-left"></label>
             @Html.ActionLink("Logout", "Logout", "Home", new { @class = "navbar-brand-right", id = "Logout" })
+            <label id="LoggedInUser" class="navbar-brand-left"></label>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container ">
         @RenderBody()
         <hr />
         <footer>

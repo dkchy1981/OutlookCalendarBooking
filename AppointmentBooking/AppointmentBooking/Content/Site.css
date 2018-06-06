@@ -147,3 +147,7 @@ td .tdRoom {
     width:200px;
     height:200px;
 }
+.ui-timepicker-wrapper
+{
+    width:100px;
+}

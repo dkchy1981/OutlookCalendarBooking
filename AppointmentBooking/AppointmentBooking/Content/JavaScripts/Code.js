@@ -1,7 +1,6 @@
 ﻿function CancelFetchAppointment() {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
-    $('#conflictResolve').css("display", "none");
     $(".overlay").hide();
 }
 
@@ -155,7 +154,6 @@ function bookAppointment() {
     if (json.Errors.length > 0) {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
-        $('#conflictResolve').css("display", "none");
 
         for (var i = 0; i < json.Errors.length; i++) {
             $('#errorList').append('<li>' + json.Errors[i] + '</li>');
@@ -165,14 +163,14 @@ function bookAppointment() {
     else if (json.Output.Message != null && json.Output.Message != '') {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
-        $('#conflictResolve').css("display", "none");
+        
         $('#errorList').append('<li>' + json.Output.Message + '</li>');
         $('#errorList').css('color', 'red');
     }
     else if (json.Errors.length == 0 && (json.Output.Message == null || json.Output.Message == '')) {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
-        $('#conflictResolve').css("display", "none");
+        
         $('#errorList').append("<li>Room booked successfully.</li>");
         $('#errorList').css('color','green');
 
@@ -191,7 +189,7 @@ function checkAvailability() {
     $("#Cal").empty();
     $("#CalForNotMatched").empty();
     $('#messages').css('display', 'none');
-    $('#conflictResolve').css("display", "none");
+    
 
     var tr;
     tr = $('<tr class=\'trRoomHeader\'/>');
@@ -505,7 +503,7 @@ function BindGrid(json) {
             var changeSlot = json[i];
             trForNotMatched = $('<tr/>');
             trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-            trForNotMatched.append("<td style=\'width:25%;padding:3px\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' style=\'width:120px\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
+            trForNotMatched.append("<td style=\'width:25%;padding:3px\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' style=\'width:100px\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
             trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'> <span id=EndTime" + i + "> " + json[i].BookingSlot.EndTime + " </span> </td>");
             trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:25%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
             trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:25%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");

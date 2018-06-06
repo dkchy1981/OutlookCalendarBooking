@@ -17,6 +17,19 @@ namespace AppointmentBooking.Models
         public List<Slot> BookingSlots { get; set; }
     }
 
+    public class FetchRoomsRtesponse
+    {
+        public IList<CalendarOutput> AvailableRooms { get; set; }
+
+        public List<string> Errors { get; set; }
+
+        public FetchRoomsRtesponse()
+        {
+            this.Errors = new List<string>();
+        }
+        public bool NeedToLogout { get; set; }
+    }
+
     public class Slot
     {
         public DateTime StartDateTime { get; set; }

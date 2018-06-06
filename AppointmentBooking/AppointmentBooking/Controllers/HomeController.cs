@@ -47,7 +47,7 @@ namespace AppointmentBooking.Controllers
 
             if ((Session["floors"] as System.Collections.Generic.IList<CalendarOutput>).Any(i => i.IsAvailable == false))
             {
-                output.Errors.Add("For booking all slots whould be available. Please re-check availability.");                
+                output.Errors.Add("For booking all slots whould be available. Please re-check availability.");
             }
             if (string.IsNullOrWhiteSpace(info.Subject))
             {
@@ -64,7 +64,7 @@ namespace AppointmentBooking.Controllers
             if (!(Session["floors"] != null && (Session["floors"] is System.Collections.Generic.IList<CalendarOutput>) && (Session["floors"] as System.Collections.Generic.IList<CalendarOutput>).Count > 0))
             {
                 output.Errors.Add("Session Expired.");
-            }          
+            }
 
             if (output.Errors.Count > 0)
             {
@@ -105,6 +105,12 @@ namespace AppointmentBooking.Controllers
             {
                 string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
                 CalendarInput input = new CalendarInput();
+                FetchRoomsRtesponse fetchRoomsRtesponse = new FetchRoomsRtesponse();
+
+                if (Convert.ToString(Session["UserName"]) == string.Empty || Convert.ToString(Session["Password"]) == string.Empty)
+                {
+                    fetchRoomsRtesponse.NeedToLogout = true;
+                }
                 input.Capacity = info.Capacity;
                 input.FloorID = info.FloorID;
                 input.UserId = (string)Session["UserName"];
@@ -113,6 +119,12 @@ namespace AppointmentBooking.Controllers
                 {
                     durationInMinutes = int.Parse(info.Duration.Split(Convert.ToChar(":"))[0]) * 60 + int.Parse(info.Duration.Split(Convert.ToChar(":"))[1]);
                 }
+                if(durationInMinutes<=0)
+                {
+                    fetchRoomsRtesponse.Errors.Add("Duration can not be zero");
+                }
+
+                
                 List<Slot> slots = new List<Slot>();
                 DateTime start = DateTime.MinValue;
                 DateTime end = DateTime.MinValue;
@@ -406,18 +418,35 @@ namespace AppointmentBooking.Controllers
                             break;
                     }
                 }
+                else
+                {
+                    fetchRoomsRtesponse.Errors.Add("Start date, end date must be proper.");
+                }
+                if (DateTime.Parse(info.StartDate) > DateTime.Parse(info.EndtDate))
+                {
+                    fetchRoomsRtesponse.Errors.Add("Start date must be less then or equal to end date.");
+                }
                 input.BookingSlots = slots;
+
+                if (slots.Count==0 )
+                {
+                    fetchRoomsRtesponse.Errors.Add("No slots to book room.");
+                }
+                if(fetchRoomsRtesponse.Errors.Count>0 || fetchRoomsRtesponse.NeedToLogout)
+                {
+                    return Json(fetchRoomsRtesponse, JsonRequestBehavior.AllowGet);
+                }
 
                 Task<HttpResponseMessage> response = client.PostAsJsonAsync(apiURL + "FetchBookings", input);
                 response.Wait();
                 if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var roomsJsonString = response.Result.Content.ReadAsStringAsync().Result;
-                    var availableRooms = JsonConvert.DeserializeObject<System.Collections.Generic.IList<CalendarOutput>>(roomsJsonString);
+                    fetchRoomsRtesponse.AvailableRooms = JsonConvert.DeserializeObject<System.Collections.Generic.IList<CalendarOutput>>(roomsJsonString);
 
-                    Session["floors"] = availableRooms;
+                    Session["floors"] = fetchRoomsRtesponse.AvailableRooms;
 
-                    return Json(availableRooms, JsonRequestBehavior.AllowGet);
+                    return Json(fetchRoomsRtesponse, JsonRequestBehavior.AllowGet);
                 }
             }
             return Json(null, JsonRequestBehavior.AllowGet);
@@ -499,7 +528,7 @@ namespace AppointmentBooking.Controllers
                 availableRooms.Add(fetchRoom);
 
                 Session["floors"] = availableRooms;
-                
+
                 return Json(availableRooms.OrderBy(x => x.BookingSlot.StartDate), JsonRequestBehavior.AllowGet);
             }
             else

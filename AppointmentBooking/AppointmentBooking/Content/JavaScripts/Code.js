@@ -365,6 +365,7 @@ function checkAvailability() {
         var json = $.parseJSON(response);
 
     BindGrid(json);
+    $(".overlay").hide();
 });
 };
 

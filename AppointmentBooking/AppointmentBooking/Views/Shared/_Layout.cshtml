@@ -30,6 +30,9 @@
             <p style="color:white; text-align:right">&copy; @DateTime.Now.Year</p>
         </footer>
     </div>
+    <div class="overlay">
+        <img src="~/Content/Images/ajax-loader.gif" class="loderimage" />
+    </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

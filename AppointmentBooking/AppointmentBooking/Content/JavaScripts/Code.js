@@ -1,10 +1,11 @@
 ﻿function CancelFetchAppointment() {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
+    $(".overlay").hide();
 }
 
 function bookAppointment() {
-
+    $(".overlay").show();
     $("#errorList").empty();
 
     var recurrenceType = 'DailyEveryDay';
@@ -169,11 +170,15 @@ function bookAppointment() {
         $('#errorList').append("<li>Room booked successfully.</li>");
         CancelFetchAppointment();
     }
+    $(".overlay").hide();
 });
+    
 };
 
 
 function checkAvailability() {
+
+    $(".overlay").show();
 
     $("#Cal").empty();
     $("#CalForNotMatched").empty();
@@ -387,7 +392,7 @@ function checkAvailability() {
         $('#Cal').append(tr);
     }
     if (json.length > 0) {
-        $('#availableRooms').css('display', 'block');
+        $('#availableRooms').css('display', 'block');        
     }
 
 
@@ -416,5 +421,7 @@ function checkAvailability() {
     if (countForunAvailableRooms > 0) {
         $('#unAvailableRoomsDiv').css("display", "block");
     }
+    $(".overlay").hide();
 });
+    
 };

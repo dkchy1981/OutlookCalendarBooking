@@ -47,26 +47,13 @@
     width:40px;
 }
 
-.DateInput 
-{
-    width: 100px;
-}
-
-.TimeInput 
-{
-    width: 120px;
-}
-
-.TimeInput2
-{
+.FormInput{
     width: 100px;
 }
 
 .FullSpread{
     min-width:100%;
 }
-
-
 
 table {
     border-spacing: 8px;
@@ -94,6 +81,7 @@ table {
 
 .tab input:hover {
     background-color: #ddd;
+    color:black;
 }
 
 .tabcontent {

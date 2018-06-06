@@ -39,6 +39,7 @@ namespace AppointmentBooking.Controllers
                     if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         Session["UserName"] = userInfo.userName;
+                        Session["Password"] = userInfo.password;
                         FormsAuthentication.SignOut();
                         FormsAuthentication.SetAuthCookie(userInfo.userName, true);
                         return Redirect("~/Home/Index");
@@ -77,6 +78,7 @@ namespace AppointmentBooking.Controllers
                     if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         Session["UserName"] = userInfo.userName;
+                        Session["Password"] = userInfo.password;
                         FormsAuthentication.SignOut();
                         FormsAuthentication.SetAuthCookie(userInfo.userName, true);
                         return Redirect("~/Home/Index");

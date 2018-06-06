@@ -75,6 +75,7 @@ namespace AppointmentBooking.Controllers
             {
                 string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
                 info.UserId = (string)Session["UserName"];
+                info.Password = (string)Session["Password"];
 
                 foreach (CalendarOutput item in (Session["floors"] as System.Collections.Generic.IList<CalendarOutput>))
                 {

@@ -59,6 +59,8 @@ namespace AppointmentBooking.Models
 
         public string UserId { get; set; }
 
+        public string Password { get; set; }
+
         public List<SlotForBooking> BookingSlots { get; set; }
 
         public string Subject { get; set; }

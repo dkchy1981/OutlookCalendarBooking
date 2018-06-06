@@ -364,6 +364,86 @@ function checkAvailability() {
     else
         var json = $.parseJSON(response);
 
+    BindGrid(json);
+});
+};
+
+
+function checkTimeSlotforConflict(startDate, id) {
+    //For Daily
+    var isEveryDay = true;
+    var isEveryDayWorking = false;
+    var everySpecifiedWorkingDate = -1;
+
+
+
+    var data = {
+        Capacity: $('#NumberOfAttendees').val(),
+        FloorID: $('#FloorSelection').val(),
+        StartDate: startDate,
+        EndtDate: startDate,
+        StartTime: $('#StartTime' + id).val(),
+        Duration: $('#Duration').val(),
+
+        RecurrenceType: 1,
+        //ForDaily
+        IsEveryDay: isEveryDay,
+        IsEveryDayWorking: isEveryDayWorking,
+        EverySpecifiedWorkingDate: everySpecifiedWorkingDate,
+
+    };
+
+    var jqexhr = $.post("FetchNewAvailableSlot", data, function () { }, 'json')
+    .done(function (response) {
+        if (response instanceof Object)
+            var editJson = response;
+        else
+            var editJson = $.parseJSON(response);
+
+        for (var k = 0; k < editJson.length; k++) {
+            if (editJson[k].IsAvailable == true) {
+                $("#tdAvailable" + id).css("display", "none");
+                $("#tdConfirm" + id).css("display", "block");
+
+            }
+        }
+    });
+
+};
+
+
+function confirmNewTimeSlotforConflict(startDate, id) {
+
+    var jqexhr = $.post("ConfirmNewAvailableSlot", function () { }, 'json')
+    .done(function (response) {
+        if (response instanceof Object)
+            var editJson = response;
+        else
+            var editJson = $.parseJSON(response);
+
+        BindGrid(editJson);
+
+        var allNotAvailable = true;
+
+        for (var k = 0; k < editJson.length; k++) {
+            if (editJson[k].IsAvailable != true) {
+                allNotAvailable = false;
+                break;
+            }
+        }
+
+        if (allNotAvailable) {
+            $("#CalForNotMatched").empty();
+            $('#unAvailableRoomsDiv').css("display", "none");
+            $('#conflictResolve').css("display", "block");
+
+        }
+    });
+
+};
+
+function BindGrid(json) {
+
     $("#Cal").empty();
     $("#CalForNotMatched").empty();
 
@@ -409,19 +489,28 @@ function checkAvailability() {
     //Append each row to html table
     for (var i = 0; i < json.length; i++) {
         if (json[i].IsAvailable == false) {
+            var changeSlot = json[i];
             trForNotMatched = $('<tr/>');
             trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-            trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
+            trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
             trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
-            trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'></td>");
+            trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:25%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
+            trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:25%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
+
             countForunAvailableRooms++;
         }
         $('#CalForNotMatched').append(trForNotMatched);
+
+        var strScript = "<script src=\'http://localhost/AppointmentBooking/Content/Plugins/jquery-timepicker-1.11.13/jquery.timepicker.min.js\'><";
+        strScript += "/script>";
+
+        strScript += "<script>$('.TimeInputGrd').timepicker({  timeFormat: 'h:i A' , step: 15, minTime: '10', maxTime: '10:00pm', defaultTime: 'now', startTime: '10:00', dynamic: false, dropdown: true, scrollbar: true, scrollDefault : 'now' });";
+        strScript += "<";
+        strScript += "/script>";
+
+        $("#editTimeSlot").append(strScript);
     }
     if (countForunAvailableRooms > 0) {
         $('#unAvailableRoomsDiv').css("display", "block");
     }
-    $(".overlay").hide();
-});
-    
-};
+}

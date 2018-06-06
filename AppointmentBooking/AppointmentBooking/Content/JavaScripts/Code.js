@@ -7,6 +7,7 @@
 function bookAppointment() {
     $(".overlay").show();
     $("#errorList").empty();
+    $('#errorList').text('');
 
     var recurrenceType = 'DailyEveryDay';
     var everySpecifiedWorkingDate = 1;
@@ -170,13 +171,13 @@ function bookAppointment() {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
         $('#errorList').append("<li>Room booked successfully.</li>");
-        $('#errorList').css('color','green');
+        $('#errorList').css('color', 'green');
 
         CancelFetchAppointment();
     }
     $(".overlay").hide();
 });
-    
+
 };
 
 
@@ -186,6 +187,7 @@ function checkAvailability() {
 
     $("#Cal").empty();
     $("#CalForNotMatched").empty();
+    $('#errorList').text('');
     $('#messages').css('display', 'none');
 
     var tr;
@@ -358,8 +360,6 @@ function checkAvailability() {
         NthMonthDay: NthMonthDay,
         DayTypeMonth: DayTypeMonth,
         MonthNumber: MonthNumber
-
-
     };
     var jqxhr = $.post("FetchAvailability", data, function () { }, 'json')
 .done(function (response) {
@@ -368,7 +368,21 @@ function checkAvailability() {
     else
         var json = $.parseJSON(response);
 
-    BindGrid(json);
+    if (json.Errors.length > 0) {
+        $('#messages').css('display', 'block');
+        $('#unAvailableRoomsDiv').css("display", "none");
+
+        for (var i = 0; i < json.Errors.length; i++) {
+            $('#errorList').append('<li>' + json.Errors[i] + '</li>');
+        }
+        $('#errorList').css('color', 'red');
+    }
+    else if (json.NeedToLogout) {
+        window.location.href = '../login'
+    }
+    else {
+        BindGrid(json.AvailableRooms);
+    }
     $(".overlay").hide();
 });
 };
@@ -440,8 +454,6 @@ function confirmNewTimeSlotforConflict(startDate, id) {
         if (allNotAvailable) {
             $("#CalForNotMatched").empty();
             $('#unAvailableRoomsDiv').css("display", "none");
-            $('#conflictResolve').css("display", "block");
-
         }
     });
 
@@ -477,7 +489,7 @@ function BindGrid(json) {
         $('#Cal').append(tr);
     }
     if (json.length > 0) {
-        $('#availableRooms').css('display', 'block');        
+        $('#availableRooms').css('display', 'block');
     }
 
 
@@ -517,5 +529,13 @@ function BindGrid(json) {
     }
     if (countForunAvailableRooms > 0) {
         $('#unAvailableRoomsDiv').css("display", "block");
+        $('#messages').css('display', 'none');
+    }
+    else
+    {
+        $('#unAvailableRoomsDiv').css("display", "none");
+        $('#errorList').append("<li>You are good to go for book meetings.</li>");
+        $('#messages').css('display', 'block');
+        $('#errorList').css('color', 'green');
     }
 }

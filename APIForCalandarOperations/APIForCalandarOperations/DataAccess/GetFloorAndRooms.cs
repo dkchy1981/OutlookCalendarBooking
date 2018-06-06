@@ -310,7 +310,7 @@ namespace APIForCalandarOperations.DataAccess
                             theSQLCommandInner.Parameters.AddWithValue("@EndDateTime", slot.EndDateTime);
                             try
                             {
-                                if (BookAppointment(service, slot, input.Subject, room, input.RecipientsTo, input.RecipientsCC, input.ReminderMinutesBeforeStart, input.RecurrenceType, input.DailyNDayInterval,input.DayofWeeksForWeekly))
+                                if (BookAppointment(service, slot, input, room))
                                 {
                                     theSQLCommandInner.Parameters.AddWithValue("@IsConfirmed", true);
                                 }
@@ -368,7 +368,7 @@ namespace APIForCalandarOperations.DataAccess
 
         private List<SlotForBooking> ExtractGroupsBasedOnRoomAndStartEndTime(List<SlotForBooking> bookingSlots, string recurrenceType)
         {
-            if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryWorkingDay" || recurrenceType == "DailyEveryNDay" || recurrenceType == "Weekly")
+            if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryWorkingDay" || recurrenceType == "DailyEveryNDay" || recurrenceType == "Weekly" || recurrenceType == "Monthly")
             {
                 List<SlotForBooking> groupsBasedOnRoomAndStartEndTime = new List<SlotForBooking>();
 
@@ -415,52 +415,64 @@ namespace APIForCalandarOperations.DataAccess
             }
         }
 
-        private bool BookAppointment(ExchangeService service, SlotForBooking slot, string subject, Room objRoom, List<string> toRecepient, List<string> ccRecepient, int reminderMinutesBeforeStart, string recurrenceType, int dailyNDayInterval, DayOfTheWeek[] dayofWeeksForWeekly)
+        private bool BookAppointment(ExchangeService service, SlotForBooking slot, CalendarInputForBooking input, Room objRoom)
         {
             Appointment meeting = new Appointment(service);
 
             // Set the properties on the meeting object to create the meeting.
-            meeting.Subject = subject;
-            meeting.Body = subject;
+            meeting.Subject = input.Subject;
+            meeting.Body = input.Subject;
             meeting.Location = objRoom.Name;
             meeting.Start = slot.StartDateTime;
             DateTime startDateWithEndTime = DateTime.Parse(slot.StartDateTime.ToString(dateFormat) + slot.EndDateTime.ToString(timeFormat));
             meeting.End = startDateWithEndTime;
             meeting.RequiredAttendees.Add(objRoom.Email);
-            if (toRecepient != null)
+            if (input.RecipientsTo != null)
             {
-                foreach (var email in toRecepient)
+                foreach (var email in input.RecipientsTo)
                 {
                     meeting.RequiredAttendees.Add(email);
                 }
             }
-            if (ccRecepient != null)
+            if (input.RecipientsCC != null)
             {
-                foreach (var email in ccRecepient)
+                foreach (var email in input.RecipientsCC)
                 {
                     meeting.RequiredAttendees.Add(email);
                 }
             }
-            meeting.ReminderMinutesBeforeStart = reminderMinutesBeforeStart;
+            meeting.ReminderMinutesBeforeStart = input.ReminderMinutesBeforeStart;
 
 
-            if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryWorkingDay" || recurrenceType == "DailyEveryNDay" || recurrenceType == "Weekly")
+            if (input.RecurrenceType == "DailyEveryDay" || input.RecurrenceType == "DailyEveryWorkingDay" || input.RecurrenceType == "DailyEveryNDay" || input.RecurrenceType == "Weekly" || input.RecurrenceType == "Monthly")
             {
-                if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryNDay")
+                if (input.RecurrenceType == "DailyEveryDay" || input.RecurrenceType == "DailyEveryNDay")
                 {
-                    meeting.Recurrence = new Recurrence.DailyPattern(meeting.Start.Date, dailyNDayInterval);
+                    meeting.Recurrence = new Recurrence.DailyPattern(meeting.Start.Date, input.DailyNDayInterval);
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }
-                else if (recurrenceType == "DailyEveryWorkingDay" )
+                else if (input.RecurrenceType == "DailyEveryWorkingDay" )
                 {
                     meeting.Recurrence = new Recurrence.WeeklyPattern(meeting.Start.Date, 1,new DayOfTheWeek[] { DayOfTheWeek.Monday, DayOfTheWeek.Tuesday, DayOfTheWeek.Wednesday, DayOfTheWeek.Thursday, DayOfTheWeek.Friday});
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }
-                else if (recurrenceType == "Weekly")
+                else if (input.RecurrenceType == "Weekly")
                 {
-                    meeting.Recurrence = new Recurrence.WeeklyPattern(meeting.Start.Date, 1, dayofWeeksForWeekly);
+                    meeting.Recurrence = new Recurrence.WeeklyPattern(meeting.Start.Date, 1, input.DayofWeeksForWeekly);
+                    meeting.Recurrence.StartDate = slot.StartDateTime.Date;
+                    meeting.Recurrence.EndDate = slot.EndDateTime.Date;
+                }
+                else if (input.RecurrenceType == "Monthly" && input.DayOfMonth_Month>0 && input.DayOfMonthInterval_Month>0)
+                {
+                    meeting.Recurrence = new Recurrence.MonthlyPattern(meeting.Start.Date, input.DayOfMonthInterval_Month, input.DayOfMonth_Month);
+                    meeting.Recurrence.StartDate = slot.StartDateTime.Date;
+                    meeting.Recurrence.EndDate = slot.EndDateTime.Date;
+                }
+                else if (input.RecurrenceType == "Monthly" && input.CustomMonthInterval_Month>0)
+                {
+                    meeting.Recurrence = new Recurrence.RelativeMonthlyPattern(meeting.Start.Date, input.CustomMonthInterval_Month, (DayOfTheWeek)input.DayOfTheWeek_Month,(DayOfTheWeekIndex)input.DayOfTheWeekIndex_Month);
                     meeting.Recurrence.StartDate = slot.StartDateTime.Date;
                     meeting.Recurrence.EndDate = slot.EndDateTime.Date;
                 }

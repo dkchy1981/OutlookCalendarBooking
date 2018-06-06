@@ -132,6 +132,7 @@
                                     <input id="Sunday" name="WeeklySelectionType" type="checkbox" value="1"> Sunday<br />
                                 </div>
                             </div>
+
                             <!--Monthly Selection-->
                             <div id="Monthly" class="tabcontent">
                                 <input id="DayWise" type="radio" name="MonthlySelectionType" onclick="javascript: MonthlyRadioCheck()" value="1" checked="checked" /> Day
@@ -151,13 +152,14 @@
                                     <option value="7">Day</option>
                                     <option value="8">WeekDay</option>
                                     <option value="9">Weekend</option>
-                                    <option value="0">Sunday</option>
                                     <option value="1">Monday</option>
                                     <option value="2">Tuesday</option>
                                     <option value="3">Wednesday</option>
                                     <option value="4">Thursday</option>
                                     <option value="5">Friday</option>
-                                    <option value="6">Saturday</option>
+                                    <option value="6" class="DissabledOptions">Saturday</option>
+                                    <option value="0" class="DissabledOptions">Sunday</option>
+
                                 </select>
                                 of every
                                 <input class="GeneralNumberInput" id="MonthWiseSelection-Month" type="number" value="1" min="1" disabled /> Month.

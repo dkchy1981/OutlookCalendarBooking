@@ -154,6 +154,13 @@ function bookAppointment() {
         case '4':
             {
                 recurrenceType = 'Custom';
+
+                var dateArray;//load here
+                for (i = 0; i < dateArray.length; i++)
+                {
+                       
+                }
+                
             }
             break;
 

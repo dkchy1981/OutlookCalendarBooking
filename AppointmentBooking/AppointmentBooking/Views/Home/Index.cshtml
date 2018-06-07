@@ -167,10 +167,14 @@
 
                             </div>
                             <!--Custom Selection-->
-                            
+                            <style>
+                                
+}
+                            </style>
                             <div id="Custom" class="tabcontent">
 
-                                Select Dates : <input type="text" id="MultiDate" />
+                                
+                                <input type="hidden" id="MultiDate" />
 
                             </div>
                             
@@ -184,7 +188,7 @@
                                 function demoTest()
                                 {
                                     alert('russing');
-                                    var dates = $('#MultiDate').multiDatesPicker('getDates');
+                                    var dates = $('#Custom').multiDatesPicker('getDates');
                                     alert(dates);
 
                                 }
@@ -286,13 +290,13 @@
             }
         });
 
-        $('#MultiDate').multiDatesPicker(
+        $('#Custom').multiDatesPicker(
                                 {
                                     dateFormat: "d-M-yy",
                                     minDate: 0,
                                     changeYear: true,
-                                    changeMonth: true
-                                    
+                                    changeMonth: true, 
+                                    altField: MultiDate
                                 });
 
         $('.TimeInput2').timepicker(

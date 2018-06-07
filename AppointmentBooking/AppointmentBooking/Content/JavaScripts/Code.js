@@ -13,7 +13,7 @@ $(function () {
         event.preventDefault();
         return false;
     });
-    $('#Duration').keypress(function(event) {
+    $('#Duration').keypress(function (event) {
         event.preventDefault();
         return false;
     });
@@ -23,9 +23,7 @@ function CancelFetchAppointment() {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
     $(".overlay").hide();
-    $('#Fetch').css('display', 'block');
-    $('#errorList').text('');
-    $('#messages').css('display', 'none');
+    $('#Fetch').css('display', 'block');    
 }
 
 function bookAppointment() {
@@ -150,6 +148,9 @@ function bookAppointment() {
 
             //Custom
         case '4':
+            {
+                recurrenceType = 'Custom';
+            }
             break;
 
     }
@@ -261,7 +262,8 @@ function checkAvailability() {
     var DayTypeMonth = "";
     var MonthNumber = -1;
 
-
+    //For Custom
+    var AppointmentDates = [];
 
     switch ($("#ActiveSelectionTab").val()) {
 
@@ -355,6 +357,11 @@ function checkAvailability() {
 
             //Custom
         case '4':
+            {
+                AppointmentDates.push('2018-06-08');
+                AppointmentDates.push('2018-06-09');
+                AppointmentDates.push('2018-06-11');
+            }
             break;
 
     }
@@ -387,7 +394,8 @@ function checkAvailability() {
         DayTypeVise: dayTypeVise,
         NthMonthDay: NthMonthDay,
         DayTypeMonth: DayTypeMonth,
-        MonthNumber: MonthNumber
+        MonthNumber: MonthNumber,
+        AppointmentDates: AppointmentDates
     };
     var jqxhr = $.post("FetchAvailability", data, function () { }, 'json')
 .done(function (response) {

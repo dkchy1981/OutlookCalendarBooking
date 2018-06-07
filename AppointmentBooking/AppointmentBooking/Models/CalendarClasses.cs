@@ -186,5 +186,8 @@ namespace AppointmentBooking.Models
         public string DayTypeMonth { get; set; }
 
         public int MonthNumber { get; set; }
+
+        public List<string> AppointmentDates { get; set; }
+        
     }
 }

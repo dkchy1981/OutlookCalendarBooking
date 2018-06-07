@@ -397,7 +397,7 @@ function checkTimeSlotforConflict(startDate, id) {
     var isEveryDayWorking = false;
     var everySpecifiedWorkingDate = -1;
 
-
+    $("#errorList").empty();
 
     var data = {
         Capacity: $('#NumberOfAttendees').val(),
@@ -421,6 +421,18 @@ function checkTimeSlotforConflict(startDate, id) {
             var editJson = response;
         else
             var editJson = $.parseJSON(response);
+
+        if (editJson.Errors != null && editJson.Errors.length > 0) {
+            $('#messages').css('display', 'block');
+
+            for (var i = 0; i < editJson.Errors.length; i++) {
+                $('#errorList').append('<li>' + editJson.Errors[i] + '</li>');
+            }
+            $('#errorList').css('color', 'red');
+        }
+        else {
+            $('#messages').css('display', 'none');
+        }
 
         for (var k = 0; k < editJson.length; k++) {
             if (editJson[k].IsAvailable == true) {
@@ -515,9 +527,9 @@ function BindGrid(json) {
             var changeSlot = json[i];
             trForNotMatched = $('<tr/>');
             trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-            trForNotMatched.append("<td style=\'width:25%;padding:3px\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' style=\'width:100px\' value=\'" + json[i].BookingSlot.StartTime + "\'  /> </td>");
+            trForNotMatched.append("<td style=\'width:25%;padding:3px\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' style=\'width:100px\' value=\'" + json[i].BookingSlot.StartTime + "\' onchange=onChangeTimeSlot(" + i + ") /> </td>");
             trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'> <span id=EndTime" + i + "> " + json[i].BookingSlot.EndTime + " </span> </td>");
-            trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:25%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
+            trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:25%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "')  /> </td>");
             trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:25%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
 
             countForunAvailableRooms++;
@@ -527,7 +539,6 @@ function BindGrid(json) {
 
         var strScript = "<script src=\'http://localhost/AppointmentBooking/Content/Plugins/jquery-timepicker-1.11.13/jquery.timepicker.min.js\'><";
         strScript += "/script>";
-
         strScript += "<script>$('.TimeInputGrd').timepicker({  timeFormat: 'h:i A' , step: 15, minTime: '10', maxTime: '10:00pm', defaultTime: 'now', startTime: '10:00', dynamic: false, dropdown: true, scrollbar: true, scrollDefault : 'now'});";
         strScript += "</script>";
         $("#editTimeSlot").append(strScript);
@@ -543,4 +554,8 @@ function BindGrid(json) {
         $('#messages').css('display', 'block');
         $('#errorList').css('color', 'green');
     }
+}
+function onChangeTimeSlot(id) {
+    $("#tdAvailable" + id).css("display", "block");
+    $("#tdConfirm" + id).css("display", "none");
 }

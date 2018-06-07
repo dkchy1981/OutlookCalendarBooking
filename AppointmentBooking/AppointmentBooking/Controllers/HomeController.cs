@@ -456,6 +456,8 @@ namespace AppointmentBooking.Controllers
         {
             using (var client = new HttpClient())
             {
+                BookingResponse output = new BookingResponse();
+
                 string apiURL = ConfigurationManager.AppSettings["APIRefenenceURL"];
                 CalendarInput input = new CalendarInput();
                 input.Capacity = info.Capacity;
@@ -509,7 +511,13 @@ namespace AppointmentBooking.Controllers
 
                     Session["newfloor"] = availableRooms;
 
-                    return Json(availableRooms, JsonRequestBehavior.AllowGet);
+                    if (availableRooms.Any(i => i.IsAvailable == false))
+                    {
+                        output.Errors.Add("Time slot is already booked, please select another time slot.");
+                        return Json(output, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(availableRooms, JsonRequestBehavior.AllowGet);
                 }
             }
             return Json(null, JsonRequestBehavior.AllowGet);
@@ -519,6 +527,8 @@ namespace AppointmentBooking.Controllers
         {
             if (Session["floors"] != null && Session["newfloor"] != null)
             {
+              
+
                 var availableRooms = (List<CalendarOutput>)Session["floors"];
                 var newFetchRoom = (List<CalendarOutput>)Session["newfloor"];
 

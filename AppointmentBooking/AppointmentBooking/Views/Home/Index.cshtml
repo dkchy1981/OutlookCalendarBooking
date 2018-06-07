@@ -256,7 +256,7 @@
 
                 minutes = minutes < 10 ? '0' + minutes : minutes;
                 if (minutes >= 60) {
-                    hours = hours + (minutes / 60);
+                    hours = hours + Math.floor(minutes / 60);
                     minutes = minutes % 60;
                 }
                 hours = hours % 12;
@@ -312,7 +312,7 @@
 
                                             minutes = minutes < 10 ? '0' + minutes : minutes;
                                             if (minutes >= 60) {
-                                                hours = hours + (minutes / 60);
+                                                hours = hours + Math.floor(minutes / 60);
                                                 minutes = minutes % 60;
                                             }
                                             hours = hours % 12;

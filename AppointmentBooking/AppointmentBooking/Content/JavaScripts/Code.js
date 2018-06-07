@@ -12,6 +12,7 @@ function CancelFetchAppointment() {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
     $(".overlay").hide();
+    $('#Fetch').css('display', 'block');
 }
 
 function bookAppointment() {
@@ -188,6 +189,7 @@ function bookAppointment() {
         CancelFetchAppointment();
     }
     $(".overlay").hide();
+    
 });
 
 };
@@ -397,6 +399,7 @@ function checkAvailability() {
         BindGrid(json.AvailableRooms);
     }
     $(".overlay").hide();
+    $('#Fetch').css('display', 'none');
 });
 };
 

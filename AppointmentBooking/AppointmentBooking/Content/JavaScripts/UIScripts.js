@@ -86,15 +86,25 @@ function MonthlyRadioCheck()
 
 function LimitNumber(element,LowerLimit,UpperLimit)
 {
+    LimitUpper(element, UpperLimit);
+    LimitLower(element, LowerLimit);
+}
+
+function LimitUpper(element, UpperLimit)
+{
+
     if (element.value > UpperLimit)
     {
         element.value = UpperLimit;
     }
-    else if(element.value < LowerLimit)
+}
+function LimitLower(element, LowerLimit)
+{
+
+    if (element.value < LowerLimit)
     {
         element.value = LowerLimit;
     }
-
 }
 
 window.onload = function () {

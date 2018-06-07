@@ -567,6 +567,8 @@ function BindGrid(json) {
         strScript += "/script>";
         strScript += "<script>$('.TimeInputGrd').timepicker({  timeFormat: 'h:i A' , step: 15, minTime: '10', maxTime: '10:00pm', defaultTime: 'now', startTime: '10:00', dynamic: false, dropdown: true, scrollbar: true, scrollDefault : 'now'});";
         strScript += "</script>";
+        strScript += "<script> $('.TimeInputGrd').keypress(function (event) { event.preventDefault(); return false; });</script>";
+
         $("#editTimeSlot").append(strScript);
     }
     if (countForunAvailableRooms > 0) {

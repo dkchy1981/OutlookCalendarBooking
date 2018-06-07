@@ -19,11 +19,15 @@ $(function () {
     });
 });
 
-function CancelFetchAppointment() {
+function CancelFetchAppointment(hideMessage) {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
     $(".overlay").hide();
-    $('#Fetch').css('display', 'block');    
+    $('#Fetch').css('display', 'block');
+    if (hideMessage) {
+        $('#errorList').text('');
+        $('#messages').css('display', 'none');
+    }
 }
 
 function bookAppointment() {
@@ -200,7 +204,7 @@ function bookAppointment() {
         $('#errorList').append("<li>Room booked successfully.</li>");
         $('#errorList').css('color', 'green');
 
-        CancelFetchAppointment();
+        CancelFetchAppointment(false);
     }
     $(".overlay").hide();
 

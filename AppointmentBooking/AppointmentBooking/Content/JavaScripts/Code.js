@@ -556,6 +556,49 @@ function BindGrid(json) {
     }
 }
 function onChangeTimeSlot(id) {
+    var newTime = convertTo24Hour($("#StartTime" + id).val().toLowerCase());
+    var time = new Date('1970-01-01T' + newTime);
+    DurationTime = String($('#Duration').val()).split(":");
+    var DurHour = parseInt(DurationTime[0]);
+    var DurMin = parseInt(DurationTime[1]);
+
+
+    var hours = time.getHours() + DurHour;
+    var minutes = time.getMinutes() + DurMin;
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    if (minutes >= 60) {
+        hours = hours + (minutes / 60);
+        minutes = minutes % 60;
+    }
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    var strTime = hours + ':';
+    if (String(minutes).length < 2) {
+        strTime = strTime + '0' + minutes;
+    }
+    else {
+        strTime = strTime + minutes;
+    }
+    strTime = strTime + ' ' + ampm;
+
+    $("#EndTime" + id)[0].innerText = strTime;
+
     $("#tdAvailable" + id).css("display", "block");
     $("#tdConfirm" + id).css("display", "none");
+}
+
+function convertTo24Hour(time) {
+    var hours = parseInt(time.substr(0, 2));
+    var strHours;
+    if (hours < 10)
+        strHours = '0' +hours;
+    if(time.indexOf('am') != -1 && hours == 12) {
+        time = time.replace('12', '0');
+    }
+    if(time.indexOf('pm')  != -1 && hours < 12) {
+        time = time.replace(strHours, (hours + 12));
+    }
+    return time.replace(/(am|pm)/, '').trim();
 }

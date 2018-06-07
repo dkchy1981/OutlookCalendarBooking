@@ -513,7 +513,7 @@ namespace AppointmentBooking.Controllers
 
                     if (availableRooms.Any(i => i.IsAvailable == false))
                     {
-                        output.Errors.Add("Time slot is already booked, please select another time slot.");
+                        output.Errors.Add("Time slot is already booked for " + info.StartDate + ", please select another time slot.");
                         return Json(output, JsonRequestBehavior.AllowGet);
                     }
                     else

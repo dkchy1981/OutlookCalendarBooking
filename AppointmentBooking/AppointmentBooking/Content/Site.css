@@ -73,7 +73,7 @@ div .ex1 {
 }
 
 table .trRoom {
-    background-color: red;
+    background-color: rgba(209, 209, 184, 1);
 }
 
 table .Rooms {
@@ -141,6 +141,7 @@ td .tdRoom {
   background: #e8e8e8 url(~/Content/images/ajax-loader.gif) no-repeat center center;
   border: 1px solid #000;
   opacity: 0.5;
+  pointer-events: none;
 }
 .loderimage
 {

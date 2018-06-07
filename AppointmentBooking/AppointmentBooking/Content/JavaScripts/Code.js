@@ -541,7 +541,7 @@ function BindGrid(json) {
             trForNotMatched = $('<tr/>');
             trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
             trForNotMatched.append("<td style=\'width:25%;padding:3px\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' style=\'width:100px\' value=\'" + json[i].BookingSlot.StartTime + "\' onchange=onChangeTimeSlot(" + i + ") /> </td>");
-            trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'> <span id=EndTime" + i + "> " + json[i].BookingSlot.EndTime + " </span> </td>");
+            trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'> <span id=EndTime" + i + "> " + parseDateTime(json[i].BookingSlot.EndTime) + " </span> </td>");
             trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:25%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "')  /> </td>");
             trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:25%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
 
@@ -582,7 +582,7 @@ function onChangeTimeSlot(id) {
 
     minutes = minutes < 10 ? '0' + minutes : minutes;
     if (minutes >= 60) {
-        hours = hours + (minutes / 60);
+        hours = hours + Math.floor(minutes / 60);
         minutes = minutes % 60;
     }
     hours = hours % 12;

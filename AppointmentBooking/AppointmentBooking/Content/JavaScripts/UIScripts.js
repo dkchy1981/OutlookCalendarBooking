@@ -84,11 +84,15 @@ function MonthlyRadioCheck()
     }
 }
 
-function LimitDays()
+function LimitNumber(element,LowerLimit,UpperLimit)
 {
-    if (document.getElementById("DayWiseSelection-Days").value > 31)
+    if (element.value > UpperLimit)
     {
-        document.getElementById("DayWiseSelection-Days").value = 31;
+        element.value = UpperLimit;
+    }
+    else if(element.value < LowerLimit)
+    {
+        element.value = LowerLimit;
     }
 
 }

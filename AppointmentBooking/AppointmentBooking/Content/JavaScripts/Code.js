@@ -2,8 +2,6 @@
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
     $(".overlay").hide();
-    $('#errorList').text('');
-    $('#messages').css('display', 'none');
 }
 
 function bookAppointment() {

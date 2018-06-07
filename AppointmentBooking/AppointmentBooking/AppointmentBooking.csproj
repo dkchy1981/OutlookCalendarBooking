@@ -190,6 +190,7 @@
     <Content Include="Content\Images\Checkavailablility.JPG" />
     <Content Include="Content\Images\ajax-loader.gif" />
     <Content Include="Content\Images\CivicaBackground.png" />
+    <Content Include="Content\Images\Check.png" />
     <Content Include="Content\JavaScripts\Code.js" />
     <Content Include="Content\Images\ConfirmImg.jpg" />
     <Content Include="Content\JavaScripts\UIScripts.js" />

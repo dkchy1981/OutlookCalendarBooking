@@ -150,6 +150,8 @@ function bookAppointment() {
 
             //Custom
         case '4':
+            var dates = $('#MultiDate').multiDatesPicker('getDates');
+            alert(dates);
             break;
 
     }

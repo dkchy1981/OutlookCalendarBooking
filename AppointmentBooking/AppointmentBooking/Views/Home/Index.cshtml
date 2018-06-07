@@ -173,15 +173,22 @@
                                 Select Dates : <input type="text" id="MultiDate" />
 
                             </div>
-                            <script>
-                                $('#Custom').dateDropper();
-                            </script>
                             
                         </td>
                     </tr>
                     <tr>
                         <td colspan="6">
-                            <input style="float:right;width:140px;" id="Fetch" type="button" value="Check Availability" class="MainButton" onclick="checkAvailability()" />
+                            @*<input style="float:right;width:140px;" id="Fetch" type="button" value="Check Availability" class="MainButton" onclick="checkAvailability()" />*@
+                            <input style="float:right;width:140px;" id="Fetch" type="button" value="Check Availability" class="MainButton" onclick="demoTest()" />
+                            <script>
+                                function demoTest()
+                                {
+                                    alert('russing');
+                                    var dates = $('#MultiDate').multiDatesPicker('getDates');
+                                    alert(dates);
+
+                                }
+                            </script>
                         </td>
                     </tr>
                 </table>

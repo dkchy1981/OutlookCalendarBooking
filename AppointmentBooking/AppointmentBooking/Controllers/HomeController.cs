@@ -127,9 +127,11 @@ namespace AppointmentBooking.Controllers
                 
                 List<Slot> slots = new List<Slot>();
                 DateTime start = DateTime.MinValue;
+                DateTime startOriginal = DateTime.MinValue;
                 DateTime end = DateTime.MinValue;
                 if (DateTime.TryParse(info.StartDate + " " + info.StartTime, out start) && DateTime.TryParse(info.EndtDate, out end))
                 {
+                    startOriginal = start;
                     switch (info.RecurrenceType)
                     {
                         #region For Daily
@@ -199,7 +201,10 @@ namespace AppointmentBooking.Controllers
                                     start = start.AddDays(info.Nthday - 1);
                                     while (start.Date <= end.Date)
                                     {
-                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        if (start > startOriginal.Date && startDateAsPerCriteria <= end.Date)
+                                        {
+                                            slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        }
                                         start = start.AddMonths(info.DayMonth);
                                     }
                                     #endregion For Monthly Day wise
@@ -234,7 +239,7 @@ namespace AppointmentBooking.Controllers
                                             {
                                                 startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(1).AddDays(-1);
                                             }
-                                            if (startDateAsPerCriteria <= end.Date)
+                                            if (startDateAsPerCriteria> startOriginal.Date && startDateAsPerCriteria <= end.Date)
                                             {
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
@@ -292,7 +297,7 @@ namespace AppointmentBooking.Controllers
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(-1);
                                                 }
                                             }
-                                            if ((startDateAsPerCriteria <= end.Date))
+                                            if (startDateAsPerCriteria > startOriginal.Date && startDateAsPerCriteria <= end.Date)
                                             {
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
@@ -347,7 +352,7 @@ namespace AppointmentBooking.Controllers
                                                     startDateAsPerCriteria = startDateAsPerCriteria.AddDays(-1);
                                                 }
                                             }
-                                            if ((startDateAsPerCriteria <= end.Date))
+                                            if (startDateAsPerCriteria > startOriginal.Date && startDateAsPerCriteria <= end.Date)
                                             {
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
@@ -399,7 +404,7 @@ namespace AppointmentBooking.Controllers
                                                 }
                                                 startDateAsPerCriteria = startDateAsPerCriteria.AddDays(1);
                                             }
-                                            if ((startDateAsPerCriteria <= end.Date))
+                                            if (startDateAsPerCriteria > startOriginal.Date && startDateAsPerCriteria <= end.Date)
                                             {
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }

@@ -579,6 +579,8 @@ function BindGrid(json) {
         strScript += "/script>";
         strScript += "<script>$('.TimeInputGrd').timepicker({  timeFormat: 'h:i A' , step: 15, minTime: '10', maxTime: '10:00pm', defaultTime: 'now', startTime: '10:00', dynamic: false, dropdown: true, scrollbar: true, scrollDefault : 'now'});";
         strScript += "</script>";
+        strScript += "<script> $('.TimeInputGrd').keypress(function (event) { event.preventDefault(); return false; });</script>";
+
         $("#editTimeSlot").append(strScript);
     }
     if (countForunAvailableRooms > 0) {
@@ -611,7 +613,16 @@ function onChangeTimeSlot(id) {
     }
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    if (String(hours).length < 2) {
+        hours = '0' + hours;
+    }
+    else {
+        hours = hours;
+    }
+
     var strTime = hours + ':';
+
     if (String(minutes).length < 2) {
         strTime = strTime + '0' + minutes;
     }

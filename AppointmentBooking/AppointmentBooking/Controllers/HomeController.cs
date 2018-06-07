@@ -119,12 +119,12 @@ namespace AppointmentBooking.Controllers
                 {
                     durationInMinutes = int.Parse(info.Duration.Split(Convert.ToChar(":"))[0]) * 60 + int.Parse(info.Duration.Split(Convert.ToChar(":"))[1]);
                 }
-                if(durationInMinutes<=0)
+                if (durationInMinutes <= 0)
                 {
                     fetchRoomsRtesponse.Errors.Add("Duration can not be zero");
                 }
 
-                
+
                 List<Slot> slots = new List<Slot>();
                 DateTime start = DateTime.MinValue;
                 DateTime startOriginal = DateTime.MinValue;
@@ -245,7 +245,7 @@ namespace AppointmentBooking.Controllers
                                             {
                                                 startDateAsPerCriteria = startDateAsPerCriteria.AddMonths(1).AddDays(-1);
                                             }
-                                            if (startDateAsPerCriteria> startOriginal.Date && startDateAsPerCriteria <= end.Date)
+                                            if (startDateAsPerCriteria > startOriginal.Date && startDateAsPerCriteria <= end.Date)
                                             {
                                                 slots.Add(new Slot() { StartDateTime = startDateAsPerCriteria, EndDateTime = startDateAsPerCriteria.AddMinutes(durationInMinutes) });
                                             }
@@ -425,6 +425,26 @@ namespace AppointmentBooking.Controllers
                             }
                             break;
                         #endregion For Monthly
+
+                        case 4: // For Custom
+                            {
+                                foreach (var item in info.AppointmentDates)
+                                {
+                                    if (DateTime.TryParse(item + " " + info.StartTime, out start))
+                                    {
+                                        if (start > DateTime.Now)
+                                        {
+                                            slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        fetchRoomsRtesponse.Errors.Add("Date is not proper.");
+                                    }
+                                }
+                            }
+                            break;
+
                         default:
                             break;
                     }
@@ -439,11 +459,11 @@ namespace AppointmentBooking.Controllers
                 }
                 input.BookingSlots = slots;
 
-                if (slots.Count==0 )
+                if (slots.Count == 0)
                 {
                     fetchRoomsRtesponse.Errors.Add("No slots to book room.");
                 }
-                if(fetchRoomsRtesponse.Errors.Count>0 || fetchRoomsRtesponse.NeedToLogout)
+                if (fetchRoomsRtesponse.Errors.Count > 0 || fetchRoomsRtesponse.NeedToLogout)
                 {
                     return Json(fetchRoomsRtesponse, JsonRequestBehavior.AllowGet);
                 }
@@ -538,7 +558,7 @@ namespace AppointmentBooking.Controllers
         {
             if (Session["floors"] != null && Session["newfloor"] != null)
             {
-              
+
 
                 var availableRooms = (List<CalendarOutput>)Session["floors"];
                 var newFetchRoom = (List<CalendarOutput>)Session["newfloor"];
@@ -594,7 +614,7 @@ namespace AppointmentBooking.Controllers
             }
             return RedirectToAction("Index");
         }
-        
+
         [HttpGet]
         public ActionResult Logout()
         {

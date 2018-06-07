@@ -1,4 +1,14 @@
-﻿function CancelFetchAppointment() {
+﻿function parseDateTime(time24) {
+  var ts = time24;
+  var H = +ts.substr(0, 2);
+  var h = (H % 12) || 12;
+  h = (h < 10) ?("0"+h): h;  // leading 0 at the left for 1 digit hours
+  var ampm = H < 12 ? " AM": " PM";
+  ts = h +ts.substr(2, 3) +ampm;
+  return ts;
+  };
+
+function CancelFetchAppointment() {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
     $(".overlay").hide();
@@ -501,9 +511,9 @@ function BindGrid(json) {
         }
         tr.append("<td style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
         tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-        tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartTime + "</td>");
+        tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + parseDateTime(json[i].BookingSlot.StartTime) + "</td>");
         tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndDate + "</td>");
-        tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.EndTime + "</td>");
+        tr.append("<td style=\'width:15%\' class=\'tdRoom\'>" + parseDateTime(json[i].BookingSlot.EndTime) + "</td>");
         $('#Cal').append(tr);
     }
     if (json.length > 0) {

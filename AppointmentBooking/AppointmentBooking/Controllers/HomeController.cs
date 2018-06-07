@@ -583,8 +583,7 @@ namespace AppointmentBooking.Controllers
             }
             return RedirectToAction("Index");
         }
-
-
+        
         [HttpGet]
         public ActionResult Logout()
         {

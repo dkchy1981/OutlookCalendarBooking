@@ -1,18 +1,31 @@
 ﻿function parseDateTime(time24) {
-  var ts = time24;
-  var H = +ts.substr(0, 2);
-  var h = (H % 12) || 12;
-  h = (h < 10) ?("0"+h): h;  // leading 0 at the left for 1 digit hours
-  var ampm = H < 12 ? " AM": " PM";
-  ts = h +ts.substr(2, 3) +ampm;
-  return ts;
-  };
+    var ts = time24;
+    var H = +ts.substr(0, 2);
+    var h = (H % 12) || 12;
+    h = (h < 10) ? ("0" + h) : h;  // leading 0 at the left for 1 digit hours
+    var ampm = H < 12 ? " AM" : " PM";
+    ts = h + ts.substr(2, 3) + ampm;
+    return ts;
+};
+
+$(function () {
+    $('#StartTime').keypress(function (event) {
+        event.preventDefault();
+        return false;
+    });
+    $('#Duration').keypress(function(event) {
+        event.preventDefault();
+        return false;
+    });
+});
 
 function CancelFetchAppointment() {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
     $(".overlay").hide();
     $('#Fetch').css('display', 'block');
+    $('#errorList').text('');
+    $('#messages').css('display', 'none');
 }
 
 function bookAppointment() {
@@ -175,21 +188,21 @@ function bookAppointment() {
     else if (json.Output.Message != null && json.Output.Message != '') {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
-        
+
         $('#errorList').append('<li>' + json.Output.Message + '</li>');
         $('#errorList').css('color', 'red');
     }
     else if (json.Errors.length == 0 && (json.Output.Message == null || json.Output.Message == '')) {
         $('#messages').css('display', 'block');
         $('#unAvailableRoomsDiv').css("display", "none");
-        
+
         $('#errorList').append("<li>Room booked successfully.</li>");
         $('#errorList').css('color', 'green');
 
         CancelFetchAppointment();
     }
     $(".overlay").hide();
-    
+
 });
 
 };
@@ -203,7 +216,7 @@ function checkAvailability() {
     $("#CalForNotMatched").empty();
     $('#errorList').text('');
     $('#messages').css('display', 'none');
-    
+
 
     var tr;
     tr = $('<tr class=\'trRoomHeader\'/>');
@@ -397,9 +410,9 @@ function checkAvailability() {
     }
     else {
         BindGrid(json.AvailableRooms);
+        $('#Fetch').css('display', 'none');
     }
     $(".overlay").hide();
-    $('#Fetch').css('display', 'none');
 });
 };
 
@@ -456,7 +469,7 @@ function checkTimeSlotforConflict(startDate, id) {
         }
         $(".overlay").hide()
     });
-   
+
 };
 
 
@@ -486,7 +499,7 @@ function confirmNewTimeSlotforConflict(startDate, id) {
         }
         $(".overlay").hide()
     });
-  
+
 
 };
 
@@ -546,7 +559,7 @@ function BindGrid(json) {
             trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:25%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
 
             countForunAvailableRooms++;
-           
+
         }
         $('#CalForNotMatched').append(trForNotMatched);
 
@@ -560,8 +573,7 @@ function BindGrid(json) {
         $('#unAvailableRoomsDiv').css("display", "block");
         $('#messages').css('display', 'none');
     }
-    else
-    {
+    else {
         $('#unAvailableRoomsDiv').css("display", "none");
         $('#errorList').append("<li>You are good to go for book meetings.</li>");
         $('#messages').css('display', 'block');
@@ -606,11 +618,11 @@ function convertTo24Hour(time) {
     var hours = parseInt(time.substr(0, 2));
     var strHours;
     if (hours < 10)
-        strHours = '0' +hours;
-    if(time.indexOf('am') != -1 && hours == 12) {
+        strHours = '0' + hours;
+    if (time.indexOf('am') != -1 && hours == 12) {
         time = time.replace('12', '0');
     }
-    if(time.indexOf('pm')  != -1 && hours < 12) {
+    if (time.indexOf('pm') != -1 && hours < 12) {
         time = time.replace(strHours, (hours + 12));
     }
     return time.replace(/(am|pm)/, '').trim();

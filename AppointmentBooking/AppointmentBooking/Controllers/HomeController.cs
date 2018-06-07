@@ -147,13 +147,19 @@ namespace AppointmentBooking.Controllers
                                             start = start.AddDays(1);
                                             continue;
                                         }
-                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        if (start > DateTime.Now)
+                                        {
+                                            slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        }
                                         start = start.AddDays(1);
                                     }
                                 }
                                 else if (info.EverySpecifiedWorkingDate > 0)
                                 {
-                                    slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                    if (start > DateTime.Now)
+                                    {
+                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                    }
                                     start = start.AddDays(info.EverySpecifiedWorkingDate);
                                     while (start.Date <= end.Date)
                                     {

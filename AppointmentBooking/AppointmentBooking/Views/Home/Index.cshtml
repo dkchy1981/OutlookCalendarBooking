@@ -94,8 +94,7 @@
                             End Time :
                         </td>
                         <td>
-                            <input id="EndTime" name="EndTime" class="TimeInput FormInput" type="text" disabled/>
-                            
+                            <input id="EndTime" name="EndTime" class="TimeInput3 FormInput" type="text" disabled/>                            
                         </td>
                     </tr>
                     <tr>
@@ -245,6 +244,10 @@
             scrollbar: true,
             change: function (time) {
 
+                if ($('#Duration').val() == '')
+                {
+                    return;
+                }
                 DurationTime = String($('#Duration').val()).split(":");
                 var DurHour = parseInt(DurationTime[0]);
                 var DurMin = parseInt(DurationTime[1]);
@@ -300,7 +303,9 @@
                                             time.setHours(parseInt(String($('#StartTime').val()).split(":")[0]));
                                             time.setMinutes(parseInt(String($('#StartTime').val()).split(":")[1]));
                                             //alert();
-
+                                            if ($('#Duration').val() == '') {
+                                                return;
+                                            }
                                             DurationTime = String($('#Duration').val()).split(":");
                                             var DurHour = parseInt(DurationTime[0]);
                                             var DurMin = parseInt(DurationTime[1]);

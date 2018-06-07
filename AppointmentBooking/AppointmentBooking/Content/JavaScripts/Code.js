@@ -601,7 +601,16 @@ function onChangeTimeSlot(id) {
     }
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    if (String(hours).length < 2) {
+        hours = '0' + hours;
+    }
+    else {
+        hours = hours;
+    }
+
     var strTime = hours + ':';
+
     if (String(minutes).length < 2) {
         strTime = strTime + '0' + minutes;
     }

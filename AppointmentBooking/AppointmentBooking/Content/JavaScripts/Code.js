@@ -53,7 +53,6 @@ function bookAppointment() {
     var MonthNumber = -1;
 
 
-
     switch ($("#ActiveSelectionTab").val()) {
 
         //Daily
@@ -154,13 +153,6 @@ function bookAppointment() {
         case '4':
             {
                 recurrenceType = 'Custom';
-
-                var dateArray;//load here
-                for (i = 0; i < dateArray.length; i++)
-                {
-                       
-                }
-                
             }
             break;
 
@@ -218,7 +210,6 @@ function bookAppointment() {
 });
 
 };
-
 
 function checkAvailability() {
 
@@ -369,9 +360,12 @@ function checkAvailability() {
             //Custom
         case '4':
             {
-                AppointmentDates.push('2018-06-08');
-                AppointmentDates.push('2018-06-09');
-                AppointmentDates.push('2018-06-11');
+                var dateArray = String($('#MultiDate').val()).split(",");
+
+                $.each(dateArray, function (index, val) {
+                    var date = dateArray[index];
+                    AppointmentDates.push(date.trim());
+                });                
             }
             break;
 
@@ -435,7 +429,6 @@ function checkAvailability() {
 });
 };
 
-
 function checkTimeSlotforConflict(startDate, id) {
     //For Daily
     var isEveryDay = true;
@@ -490,7 +483,6 @@ function checkTimeSlotforConflict(startDate, id) {
     });
 
 };
-
 
 function confirmNewTimeSlotforConflict(startDate, id) {
     $(".overlay").show()
@@ -601,6 +593,7 @@ function BindGrid(json) {
         $('#errorList').css('color', 'green');
     }
 }
+
 function onChangeTimeSlot(id) {
     var newTime = convertTo24Hour($("#StartTime" + id).val().toLowerCase());
     var time = new Date('1970-01-01T' + newTime);

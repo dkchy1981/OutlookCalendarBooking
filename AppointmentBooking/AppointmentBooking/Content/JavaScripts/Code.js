@@ -575,7 +575,7 @@ function BindGrid(json) {
         }
         $('#CalForNotMatched').append(trForNotMatched);
 
-        var strScript = "<script src=\'http://localhost/AppointmentBooking/Content/Plugins/jquery-timepicker-1.11.13/jquery.timepicker.min.js\'><";
+        var strScript = "<script src=\'../Content/Plugins/jquery-timepicker-1.11.13/jquery.timepicker.min.js\'><";
         strScript += "/script>";
         strScript += "<script>$('.TimeInputGrd').timepicker({  timeFormat: 'h:i A' , step: 15, minTime: '10', maxTime: '10:00pm', defaultTime: 'now', startTime: '10:00', dynamic: false, dropdown: true, scrollbar: true, scrollDefault : 'now'});";
         strScript += "</script>";

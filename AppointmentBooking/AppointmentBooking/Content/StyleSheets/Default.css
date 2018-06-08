@@ -20,6 +20,10 @@
     height: 425px;
 }
 
+.innerDivisionleftoverlay {
+   pointer-events: none;
+    opacity: 0.4;
+}
 .innerDivisionright {
     margin-top: 7px;
     margin-left: 0px;

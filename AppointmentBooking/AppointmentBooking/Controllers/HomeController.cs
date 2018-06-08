@@ -542,9 +542,14 @@ namespace AppointmentBooking.Controllers
 
                     Session["newfloor"] = availableRooms;
 
-                    if (availableRooms.Any(i => i.IsAvailable == false))
+                    if (availableRooms.Any(i => i.IsAvailable == false) && availableRooms.Any(x => x.RoomName != null))
                     {
                         output.Errors.Add("Time slot is already booked for " + info.StartDate + ", please select another time slot.");
+                        return Json(output, JsonRequestBehavior.AllowGet);
+                    }
+                    else if (availableRooms.Any(i => i.IsAvailable == false) && availableRooms.Any(x => x.RoomName == null))
+                    {
+                        output.Errors.Add("No any room is available for (" + input.Capacity + ") no of attendees.");
                         return Json(output, JsonRequestBehavior.AllowGet);
                     }
                     else

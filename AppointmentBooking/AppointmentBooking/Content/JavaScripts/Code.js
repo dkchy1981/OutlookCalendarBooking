@@ -24,6 +24,7 @@ function CancelFetchAppointment(hideMessage) {
     $('#unAvailableRoomsDiv').css("display", "none");
     $(".overlay").hide();
     $('#Fetch').css('display', 'block');
+    
     if (hideMessage) {
         $('#errorList').text('');
         $('#messages').css('display', 'none');

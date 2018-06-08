@@ -163,6 +163,10 @@ namespace APIForCalandarOperations.DataAccess
                 IList<Room> lstPriorityRooms = lstRooms.Where(t => (t.Capacity >= input.Capacity)).OrderBy(t => t.Capacity).ToList();
                 string commonMessage = string.Empty;
                 ExchangeService service = GetExchangeService(input.UserId, input.Password);
+                if(service==null)
+                {
+                    commonMessage = "Service is not initialized. Please check credentails.";
+                }
                 if (lstPriorityRooms.Count <= 0)
                 {
                     commonMessage = "Room is not available for matching capacity";
@@ -178,14 +182,18 @@ namespace APIForCalandarOperations.DataAccess
                     }
                     calendarOutputList.Add(calendarOutput);
                 }
-                DateTime startDate = input.BookingSlots.OrderBy(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
-                DateTime endtDate = input.BookingSlots.OrderByDescending(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date.AddDays(1);
+                
+                if (service != null)
+                {
+                    DateTime startDate = input.BookingSlots.OrderBy(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
+                    DateTime endtDate = input.BookingSlots.OrderByDescending(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date.AddDays(1);
 
-                Dictionary<string, FindItemsResults<Appointment>> fapts = null;
+                    Dictionary<string, FindItemsResults<Appointment>> fapts = null;
 
-                FillAllRoomsAvailability(service, lstPriorityRooms.ToList(), startDate, endtDate, ref fapts);
+                    FillAllRoomsAvailability(service, lstPriorityRooms.ToList(), startDate, endtDate, ref fapts);
 
-                GetRoomAvailabilityRecursivly(calendarOutputList, lstPriorityRooms, service, 0, startDate, endtDate,  fapts);
+                    GetRoomAvailabilityRecursivly(calendarOutputList, lstPriorityRooms, service, 0, startDate, endtDate, fapts);
+                }
             }
             finally
             {
@@ -254,7 +262,7 @@ namespace APIForCalandarOperations.DataAccess
                     
                     fapts.Add(key, fapt);
                 }
-                catch
+                catch(Exception ex)
                 {
                     fapts.Add(key, null);
                 }
@@ -526,7 +534,10 @@ namespace APIForCalandarOperations.DataAccess
             {
                 userPassword = System.Configuration.ConfigurationManager.AppSettings["Password"];
             }
-
+            if(string.IsNullOrWhiteSpace(userEmail) || string.IsNullOrWhiteSpace(userPassword))
+            {
+                return null;
+            }
             ExchangeService service = new ExchangeService();
 
             #region Authentication

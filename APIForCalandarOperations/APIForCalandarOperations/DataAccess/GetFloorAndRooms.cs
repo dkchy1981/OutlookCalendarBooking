@@ -180,7 +180,12 @@ namespace APIForCalandarOperations.DataAccess
                 }
                 DateTime startDate = input.BookingSlots.OrderBy(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date;
                 DateTime endtDate = input.BookingSlots.OrderByDescending(t => t.StartDateTime).FirstOrDefault().StartDateTime.Date.AddDays(1);
-                GetRoomAvailabilityRecursivly(calendarOutputList, lstPriorityRooms, service, 0, startDate, endtDate);
+
+                Dictionary<string, FindItemsResults<Appointment>> fapts = null;
+
+                FillAllRoomsAvailability(service, lstPriorityRooms.ToList(), startDate, endtDate, ref fapts);
+
+                GetRoomAvailabilityRecursivly(calendarOutputList, lstPriorityRooms, service, 0, startDate, endtDate,  fapts);
             }
             finally
             {
@@ -192,12 +197,11 @@ namespace APIForCalandarOperations.DataAccess
             return calendarOutputList;
         }
 
-        private void GetRoomAvailabilityRecursivly(IList<CalendarOutput> calendarOutputList, IList<Room> lstPriorityRooms, ExchangeService service, int roomSkipCount, DateTime startDate, DateTime endtDate)
+        private void GetRoomAvailabilityRecursivly(IList<CalendarOutput> calendarOutputList, IList<Room> lstPriorityRooms, ExchangeService service, int roomSkipCount, DateTime startDate, DateTime endtDate, Dictionary<string, FindItemsResults<Appointment>> fapts)
         {
             if (calendarOutputList.Any(i => i.IsAvailable == false) && lstPriorityRooms.ToList().Count > roomSkipCount)
             {
                 Room room = lstPriorityRooms.ToList().Skip(roomSkipCount).FirstOrDefault();
-                FindItemsResults<Appointment> fapts = null;
 
                 foreach (CalendarOutput calendarOutput in calendarOutputList.Where(i => i.IsAvailable == false).ToList())
                 {
@@ -205,7 +209,7 @@ namespace APIForCalandarOperations.DataAccess
                     calendarOutput.RoomID = room.Id;
                     try
                     {
-                        if (CheckRoomAvailability(room.Name, room.Email, calendarOutput.BookingSlot, service, startDate, endtDate, ref fapts))
+                        if (CheckRoomAvailability(room.Name, room.Email, calendarOutput.BookingSlot, service, startDate, endtDate, fapts))
                         {
                             calendarOutput.Messages.Add("Room Available");
                             calendarOutput.IsAvailable = true;
@@ -224,7 +228,7 @@ namespace APIForCalandarOperations.DataAccess
                         calendarOutput.Messages.Add(string.Format("Error occured to fetch rooms availability for room '{0}'", room.Name));
                     }
                 }
-                GetRoomAvailabilityRecursivly(calendarOutputList, lstPriorityRooms, service, roomSkipCount + 1, startDate, endtDate);
+                GetRoomAvailabilityRecursivly(calendarOutputList, lstPriorityRooms, service, roomSkipCount + 1, startDate, endtDate, fapts);
             }
             else
             {
@@ -232,23 +236,48 @@ namespace APIForCalandarOperations.DataAccess
             }
         }
 
-        private bool CheckRoomAvailability(string roomName, string email, Slot slot, ExchangeService service, DateTime startDate, DateTime endtDate, ref FindItemsResults<Appointment> fapts)
-        {
-            bool blnReturn = true;
 
+        private void FillAllRoomsAvailability(ExchangeService service, IList<Room> rooms, DateTime startDate, DateTime endtDate, ref Dictionary<string, FindItemsResults<Appointment>> fapts)
+        {
             if (fapts == null)
             {
-                FolderId CalendarFolderId = new FolderId(WellKnownFolderName.Calendar, email);
-                CalendarView cv = new CalendarView(startDate, endtDate);
-                fapts = service.FindAppointments(CalendarFolderId, cv);
+                fapts = new Dictionary<string, FindItemsResults<Appointment>>();
             }
-            if (fapts.Count() > 0)
+            foreach (Room room in rooms)
             {
-                var starts = fapts.Select(t => t.Start).ToList();
-                var ends = fapts.Select(t => t.End).ToList();
+                string key = room.Email + startDate.ToString("ddMMyyyy") + endtDate.ToString("ddMMyyyy");
+                FolderId CalendarFolderId = new FolderId(WellKnownFolderName.Calendar, room.Email);
+                CalendarView cv = new CalendarView(startDate, endtDate);
+                try
+                {
+                    FindItemsResults<Appointment> fapt = service.FindAppointments(CalendarFolderId, cv);
+                    
+                    fapts.Add(key, fapt);
+                }
+                catch
+                {
+                    fapts.Add(key, null);
+                }
+            }
+        }
 
 
-                if (fapts.Where(t => ((t.Start < slot.StartDateTime && t.End > slot.StartDateTime) || (t.Start < slot.EndDateTime && t.End > slot.EndDateTime) ||
+        private bool CheckRoomAvailability(string roomName, string email, Slot slot, ExchangeService service, DateTime startDate, DateTime endtDate, Dictionary<string, FindItemsResults<Appointment>> fapts)
+        {
+            bool blnReturn = true;
+            string key = email + startDate.ToString("ddMMyyyy") + endtDate.ToString("ddMMyyyy");
+            FindItemsResults<Appointment> fapt=fapts[key];
+
+            if (fapt == null)
+            {
+                return false;
+            }
+            if (fapt.Count() > 0)
+            {
+                var starts = fapt.Select(t => t.Start).ToList();
+                var ends = fapt.Select(t => t.End).ToList();
+
+                if (fapt.Where(t => ((t.Start < slot.StartDateTime && t.End > slot.StartDateTime) || (t.Start < slot.EndDateTime && t.End > slot.EndDateTime) ||
                      (slot.StartDateTime < t.Start && slot.EndDateTime > t.Start) || (slot.StartDateTime < t.End && slot.EndDateTime > t.End)
                      || (slot.StartDateTime == t.Start && slot.EndDateTime == t.End)
                      )).Count() > 0)
@@ -258,8 +287,6 @@ namespace APIForCalandarOperations.DataAccess
             }
             return blnReturn;
         }
-
-
 
         public CalendarOutputForBooking BookRooms(string connKey, CalendarInputForBooking input)
         {

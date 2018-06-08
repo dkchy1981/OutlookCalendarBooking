@@ -148,7 +148,7 @@
                                     <option value="3">Fourth</option>
                                     <option value="4">Last</option>
                                 </select>
-                                <select id="MonthWiseSelection-day" disabled>
+                                <select id="MonthWiseSelection-day" disabled class="MonthWiseSelectionClass">
                                     <option value="7">Day</option>
                                     <option value="8">WeekDay</option>
                                     <option value="9">Weekend</option>
@@ -167,14 +167,32 @@
 
                             </div>
                             <!--Custom Selection-->
-                            @*<style>
-                           .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
-                                border: 1px solid black;
-                                background: black;
-                                color: black;
-                            }
+                            <style>
+                           div.ui-datepicker
+                           {
+                                font-size:12px;
+                                width:100%;
+                                border-radius:5px;
+
+                           }
                            
-                            </style>*@
+                           .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight 
+                           {
+                                border: 1px solid #297689;
+                                background-color:#297689;
+                                color: white;
+                            }
+                           .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active 
+                           {
+                                border: 1px solid #c5c5c5;
+                                border-radius:3px;
+                                background: #f6f6f6;
+                                font-weight: normal;
+                                color: #454545;
+                            }
+
+                           
+                            </style>
                             <div id="Custom" class="tabcontent">
 
                             </div>

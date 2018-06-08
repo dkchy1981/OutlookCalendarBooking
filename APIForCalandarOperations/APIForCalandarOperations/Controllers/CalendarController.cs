@@ -120,6 +120,7 @@ namespace APIForCalandarOperations.Controllers
             input.Capacity = inputForRoomBooking.Capacity;
             input.FloorID = inputForRoomBooking.FloorID;
             input.UserId = inputForRoomBooking.UserId;
+            input.Password = inputForRoomBooking.Password;
 
             GetFloorAndRooms getFloorAndRooms = new GetFloorAndRooms();
             IList<CalendarOutput> calendarOutputList = getFloorAndRooms.GetRoomsAvailabilityByCalendateInput(System.Configuration.ConfigurationManager.AppSettings["Connection"], input);

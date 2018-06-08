@@ -114,6 +114,7 @@ namespace AppointmentBooking.Controllers
                 input.Capacity = info.Capacity;
                 input.FloorID = info.FloorID;
                 input.UserId = (string)Session["UserName"];
+                input.Password = (string)Session["Password"];
                 int durationInMinutes = 0;
                 if (!string.IsNullOrEmpty(info.Duration))
                 {

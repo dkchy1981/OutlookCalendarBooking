@@ -162,7 +162,7 @@ namespace APIForCalandarOperations.DataAccess
                 IList<Room> lstRooms = GetRoomsByFloorID(connKey, input.FloorID);
                 IList<Room> lstPriorityRooms = lstRooms.Where(t => (t.Capacity >= input.Capacity)).OrderBy(t => t.Capacity).ToList();
                 string commonMessage = string.Empty;
-                ExchangeService service = GetExchangeService();
+                ExchangeService service = GetExchangeService(input.UserId, input.Password);
                 if (lstPriorityRooms.Count <= 0)
                 {
                     commonMessage = "Room is not available for matching capacity";

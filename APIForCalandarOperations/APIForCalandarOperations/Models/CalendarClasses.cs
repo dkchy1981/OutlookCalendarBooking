@@ -21,6 +21,8 @@ namespace APIForCalandarOperations.Models
 
         public string UserId { get; set; }
 
+        public string Password { get; set; }
+
         public List<Slot> BookingSlots { get; set; }
     }
 

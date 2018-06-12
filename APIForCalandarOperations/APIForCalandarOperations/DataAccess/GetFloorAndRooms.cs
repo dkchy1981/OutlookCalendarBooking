@@ -15,8 +15,9 @@ namespace APIForCalandarOperations.DataAccess
 {
     public class GetFloorAndRooms
     {
-        string timeFormat = "HH:mm";
-        string dateFormat = "yyyy/MM/dd ";
+        private const string timeFormat = "HH:mm";
+        private const string dateFormat = "yyyy/MM/dd ";
+        private const string NoRoomAvailable = "No room available";
 
         public GetFloorAndRooms()
         {
@@ -206,7 +207,7 @@ namespace APIForCalandarOperations.DataAccess
         }
 
         private void GetRoomAvailabilityRecursivly(IList<CalendarOutput> calendarOutputList, IList<Room> lstPriorityRooms, ExchangeService service, int roomSkipCount, DateTime startDate, DateTime endtDate, Dictionary<string, FindItemsResults<Appointment>> fapts)
-        {
+        {   
             if (calendarOutputList.Any(i => i.IsAvailable == false) && lstPriorityRooms.ToList().Count > roomSkipCount)
             {
                 Room room = lstPriorityRooms.ToList().Skip(roomSkipCount).FirstOrDefault();
@@ -224,15 +225,18 @@ namespace APIForCalandarOperations.DataAccess
                         }
                         else
                         {
+                            calendarOutput.RoomName = NoRoomAvailable;
                             calendarOutput.Messages.Add("Room Not Available");
                         }
                     }
                     catch (Microsoft.Exchange.WebServices.Data.ServiceRequestException ex)
                     {
+                        calendarOutput.RoomName = NoRoomAvailable;
                         calendarOutput.Messages.Add(string.Format("User do not have access on room '{0}'", room.Name));
                     }
                     catch (Exception ex)
                     {
+                        calendarOutput.RoomName = NoRoomAvailable;
                         calendarOutput.Messages.Add(string.Format("Error occured to fetch rooms availability for room '{0}'", room.Name));
                     }
                 }

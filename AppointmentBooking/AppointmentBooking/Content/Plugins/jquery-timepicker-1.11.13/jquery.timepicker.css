@@ -10,6 +10,7 @@
 	outline: none;
 	z-index: 10052;
 	margin: 0;
+ 
 }
 
 .ui-timepicker-wrapper.ui-timepicker-with-duration {
@@ -32,7 +33,7 @@
 }
 
 .ui-timepicker-list:hover .ui-timepicker-duration {
-	color: #888;
+	color: #d3cbc8;
 }
 
 .ui-timepicker-list li {
@@ -51,7 +52,7 @@
 li.ui-timepicker-selected,
 .ui-timepicker-list li:hover,
 .ui-timepicker-list .ui-timepicker-selected:hover {
-	background: #1980EC; color: #fff;
+	background: #d3cbc8; color: #fff;
 }
 
 li.ui-timepicker-selected .ui-timepicker-duration,

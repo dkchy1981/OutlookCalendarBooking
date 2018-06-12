@@ -81,7 +81,7 @@ div .ex1 {
 }
 
 table .trRoom {
-    background-color: rgba(209, 209, 184, 1);
+    background-color: #d3cbc8;
 }
 
 table .Rooms {
@@ -93,7 +93,7 @@ table .Rooms {
 table .RoomsNotAvailable {
     border-spacing: 0px;
     border-collapse: separate;
-    width: 500px;
+    width: 100%;
 }
 
 .trRoomHeader {
@@ -240,14 +240,14 @@ input[type="checkbox"]:checked:after {
     top: -2px;
     left: -1px;
     position: relative;
-    background-color: #a5958c;
-    border-color: black;
+    background-color: #463529;
+    border-color: #463529;
     content: '';
     display: inline-block;
     visibility: visible;
     border: 1px thin black;
     border-radius: 3px;
-    background-image: url('../Images/Check.png'), linear-gradient(135deg, #B1B6BE 0%,#FFF 100%);
+    
 }
 .mainDivision {
     margin-top: 5px;

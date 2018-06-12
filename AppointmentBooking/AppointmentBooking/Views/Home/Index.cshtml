@@ -110,16 +110,11 @@
                             </div>
                             <!--Daily Selection-->
                             <div id="Daily" class="tabcontent">
-                                <p>
-                                    <input id="EveryDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" checked="checked" value="1"> <label>Every Day</label>
-                                </p>
-                                <p>
-                                    <input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="2"><label>Every Working Day</label> 
-                                </p>
-                                <p>
-                                    <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="3">
-                                    <label>Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="2" value="2" disabled onblur="javascript: LimitLower(this, 2);" /> Day(s).</label>
-</p>
+                                    <input id="EveryDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" checked="checked" value="1">&nbsp;Every Day
+                                <br /><br /><input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="2">&nbsp;Every Working Day                                <br />
+                                <br />
+                                <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="3">&nbsp;
+                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="2" value="2" disabled onblur="javascript: LimitLower(this, 2);" /> Day(s).
                             </div>
                             <!--Weekly Selection-->
                             <div id="Weekly" class="tabcontent">

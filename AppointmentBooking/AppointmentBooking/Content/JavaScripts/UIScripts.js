@@ -19,7 +19,7 @@
 
     document.getElementById(TabName).style.display = "block";
 
-    evt.currentTarget.className += " active";
+    evt.className += " active";
 }
 
 function SelectSelection(element)
@@ -28,19 +28,19 @@ function SelectSelection(element)
     {
         case 'Daily':
             document.getElementById("ActiveSelectionTab").value = 1;
-            openTab(event, 'Daily')
+            openTab(element, 'Daily')
             break;
         case 'Weekly':
             document.getElementById("ActiveSelectionTab").value = 2;
-            openTab(event, 'Weekly')
+            openTab(element, 'Weekly')
             break;
         case 'Monthly':
             document.getElementById("ActiveSelectionTab").value = 3;
-            openTab(event, 'Monthly')
+            openTab(element, 'Monthly')
             break;
         case 'Custom':
             document.getElementById("ActiveSelectionTab").value = 4;
-            openTab(event, 'Custom')
+            openTab(element, 'Custom')
             break;
 
     }
@@ -109,6 +109,7 @@ function LimitLower(element, LowerLimit)
 
 window.onload = function () {
     if (document.getElementById("defaultOpen") != null) {
-        document.getElementById("defaultOpen").click();
+        //document.getElementById("defaultOpen").click();
+        SelectSelection(document.getElementById("defaultOpen"));
     }
 };

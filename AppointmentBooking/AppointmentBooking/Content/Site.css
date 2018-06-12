@@ -367,3 +367,9 @@ input[type="checkbox"]:checked:after {
 .form-horizontalMargin{
     margin-left:20%;
 }
+
+option:checked { 
+    background-color: #d3cbc8;
+    color:#000;    
+}
+

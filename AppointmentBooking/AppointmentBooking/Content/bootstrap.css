@@ -1597,14 +1597,10 @@ pre code {
     width: 970px;
   }
 }
-@media (max-width: 1500px) {
-  .container {
-    width: 1470px;
-  }
-}
+
 @media (min-width: 1200px) {
   .container {
-    width: 1350px;
+    width: 1180px;
   }
 }
 .container-fluid {

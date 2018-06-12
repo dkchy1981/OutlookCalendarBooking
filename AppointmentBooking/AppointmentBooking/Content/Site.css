@@ -383,6 +383,8 @@ outline: none !important;
 ::-moz-selection { color:white; #AF8364; }
 ::selection { color:white; background: #AF8364; }
 
+option:checked { display:none; }
+
 /*select option:checked,
 select option:hover {
     box-shadow: 0 0 10px 100px #000 inset;

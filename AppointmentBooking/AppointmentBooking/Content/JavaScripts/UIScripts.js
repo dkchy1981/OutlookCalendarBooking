@@ -28,18 +28,26 @@ function SelectSelection(element)
     {
         case 'Daily':
             document.getElementById("ActiveSelectionTab").value = 1;
+            document.getElementById("StartDate").disabled = false;
+            document.getElementById("EndDate").disabled = false;           
             openTab(element, 'Daily')
             break;
         case 'Weekly':
             document.getElementById("ActiveSelectionTab").value = 2;
+            document.getElementById("StartDate").disabled = false;
+            document.getElementById("EndDate").disabled = false;
             openTab(element, 'Weekly')
             break;
         case 'Monthly':
             document.getElementById("ActiveSelectionTab").value = 3;
+            document.getElementById("StartDate").disabled = false;
+            document.getElementById("EndDate").disabled = false;
             openTab(element, 'Monthly')
             break;
         case 'Custom':
             document.getElementById("ActiveSelectionTab").value = 4;
+            document.getElementById("StartDate").disabled = true;
+            document.getElementById("EndDate").disabled = true;
             openTab(element, 'Custom')
             break;
 

@@ -1,51 +1,5 @@
 ﻿
-.mainDivision {
-    margin-top: 5px;
-    background-color: #d6dcdd;
-    border-radius: 15px;
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-}
 
-.innerDivisionleft {
-    margin-top: 7px;
-    margin-left: 7px;
-    margin-bottom: 7px;
-    margin-right: 0px;
-    background-color: white;
-    border-radius: 10px;
-    display: inline-block;
-    width: 49%;
-    height: 425px;
-}
-
-.innerDivisionleftoverlay {
-   pointer-events: none;
-    opacity: 0.4;
-}
-.innerDivisionright {
-    margin-top: 7px;
-    margin-left: 0px;
-    margin-bottom: 7px;
-    margin-right: 7px;
-    background-color: white;
-    border-radius: 10px;
-    display: inline-block;
-    width: 49%;
-    height: 425px;
-}
-
-.innerDivisionLower {
-    margin-top: 5px;
-    background-color: white;
-    border-radius: 15px;
-    display: inline-block;
-    width: 98.7%;
-    height: 290px;
-    margin-left: 8px;
-    margin-right: 5px;
-}
 
 .GeneralNumberInput {
     width: 40px;
@@ -69,68 +23,7 @@ table {
     border-collapse: separate;
 }
 
-input[type='radio']:after {
-    width: 15px;
-    height: 15px;
-    border-radius: 15px;
-    top: -2px;
-    left: -1px;
-    position: relative;
-    background-color: #d1d3d1;
-    border-color: black;
-    content: '';
-    display: inline-block;
-    visibility: visible;
-    border: 1px inherit black;
-}
 
-input[type='radio']:checked:after {
-    width: 15px;
-    height: 15px;
-    border-radius: 15px;
-    top: -2px;
-    left: -1px;
-    position: relative;
-    background-color: #297689;
-    content: '';
-    display: inline-block;
-    visibility: visible;
-    border: 1px thin black;
-}
-
-input[type="checkbox"]:before {
-}
-
-input[type="checkbox"]:after {
-    width: 15px;
-    height: 15px;
-    top: -2px;
-    left: -1px;
-    position: relative;
-    background-color: #d1d3d1;
-    border-color: black;
-    content: '';
-    display: inline-block;
-    visibility: visible;
-    border: 1px thin black;
-    border-radius: 3px;
-}
-
-input[type="checkbox"]:checked:after {
-    width: 15px;
-    height: 15px;
-    top: -2px;
-    left: -1px;
-    position: relative;
-    background-color: #297689;
-    border-color: black;
-    content: '';
-    display: inline-block;
-    visibility: visible;
-    border: 1px thin black;
-    border-radius: 3px;
-    background-image: url('../Images/Check.png'), linear-gradient(135deg, #B1B6BE 0%,#FFF 100%);
-}
 
 .tab {
     float: left;
@@ -139,28 +32,7 @@ input[type="checkbox"]:checked:after {
     border-right-color: gray;
 }
 
-.tablinks {
-    width: 100px;
-    height: 50px;
-    background-color: white;
-    border: none;
-}
 
-.tab input.active {
-    background-color: #297689;
-    color: white;
-}
-
-.tab input:hover {
-    background-color: #ddd;
-    color: black;
-}
-
-.tabcontent {
-    padding-top: 10px;
-    padding-left: 115px;
-    background-color: white;
-}
 
 #RegressionTypeSelectionTableData {
     border-style: solid;
@@ -169,15 +41,6 @@ input[type="checkbox"]:checked:after {
     padding-right: 20px;
 }
 
-.MainButton {
-    min-height: 30px;
-    min-width: 70px;
-    border-radius: 3px;
-    border: none;
-    background-color: #297689;
-    color: white;
-    display: inline-block;
-}
 
 .PopupButtons {
     border-radius: 3px;
@@ -190,4 +53,3 @@ input[type="checkbox"]:checked:after {
 .MonthWiseSelectionClass {
     width: 80px;
 }
-

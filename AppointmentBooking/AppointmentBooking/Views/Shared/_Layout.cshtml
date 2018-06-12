@@ -14,23 +14,24 @@
     <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
     <script src="~/Content/JavaScripts/UIScripts.js"></script>
-    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/Content/StyleSheets/Default.css")" rel="stylesheet" />
-    
+    <link id="SiteCSS" href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/StyleSheets/Default.css")" rel="stylesheet" />    
+    <script src=@Url.Content("~/Content/JavaScripts/Code.js")></script>
 </head>
 <body>
     <div class="containerTop">
         <div class="containerTopText">
             <label class="navbar-brand">Book Appointment</label>
+
             @Html.ActionLink("Logout", "Logout", "Home", new { @class = "navbar-brand-right", id = "Logout" })
             <label id="LoggedInUser" class="navbar-brand-left"></label>
         </div>
     </div>
     <div class="container ">
         @RenderBody()
-        <hr />
+        <hr/>
         <footer>
-            <p style="color:white; text-align:right">&copy; @DateTime.Now.Year</p>
+            <p style="text-align:right" class="control-label">&copy; @DateTime.Now.Year</p>
         </footer>
     </div>
     <div class="overlay">
@@ -53,6 +54,6 @@
                 $("#Logout").css("display", "block");
                 $("#LoggedInUser").css("display", "block");
                 $('#LoggedInUser').text(value);
-            }
+            }         
 
 </script>

@@ -108,5 +108,7 @@ function LimitLower(element, LowerLimit)
 }
 
 window.onload = function () {
-    document.getElementById("defaultOpen").click();
+    if (document.getElementById("defaultOpen") != null) {
+        document.getElementById("defaultOpen").click();
+    }
 };

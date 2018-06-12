@@ -444,3 +444,20 @@ option:checked {
     color:#000;    
 }
 }*/
+
+.btnAvailability
+{
+    height:25px;
+    width:25px;    
+    margin-left:10px;
+    cursor:pointer;
+    margin-top:2px;
+}
+.btnConfirm
+{
+    height:25px;
+    width:25px;
+    margin-left:10px;
+    cursor:pointer;
+    margin-top:2px;
+}

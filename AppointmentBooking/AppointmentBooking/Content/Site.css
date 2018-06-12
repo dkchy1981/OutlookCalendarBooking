@@ -93,7 +93,7 @@ table .Rooms {
 table .RoomsNotAvailable {
     border-spacing: 0px;
     border-collapse: separate;
-    width: 500px;
+    width: 100%;
 }
 
 .trRoomHeader {

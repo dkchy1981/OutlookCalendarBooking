@@ -233,6 +233,7 @@ function checkAvailability() {
 
     var trForNotMatched;
     trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
+    trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Room Name</th>");
     trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
     trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
     trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>");
@@ -472,9 +473,10 @@ function checkTimeSlotforConflict(startDate, id) {
         else {
             $('#messages').css('display', 'none');
         }
-
+        
         for (var k = 0; k < editJson.length; k++) {
             if (editJson[k].IsAvailable == true) {
+                $("#tdRoomForAvailable" + id).text(editJson[k].RoomName);
                 $("#tdAvailable" + id).css("display", "none");
                 $("#tdConfirm" + id).css("display", "block");
 
@@ -552,10 +554,11 @@ function BindGrid(json) {
 
     var trForNotMatched;
     trForNotMatched = $('<tr class=\'trRoomHeader\'/>');
-    trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Date</th>");
-    trForNotMatched.append("<th style=\'width:30%\' class=\'tdRoom\'>Start Time</th>");
-    trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>End Time</th>")
-    trForNotMatched.append("<th style=\'width:20%\' class=\'tdRoom\'>Action</th>");
+    trForNotMatched.append("<th style=\'width:40%\' class=\'tdRoom\'>Room Name</th>");
+    trForNotMatched.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Date</th>");
+    trForNotMatched.append("<th style=\'width:15%\' class=\'tdRoom\'>Start Time</th>");
+    trForNotMatched.append("<th style=\'width:15%\' class=\'tdRoom\'>End Time</th>")
+    trForNotMatched.append("<th style=\'width:15%\' class=\'tdRoom\'>Action</th>");
 
     $('#CalForNotMatched').append(trForNotMatched);
     var countForunAvailableRooms = 0;
@@ -564,11 +567,12 @@ function BindGrid(json) {
         if (json[i].IsAvailable == false) {
             var changeSlot = json[i];
             trForNotMatched = $('<tr/>');
-            trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
-            trForNotMatched.append("<td style=\'width:25%;padding:3px\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' style=\'width:100px\' value=\'" + json[i].BookingSlot.StartTime + "\' onchange=onChangeTimeSlot(" + i + ") /> </td>");
-            trForNotMatched.append("<td style=\'width:25%\' class=\'tdRoom\'> <span id=EndTime" + i + "> " + parseDateTime(json[i].BookingSlot.EndTime) + " </span> </td>");
-            trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:25%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "')  /> </td>");
-            trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:25%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
+            trForNotMatched.append("<td id=\'tdRoomForAvailable" + i + "\' style=\'width:40%\' class=\'tdRoom\'>" + json[i].RoomName + "</td>");
+            trForNotMatched.append("<td style=\'width:15%\' class=\'tdRoom\'>" + json[i].BookingSlot.StartDate + "</td>");
+            trForNotMatched.append("<td style=\'width:15%;padding:3px\' class=\'tdRoom\'>  <input id=\'StartTime" + i + "\' name=\'StartTime\' class=\'TimeInputGrd\' type=\'text\' style=\'width:100px\' value=\'" + json[i].BookingSlot.StartTime + "\' onchange=onChangeTimeSlot(" + i + ") /> </td>");
+            trForNotMatched.append("<td style=\'width:15%\' class=\'tdRoom\'> <span id=EndTime" + i + "> " + parseDateTime(json[i].BookingSlot.EndTime) + " </span> </td>");
+            trForNotMatched.append("<td id=\'tdAvailable" + i + "\' style=\'width:15%\;display:block' class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/Checkavailablility.JPG\' onclick=checkTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "')  /> </td>");
+            trForNotMatched.append("<td id=\'tdConfirm" + i + "\' style=\'width:15%;display:none\', class=\'tdRoom\'> <img id=\'actionImg" + i + "\' style=\'cursor:pointer\'  width='100px' src=\'../Content/Images/ConfirmImg.JPG\' onclick=confirmNewTimeSlotforConflict('" + changeSlot.BookingSlot.StartDate + "','" + i + "') /> </td>");
 
             countForunAvailableRooms++;
 

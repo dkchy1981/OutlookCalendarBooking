@@ -186,7 +186,7 @@ td .tdRoom {
     display: inline-block;
 }
 
-input[type='radio']:after {
+/*input[type='radio']:after {
     width: 15px;
     height: 15px;
     border-radius: 15px;
@@ -199,9 +199,9 @@ input[type='radio']:after {
     display: inline-block;
     visibility: visible;
     border: 1px inherit black;
-}
+}*/
 
-input[type='radio']:checked:after {
+/*input[type='radio']:checked:after {
     width: 15px;
     height: 15px;
     border-radius: 15px;
@@ -213,7 +213,7 @@ input[type='radio']:checked:after {
     display: inline-block;
     visibility: visible;
     border: 1px thin black;
-}
+}*/
 
 input[type="checkbox"]:before {
     background-color: #a5958c;
@@ -385,62 +385,35 @@ outline: none !important;
 
 option:checked { display:none; }
 
-/*select option:checked,
-select option:hover {
-    box-shadow: 0 0 10px 100px #000 inset;
-}
-[type="radio"]:checked,
-[type="radio"]:not(:checked) {
-    position: absolute;
-    left: -9999px;
-}
-[type="radio"]:checked + label,
-[type="radio"]:not(:checked) + label
-{
-    position: relative;
-    padding-left: 28px;
-    cursor: pointer;
-    line-height: 20px;
+/*Radio*/
+.custom-radio {
+    width: 16px;
+    height: 16px;
     display: inline-block;
-    color: #666;
+    position: relative;
+    z-index: 1;
+    top: 3px;
+    background: url("Images/RadioButton/radio.png") no-repeat;
 }
-[type="radio"]:checked + label:before,
-[type="radio"]:not(:checked) + label:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 18px;
-    height: 18px;
-    border: 1px solid #ddd;
-    border-radius: 100%;
-    background: #fff;
-}
-[type="radio"]:checked + label:after,
-[type="radio"]:not(:checked) + label:after {
-    content: '';
-    width: 12px;
-    height: 12px;
-    background: #473528;
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    border-radius: 100%;
-    -webkit-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-}
-[type="radio"]:not(:checked) + label:after {
-    opacity: 0;
-    -webkit-transform: scale(0);
-    transform: scale(0);
-}
-[type="radio"]:checked + label:after {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-}
-option:checked { 
-    background-color: #d3cbc8;
-    color:#000;    
-}
-}*/
+    .custom-radio:hover {
+        background: url("Images/RadioButton/radio-hover.png") no-repeat;
+        
+    }
+    .custom-radio.selected {
+        background: url("Images/RadioButton/radio-selected.png") no-repeat;
+    }
+	.custom-radio input[type="radio"]{
+		margin: 1px;
+		position: absolute;
+		z-index: 2;            
+		cursor: pointer;
+		outline: none;
+		opacity: 0;
+		/* CSS hacks for older browsers */
+		_noFocusLine: expression(this.hideFocus=true); 
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+		filter: alpha(opacity=0);
+		-khtml-opacity: 0;
+		-moz-opacity: 0;
+	}
+ 

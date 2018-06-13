@@ -117,7 +117,31 @@ function LimitLower(element, LowerLimit)
 
 window.onload = function () {
     if (document.getElementById("defaultOpen") != null) {
-        //document.getElementById("defaultOpen").click();
         SelectSelection(document.getElementById("defaultOpen"));
     }
 };
+
+//Radio
+function customRadio(radioName) {
+    var radioButton = $('input[name="' + radioName + '"]');
+    $(radioButton).each(function () {
+        $(this).wrap("<span class='custom-radio'></span>");
+        if ($(this).is(':checked')) {
+            $(this).parent().addClass("selected");
+        }
+    });
+    $(radioButton).click(function () {
+        if ($(this).is(':checked')) {
+            $(this).parent().addClass("selected");
+        }
+        $(radioButton).not(this).each(function () {
+            $(this).parent().removeClass("selected");
+        });
+    });
+}
+
+
+$(document).ready(function () {
+    customRadio("DailySelectionType");
+    customRadio("MonthlySelectionType");
+})

@@ -190,6 +190,9 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\Checkavailablility.JPG" />
     <Content Include="Content\Images\ajax-loader.gif" />
+    <Content Include="Content\Images\CheckBox\checkbox-hover.png" />
+    <Content Include="Content\Images\CheckBox\checkbox-selected.png" />
+    <Content Include="Content\Images\CheckBox\checkbox.png" />
     <Content Include="Content\Images\CivicaBackground.png" />
     <Content Include="Content\Images\Check.png" />
     <Content Include="Content\Images\RadioButton\radio-hover.png" />

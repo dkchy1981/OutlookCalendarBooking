@@ -186,40 +186,12 @@ td .tdRoom {
     display: inline-block;
 }
 
-/*input[type='radio']:after {
-    width: 15px;
-    height: 15px;
-    border-radius: 15px;
-    top: -2px;
-    left: -1px;
-    position: relative;
+
+/*input[type="checkbox"]:before {
     background-color: #a5958c;
-    border-color: black;
-    content: '';
-    display: inline-block;
-    visibility: visible;
-    border: 1px inherit black;
 }*/
 
-/*input[type='radio']:checked:after {
-    width: 15px;
-    height: 15px;
-    border-radius: 15px;
-    top: -2px;
-    left: -1px;
-    position: relative;
-    background-color: #473528;
-    content: '';
-    display: inline-block;
-    visibility: visible;
-    border: 1px thin black;
-}*/
-
-input[type="checkbox"]:before {
-    background-color: #a5958c;
-}
-
-input[type="checkbox"]:after {
+/*input[type="checkbox"]:after {
     width: 15px;
     height: 15px;
     top: -2px;
@@ -232,9 +204,9 @@ input[type="checkbox"]:after {
     visibility: visible;
     border: 1px thin black;
     border-radius: 3px;
-}
+}*/
 
-input[type="checkbox"]:checked:after {
+/*input[type="checkbox"]:checked:after {
     width: 15px;
     height: 15px;
     top: -2px;
@@ -248,7 +220,7 @@ input[type="checkbox"]:checked:after {
     border: 1px thin black;
     border-radius: 3px;
     
-}
+}*/
 .mainDivision {
     margin-top: 5px;
     background-color: #a5958c;
@@ -416,4 +388,34 @@ option:checked { display:none; }
 		-khtml-opacity: 0;
 		-moz-opacity: 0;
 	}
- 
+
+    /*CustomCheckBox*/
+.custom-checkbox {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    top: 3px;
+    background: url("Images/CheckBox/checkbox.png") no-repeat;
+}
+    .custom-checkbox:hover{
+        background: url("Images/CheckBox/checkbox-hover.png") no-repeat;
+    }
+    .custom-checkbox.selected{
+        background: url("Images/CheckBox/checkbox-selected.png") no-repeat;
+    }
+    .custom-checkbox input[type="checkbox"]{
+        margin: 0;
+        position: absolute;
+        z-index: 2;            
+        cursor: pointer;
+        outline: none;
+        opacity: 0;
+        /* CSS hacks for older browsers */
+        _noFocusLine: expression(this.hideFocus=true); 
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+        filter: alpha(opacity=0);
+        -khtml-opacity: 0;
+        -moz-opacity: 0;
+    }

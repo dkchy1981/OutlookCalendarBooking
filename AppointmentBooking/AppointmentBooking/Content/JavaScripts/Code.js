@@ -22,6 +22,7 @@ $(function () {
 function CancelFetchAppointment(hideMessage) {
     $('#availableRooms').css('display', 'none');
     $('#unAvailableRoomsDiv').css("display", "none");
+    $(".innerDivisionleft").css("pointer-events", "all");
     $(".overlay").hide();
     $('#Fetch').css('display', 'block');
     
@@ -32,6 +33,7 @@ function CancelFetchAppointment(hideMessage) {
 }
 
 function bookAppointment() {
+    $(".innerDivisionleft").css("pointer-events", "none");
     $(".overlay").show();
     $("#errorList").empty();
     $('#errorList').text('');
@@ -206,7 +208,9 @@ function bookAppointment() {
 
         CancelFetchAppointment(false);
     }
+    $(".innerDivisionleft").css("pointer-events", "all");
     $(".overlay").hide();
+
 
 });
 
@@ -214,6 +218,7 @@ function bookAppointment() {
 
 function checkAvailability() {
 
+    $(".innerDivisionleft").css("pointer-events", "none");
     $(".overlay").show();
 
     $("#Cal").empty();
@@ -427,6 +432,7 @@ function checkAvailability() {
         BindGrid(json.AvailableRooms);
         $('#Fetch').css('display', 'none');
     }
+    $(".innerDivisionleft").css("pointer-events", "all");
     $(".overlay").hide();
 });
 };

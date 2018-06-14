@@ -21,6 +21,14 @@
 <link href="~/Content/Plugins/jquery-timepicker-1.3.5/jquery.timepicker.min.css" rel="stylesheet" />
 <link href="~/Content/Plugins/jquery-timepicker-1.11.13/jquery.timepicker.min.css" rel="stylesheet" />
 
+<style>
+
+    /*ui-timepicker-container ui-timepicker-standard*/ ui-helper-hidden /*ui-timepicker-hidden*/
+    {
+        z-index:2;
+    }
+</style>
+
 
 
 @using (Html.BeginForm("MultipleCommand", "Home", FormMethod.Post, new { id = "submitForm" }))

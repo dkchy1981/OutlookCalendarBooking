@@ -188,7 +188,10 @@ namespace AppointmentBooking.Controllers
                                         (info.IsFriday && start.DayOfWeek == DayOfWeek.Friday)
                                         )
                                     {
-                                        slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        if (start > DateTime.Now)
+                                        {
+                                            slots.Add(new Slot() { StartDateTime = start, EndDateTime = start.AddMinutes(durationInMinutes) });
+                                        }
                                     }
                                     start = start.AddDays(1);
                                 }

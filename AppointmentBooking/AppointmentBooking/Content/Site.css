@@ -138,7 +138,6 @@ td .tdRoom {
     width: 95%;
 }
 .overlay {display: none;
-  margin: 0px 0px 0px -50px; /* left margin is half width of the div, to centre it */
   padding: 300px 10px 10px 10px;
   position: absolute;
   left: 0;
@@ -147,9 +146,9 @@ td .tdRoom {
   height: 100%;
   text-align: center;
   background: #e8e8e8 url(~/Content/images/ajax-loader.gif) no-repeat center center;
-  border: 1px solid #000;
   opacity: 0.5;
   pointer-events: none;
+  z-index:1000;
 }
 .loderimage
 {

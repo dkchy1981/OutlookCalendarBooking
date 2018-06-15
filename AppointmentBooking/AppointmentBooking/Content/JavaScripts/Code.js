@@ -32,6 +32,7 @@ function CancelFetchAppointment(hideMessage) {
 }
 
 function bookAppointment() {
+    $(".innerDivisionleft").css("pointer-events", "none");
     $(".overlay").show();
     $("#errorList").empty();
     $('#errorList').text('');
@@ -208,12 +209,15 @@ function bookAppointment() {
     }
 
 })
- .always(function () { $(".overlay").hide(); });
+ .always(function () {
+     $(".innerDivisionleft").css("pointer-events", "all");
+     $(".overlay").hide();
+ });
 
 };
 
 function checkAvailability() {
-
+    $(".innerDivisionleft").css("pointer-events", "none");
     $(".overlay").show();
 
     $("#Cal").empty();
@@ -429,7 +433,10 @@ function checkAvailability() {
     }
 
 })
-    .always(function () { $(".overlay").hide(); });
+    .always(function () {
+        $(".innerDivisionleft").css("pointer-events", "all");
+        $(".overlay").hide();
+    });
 };
 
 function checkTimeSlotforConflict(startDate, id) {
@@ -484,7 +491,10 @@ function checkTimeSlotforConflict(startDate, id) {
             }
         }
     })
-    .always(function () { $(".overlay").hide(); });
+    .always(function () {
+        $(".innerDivisionleft").css("pointer-events", "all");
+        $(".overlay").hide();
+    });
 
 };
 
@@ -513,7 +523,10 @@ function confirmNewTimeSlotforConflict(startDate, id) {
             $('#unAvailableRoomsDiv').css("display", "none");
         }
     })
-    .always(function () { $(".overlay").hide(); });
+    .always(function () {
+        $(".innerDivisionleft").css("pointer-events", "all");
+        $(".overlay").hide();
+    });
 
 
 };

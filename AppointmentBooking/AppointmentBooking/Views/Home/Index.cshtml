@@ -109,12 +109,11 @@
                                 <input type="button" class="tablinks" onclick="SelectSelection(this);" value="Custom"><br />
                             </div>
                             <!--Daily Selection-->
-                            <div id="Daily" class="tabcontent">
-                                    <input id="EveryDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" checked="checked" value="1">&nbsp;Every Day
-                                <br /><br /><input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="2">&nbsp;Every Working Day                                <br />
-                                <br />
+                            <div id="Daily" class="tabcontent">                                    
+                                <input id="EveryWorkingDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="2" checked="checked">&nbsp;Every Working Day<br /><br />
                                 <input id="EveryNDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="3">&nbsp;
-                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="2" value="2" disabled onblur="javascript: LimitLower(this, 2);" /> Day(s).
+                                Every <input class="GeneralNumberInput" id="DailyRepeatFrequency" type="number" min="2" value="2" disabled onblur="javascript: LimitLower(this, 2);" /> Day(s).<br/><br/>
+                                <input id="EveryDay" name="DailySelectionType" type="radio" onclick="javascript: DailyRadioCheck()" value="1">&nbsp;Every Day
                             </div>
                             <!--Weekly Selection-->
                             <div id="Weekly" class="tabcontent">

@@ -403,6 +403,12 @@ namespace APIForCalandarOperations.DataAccess
             return calendarOutputForBooking;
         }
 
+        /// <summary>
+        /// Test comment
+        /// </summary>
+        /// <param name="bookingSlots"></param>
+        /// <param name="recurrenceType"></param>
+        /// <returns></returns>
         private List<SlotForBooking> ExtractGroupsBasedOnRoomAndStartEndTime(List<SlotForBooking> bookingSlots, string recurrenceType)
         {
             if (recurrenceType == "DailyEveryDay" || recurrenceType == "DailyEveryWorkingDay" || recurrenceType == "DailyEveryNDay" || recurrenceType == "Weekly" || recurrenceType == "Monthly")
